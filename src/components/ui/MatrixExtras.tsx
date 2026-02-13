@@ -520,22 +520,25 @@ export function LiveSniffer() {
 // ============================================
 
 interface SparklineProps {
-  values: number[];
+  values?: number[];
+  data?: number[];
   width?: number;
   height?: number;
+  color?: string;
 }
 
-export function Sparkline({ values, width = 200, height = 40 }: SparklineProps) {
-  if (values.length < 2) return null;
+export function Sparkline({ values, data, width = 200, height = 40, color = "#00FF41" }: SparklineProps) {
+  const pts_source = values ?? data;
+  if (!pts_source || pts_source.length < 2) return null;
 
-  const min = Math.min(...values);
-  const max = Math.max(...values);
+  const min = Math.min(...pts_source);
+  const max = Math.max(...pts_source);
   const span = max - min || 1;
   const padX = 4;
   const padY = 4;
 
-  const pts = values.map((v, i) => {
-    const x = padX + (i * (width - padX * 2)) / (values.length - 1);
+  const pts = pts_source.map((v, i) => {
+    const x = padX + (i * (width - padX * 2)) / (pts_source.length - 1);
     const y = padY + (1 - (v - min) / span) * (height - padY * 2);
     return { x, y };
   });
@@ -548,7 +551,7 @@ export function Sparkline({ values, width = 200, height = 40 }: SparklineProps) 
         className="drop-shadow-[0_0_10px_rgba(0,255,65,0.22)]"
         d={d}
         fill="none"
-        stroke="#00FF41"
+        stroke={color}
         strokeWidth="2"
         vectorEffect="non-scaling-stroke"
       />

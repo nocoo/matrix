@@ -1,6 +1,6 @@
 import { AsciiBox } from "@/components/ui/AsciiBox";
 import { MatrixButton } from "@/components/ui/MatrixButton";
-import { TrendMonitor, ActivityHeatmap } from "@/components/ui/DataVizComponents";
+import { TrendMonitor } from "@/components/ui/DataVizComponents";
 import { Sparkline } from "@/components/ui/MatrixExtras";
 import { useLifeAiViewModel } from "@/viewmodels/useLifeAiViewModel";
 import { cn } from "@/lib/utils";
@@ -102,10 +102,20 @@ export default function LifeAiPage() {
 
       {/* Activity heatmap */}
       <AsciiBox title="ACTIVITY HEATMAP (2026)">
-        <ActivityHeatmap
-          data={heatmapData.map((d) => ({ date: d.date, count: d.value }))}
-          color="var(--matrix-ink)"
-        />
+        <div className="flex flex-wrap gap-[2px]">
+          {heatmapData.map((d) => (
+            <div
+              key={d.date}
+              className="w-2 h-2 rounded-[1px]"
+              style={{
+                backgroundColor: d.value > 0
+                  ? `rgba(0, 255, 65, ${Math.min(d.value / 10, 1)})`
+                  : "rgba(0, 255, 65, 0.05)",
+              }}
+              title={`${d.date}: ${d.value}`}
+            />
+          ))}
+        </div>
       </AsciiBox>
 
       {/* Charts row */}
