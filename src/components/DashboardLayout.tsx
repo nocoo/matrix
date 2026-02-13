@@ -6,7 +6,7 @@ import {
   LineChart, HelpCircle, Settings, Search,
   ChevronRight, LogOut, Palette, LogIn, IdCard,
   ExternalLink, FileText, Layers, HeartPulse,
-  Loader, Menu, X, FileQuestion,
+  Loader, Menu, X, FileQuestion, Component,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -38,6 +38,7 @@ const NAV_GROUPS: NavGroup[] = [
       { title: "Progress Tracking", icon: PiggyBank, path: "/progress-tracking" },
       { title: "Targets", icon: Target, path: "/targets" },
       { title: "Life.ai", icon: HeartPulse, path: "/life-ai" },
+      { title: "Component Showcase", icon: Component, path: "/component-showcase" },
     ],
   },
   {
@@ -88,6 +89,7 @@ const PAGE_TITLES: Record<string, string> = {
   "/palette": "Color Palette",
   "/interactions": "Interactions",
   "/life-ai": "Life.ai",
+  "/component-showcase": "Component Showcase",
 };
 
 // -- Nav group section --

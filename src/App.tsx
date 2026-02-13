@@ -14,6 +14,7 @@ import SettingsPage from "@/pages/SettingsPage";
 import PalettePage from "@/pages/PalettePage";
 import InteractionShowcasePage from "@/pages/InteractionShowcasePage";
 import LifeAiPage from "@/pages/LifeAiPage";
+import ComponentShowcasePage from "@/pages/ComponentShowcasePage";
 import LoginPage from "@/pages/LoginPage";
 import BadgeLoginPage from "@/pages/BadgeLoginPage";
 import StaticPage from "@/pages/StaticPage";
@@ -39,6 +40,7 @@ const App = () => (
         <Route path="/palette" element={<PalettePage />} />
         <Route path="/interactions" element={<InteractionShowcasePage />} />
         <Route path="/life-ai" element={<LifeAiPage />} />
+        <Route path="/component-showcase" element={<ComponentShowcasePage />} />
       </Route>
       {/* Standalone pages (no sidebar) */}
       <Route path="/login" element={<LoginPage />} />
