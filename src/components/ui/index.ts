@@ -38,3 +38,37 @@ export {
   ActivityHeatmap,
   ArchiveHeatmap,
 } from "./DataVizComponents";
+
+// Vibe components (from runner vibeusage)
+export {
+  BackendStatus,
+  SystemHeader,
+  IdentityPanel,
+  IdentityCard,
+  TopModelsPanel,
+  LeaderboardPanel,
+  UsagePanel,
+  NeuralAdaptiveFleet,
+  NeuralDivergenceMap,
+  LandingExtras,
+  GithubStar,
+  UpgradeAlertModal,
+  CostAnalysisModal,
+} from "./VibeComponents";
+
+// Runner-specific components
+export {
+  MatrixClock,
+  TaskSchedule,
+  RunHistory,
+  RunHeatmap,
+  RunnerTrendChart,
+  UpcomingTasks,
+  AddTaskModal,
+  TaskDetailModal,
+  RunDetailModal,
+} from "./RunnerComponents";
+
+// Feedback components
+export { Toast } from "./Toast";
+export type { ToastTone } from "./Toast";

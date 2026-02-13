@@ -82,6 +82,75 @@ export interface ShowcaseDialog {
   style: "info" | "form" | "confirm";
 }
 
+// -- Runner task scheduling types --
+
+export interface Task {
+  id: string;
+  executor: "shell" | "opencode" | "http";
+  description: string;
+  timeout: number;
+  command?: string | null;
+  prompt?: string | null;
+  workdir?: string | null;
+  url?: string | null;
+  method?: string | null;
+  headers?: Record<string, string> | null;
+  body?: string | null;
+}
+
+export interface Schedule {
+  task: string;
+  hour: number | string;
+  minute: number | string;
+  weekday: number | string;
+}
+
+export type RunStatus = "running" | "success" | "failed" | "interrupted";
+
+export interface RunSummary {
+  id: string;
+  task: string;
+  exit_code: number | null;
+  started_at: string;
+  finished_at: string | null;
+}
+
+export interface RunDetail {
+  id: string;
+  task: string;
+  trigger: "auto" | "manual";
+  started_at: string;
+  finished_at?: string;
+  duration_seconds?: number;
+  exit_code: number | null;
+  output_preview?: string;
+}
+
+export interface HeatmapCell {
+  date: string;
+  count: number;
+  success: number;
+  failed: number;
+}
+
+export interface TrendPoint {
+  date: string;
+  total: number;
+  success: number;
+  successRate: number;
+}
+
+export interface TaskWithSchedule extends Task {
+  schedules: Schedule[];
+}
+
+export interface UpcomingTask {
+  task: Task;
+  schedule: Schedule;
+  nextRun: Date;
+  countdown: number;
+}
+
 // -- Life.ai demo types --
 
 export interface LifeAiTimelineEvent {
