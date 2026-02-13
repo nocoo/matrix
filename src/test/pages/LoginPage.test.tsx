@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import LoginPage from "@/pages/LoginPage";
 
 // Mock MatrixRain since it uses canvas
@@ -33,5 +33,24 @@ describe("LoginPage", () => {
   it("renders forgot access text", () => {
     render(<LoginPage />);
     expect(screen.getByText("> forgot access? contact sysadmin")).toBeInTheDocument();
+  });
+
+  it("updates email input on change", () => {
+    render(<LoginPage />);
+    const emailInput = screen.getByPlaceholderText("operator@matrix.sys") as HTMLInputElement;
+    fireEvent.change(emailInput, { target: { value: "test@example.com" } });
+    expect(emailInput.value).toBe("test@example.com");
+  });
+
+  it("updates password input on change", () => {
+    render(<LoginPage />);
+    const passwordInput = screen.getByPlaceholderText("••••••••") as HTMLInputElement;
+    fireEvent.change(passwordInput, { target: { value: "secret123" } });
+    expect(passwordInput.value).toBe("secret123");
+  });
+
+  it("renders MatrixRain background", () => {
+    render(<LoginPage />);
+    expect(screen.getByTestId("matrix-rain")).toBeInTheDocument();
   });
 });
