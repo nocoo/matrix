@@ -17,7 +17,7 @@ A sci-fi dashboard UI kit with 40+ components, 20 pages, and a strict MVVM archi
 - 📐 **Strict MVVM Architecture** — Models (pure logic, zero React), ViewModels (hooks), Pages (pure UI)
 - 📄 **20 Pages** — Dashboard, Accounts, Cards, Records, Progress Tracking, Targets, Stats, Portfolio, Life.ai, Component Showcase, and more
 - 🎨 **Matrix Design System** — Custom Tailwind v4 theme with `matrix-primary`, `matrix-bright`, `matrix-muted`, `matrix-dim`, panel tokens, and glow effects
-- 🧪 **190 Tests** — Unit tests for every model, viewmodel, and page with 90%+ coverage
+- 🧪 **749 Tests** — Unit tests for every model, viewmodel, page, and component with 90%+ coverage enforced
 - 🔒 **Quality Gates** — Husky pre-commit (tests) and pre-push (tests + lint) hooks
 - 📦 **~127KB gzipped** — Lean production bundle, no heavy charting libraries
 
@@ -192,21 +192,82 @@ Matrix follows a strict **MVVM (Model-View-ViewModel)** pattern:
 | `/loading` | Loading | Loading state template |
 | `*` | 404 | Not found |
 
-## 🧪 Testing
+## 🧪 Testing, Hooks & Coverage
+
+### Running Tests
 
 ```bash
-# Run all 190 tests
+# Run all 749 tests
 bun test
 
-# Watch mode
-bun run test:watch
+# Run with coverage report
+bun run test:coverage
+
+# Run a single file
+bun run test src/test/pages/DashboardPage.test.tsx
+
+# Lint
+bun run lint
 ```
 
-Tests are organized to mirror the source structure:
+### Test Structure
 
-- `test/models/` — Pure function tests (no DOM, no React)
-- `test/viewmodels/` — Hook tests with `renderHook`
-- `test/pages/` — Smoke tests with mocked viewmodels
+Tests mirror the source directory layout under `src/test/`:
+
+| Directory | Files | Description |
+|-----------|-------|-------------|
+| `test/models/` | 14 files | Pure function tests — no DOM, no React |
+| `test/viewmodels/` | 12 files | Hook tests using `renderHook` |
+| `test/pages/` | 15+ files | Page smoke tests with mocked viewmodels |
+| `test/components/` | 6 files | Component rendering and interaction tests |
+| `test/lib/` | 3 files | Utility function tests (date, format, matrix-utils) |
+
+### Coverage
+
+Coverage is enforced at **90%** for all four metrics via `vitest.config.ts`:
+
+| Metric | Threshold | Current |
+|--------|-----------|---------|
+| Statements | 90% | 97.43% |
+| Branches | 90% | 90.19% |
+| Functions | 90% | 99.08% |
+| Lines | 90% | 98.75% |
+
+The coverage provider is **v8**. Reports are generated in `text`, `text-summary`, and `lcov` formats. The `coverage/` directory is gitignored.
+
+Excluded from coverage: `src/test/**`, `src/main.tsx`, `*.d.ts`, `src/models/types.ts` (pure types, no runtime), `src/components/ui/index.ts` (barrel re-exports).
+
+### Git Hooks (Husky 9)
+
+Husky is configured to enforce quality gates automatically:
+
+| Hook | Runs | Purpose |
+|------|------|---------|
+| **pre-commit** | `bun run test` | All unit tests must pass before committing |
+| **pre-push** | `bun run test && bun run lint` | Full test suite + ESLint must pass before pushing |
+
+Hooks are installed automatically via the `prepare` script when running `bun install`. The hook scripts live in `.husky/` and are checked into git so the entire team shares the same gates.
+
+### Writing Tests
+
+**Mocking viewmodels**: Page tests mock the corresponding viewmodel using `vi.hoisted()` for mutable state:
+
+```tsx
+const mockState = vi.hoisted(() => ({
+  items: [{ id: 1, name: "test" }],
+}));
+
+vi.mock("@/viewmodels/useFooViewModel", () => ({
+  useFooViewModel: () => mockState,
+}));
+
+// In beforeEach, mutate mockState to test different branches
+beforeEach(() => {
+  mockState.items = [{ id: 1, name: "reset" }];
+});
+```
+
+> **Why `vi.hoisted()`?** — `vi.mock` factories are hoisted to the top of the file at compile time. Regular `let`/`const` variables declared after the mock are not yet initialized when the factory runs. `vi.hoisted()` creates a reference that is available at hoist time and can be mutated in `beforeEach` to test different code paths.
 
 ## 🎨 Design Tokens
 
