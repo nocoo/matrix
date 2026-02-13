@@ -22,10 +22,14 @@ export {
   Sparkline,
   MatrixRain,
   BootScreen,
+} from "./MatrixExtras";
+
+// Pure utility functions (separated for react-refresh compatibility)
+export {
   shouldFetchGithubStars,
   shouldRunLiveSniffer,
   shouldScrambleText,
-} from "./MatrixExtras";
+} from "./matrix-utils";
 
 // Data visualization components
 export {
