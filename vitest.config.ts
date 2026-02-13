@@ -17,6 +17,8 @@ export default defineConfig({
         "src/test/**",
         "src/main.tsx",
         "src/**/*.d.ts",
+        "src/models/types.ts",
+        "src/components/ui/index.ts",
       ],
       thresholds: {
         statements: 60,
