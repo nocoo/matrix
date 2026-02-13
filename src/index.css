@@ -1,0 +1,246 @@
+@import "tailwindcss";
+
+/* ── Matrix Design Tokens ─────────────────────────────────────────── */
+
+:root {
+  color-scheme: dark;
+
+  /* core palette */
+  --matrix-bg: #050505;
+  --matrix-panel-bg: rgba(0, 10, 0, 0.7);
+  --matrix-panel-bg-strong: rgba(0, 10, 0, 0.82);
+  --matrix-panel-border: rgba(0, 255, 65, 0.18);
+  --matrix-panel-border-strong: rgba(0, 255, 65, 0.32);
+  --matrix-ink: #00ff41;
+  --matrix-ink-bright: #e8ffe9;
+  --matrix-ink-muted: rgba(0, 255, 65, 0.6);
+  --matrix-ink-dim: rgba(0, 255, 65, 0.35);
+  --matrix-ink-ghost: rgba(0, 255, 65, 0.18);
+  --matrix-glow: rgba(0, 255, 65, 0.45);
+
+  /* semantic */
+  --color-success: #00ff41;
+  --color-error: #ff4141;
+  --color-warning: #ffd700;
+
+  /* typography sizes */
+  --matrix-display-size: clamp(48px, 6vw, 72px);
+  --matrix-heading-size: 14px;
+  --matrix-body-size: 16px;
+  --matrix-caption-size: 12px;
+}
+
+/* ── Tailwind v4 Theme Extension ──────────────────────────────────── */
+
+@theme {
+  --color-matrix-primary: #00ff41;
+  --color-matrix-bright: #e8ffe9;
+  --color-matrix-muted: rgba(0, 255, 65, 0.6);
+  --color-matrix-dim: rgba(0, 255, 65, 0.35);
+  --color-matrix-ghost: rgba(0, 255, 65, 0.18);
+  --color-matrix-panel: rgba(0, 10, 0, 0.7);
+  --color-matrix-panel-strong: rgba(0, 10, 0, 0.82);
+  --color-matrix-dark: #050505;
+  --color-matrix-bg: #050505;
+  --color-success: #00ff41;
+  --color-error: #ff4141;
+  --color-warning: #ffd700;
+
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-matrix: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, "Liberation Mono", "Courier New", monospace;
+
+  --text-display: clamp(48px, 6vw, 72px);
+  --text-display--line-height: 1.1;
+  --text-heading: 14px;
+  --text-heading--line-height: 1.4;
+  --text-heading--letter-spacing: 0.05em;
+  --text-body: 16px;
+  --text-body--line-height: 1.6;
+  --text-caption: 12px;
+  --text-caption--line-height: 1.4;
+}
+
+/* ── Base Resets ───────────────────────────────────────────────────── */
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--matrix-bg);
+  color: var(--matrix-ink);
+  font-family: var(--font-mono);
+  font-size: var(--matrix-body-size);
+  line-height: 1.5;
+}
+
+#root {
+  min-height: 100%;
+}
+
+/* ── Component Classes ────────────────────────────────────────────── */
+
+@layer components {
+  .matrix-panel {
+    background: var(--matrix-panel-bg);
+    border: 1px solid var(--matrix-panel-border);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 0 0 1px rgba(0, 255, 65, 0.08),
+      0 18px 40px rgba(0, 0, 0, 0.45);
+  }
+
+  .matrix-panel-strong {
+    border-color: var(--matrix-panel-border-strong);
+  }
+
+  .matrix-header-chip {
+    height: 40px;
+    min-width: 160px;
+    padding: 0 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    border: 1px solid var(--matrix-panel-border);
+    background: var(--matrix-panel-bg);
+    text-transform: uppercase;
+    position: relative;
+    overflow: hidden;
+    --matrix-header-corner: var(--matrix-ink);
+    background-image: linear-gradient(var(--matrix-header-corner) 0 0),
+      linear-gradient(var(--matrix-header-corner) 0 0),
+      linear-gradient(var(--matrix-header-corner) 0 0),
+      linear-gradient(var(--matrix-header-corner) 0 0);
+    background-repeat: no-repeat;
+    background-size: 10px 1px, 1px 10px, 10px 1px, 1px 10px;
+    background-position: top 6px left 6px, top 6px left 6px,
+      bottom 6px right 6px, bottom 6px right 6px;
+  }
+
+  .matrix-header-chip--solid {
+    background: var(--matrix-ink);
+    border-color: var(--matrix-ink);
+    color: #000;
+    box-shadow: 0 0 12px rgba(0, 255, 65, 0.35);
+    --matrix-header-corner: #000;
+  }
+
+  .matrix-header-action {
+    transition: all 200ms ease;
+    cursor: pointer;
+  }
+
+  .matrix-header-action:hover {
+    background: rgba(0, 10, 0, 0.82);
+    border-color: var(--matrix-ink);
+  }
+
+  .matrix-header-action::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      120deg,
+      transparent 0%,
+      rgba(0, 255, 65, 0.2) 45%,
+      rgba(255, 255, 255, 0.2) 50%,
+      rgba(0, 255, 65, 0.2) 55%,
+      transparent 100%
+    );
+    transform: translateX(-120%);
+    opacity: 0;
+    transition: transform 300ms ease, opacity 200ms ease;
+    pointer-events: none;
+  }
+
+  .matrix-header-action:hover::after {
+    transform: translateX(120%);
+    opacity: 1;
+  }
+}
+
+/* ── Utility Classes ──────────────────────────────────────────────── */
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .glow-text {
+    text-shadow: 0 0 16px var(--matrix-glow);
+  }
+  .glow-text-strong {
+    text-shadow: 0 0 26px var(--matrix-glow);
+  }
+  .glow-text-white {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8),
+      0 0 20px rgba(255, 255, 255, 0.6), 0 0 40px rgba(255, 255, 255, 0.4),
+      0 0 60px rgba(0, 255, 65, 0.3);
+  }
+  .shadow-glow {
+    filter: drop-shadow(0 0 2px rgba(0, 255, 65, 0.3));
+  }
+
+  .matrix-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 255, 65, 0.45) transparent;
+    scrollbar-gutter: stable both-edges;
+  }
+
+  .matrix-scrollbar::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+  }
+
+  .matrix-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .matrix-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(0, 255, 65, 0.35);
+    border-radius: 999px;
+    border: 1px solid rgba(0, 255, 65, 0.4);
+  }
+
+  .matrix-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 255, 65, 0.6);
+  }
+
+  .matrix-scanlines {
+    background-image: linear-gradient(
+      to bottom,
+      rgba(0, 255, 65, 0.12) 1px,
+      rgba(0, 0, 0, 0) 1px
+    );
+    background-size: 100% 4px;
+    animation: matrix-scan 6s linear infinite;
+  }
+}
+
+/* ── Animations ───────────────────────────────────────────────────── */
+
+@keyframes matrix-scan {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 40px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-pulse,
+  .animate-spin,
+  .animate-bounce {
+    animation: none !important;
+  }
+}
