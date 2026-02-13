@@ -48,12 +48,13 @@ describe("DashboardLayout", () => {
       expect(screen.getByText("[MATRIX]")).toBeInTheDocument();
     });
 
-    it("renders all four nav group labels", () => {
+    it("renders all five nav group labels", () => {
       renderLayout();
       expect(screen.getByText("PAGES")).toBeInTheDocument();
       expect(screen.getByText("CHARTS")).toBeInTheDocument();
       expect(screen.getByText("STANDALONE")).toBeInTheDocument();
       expect(screen.getByText("SYSTEM")).toBeInTheDocument();
+      expect(screen.getByText("CONTROLS")).toBeInTheDocument();
     });
 
     it("renders navigation items", () => {
@@ -264,8 +265,8 @@ describe("DashboardLayout", () => {
       const dialog = screen.getByPlaceholderText("search pages...").closest(".matrix-panel") as HTMLElement;
       // Should have buttons for all nav items
       const buttons = within(dialog).getAllByRole("button");
-      // All nav items from all groups: 8 + 3 + 5 + 4 = 20
-      expect(buttons.length).toBe(20);
+      // All nav items from all groups: 8 + 3 + 5 + 4 + 9 = 29
+      expect(buttons.length).toBe(29);
     });
 
     it("filters results based on search query", () => {

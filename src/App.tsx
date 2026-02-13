@@ -15,6 +15,15 @@ import PalettePage from "@/pages/PalettePage";
 import InteractionShowcasePage from "@/pages/InteractionShowcasePage";
 import LifeAiPage from "@/pages/LifeAiPage";
 import ComponentShowcasePage from "@/pages/ComponentShowcasePage";
+import ControlsPage from "@/pages/controls/ControlsPage";
+import ButtonsPage from "@/pages/controls/ButtonsPage";
+import FeedbackPage from "@/pages/controls/FeedbackPage";
+import OverlaysPage from "@/pages/controls/OverlaysPage";
+import DataDisplayPage from "@/pages/controls/DataDisplayPage";
+import NavigationPage from "@/pages/controls/NavigationPage";
+import FormsPage from "@/pages/controls/FormsPage";
+import TablesPage from "@/pages/controls/TablesPage";
+import PillsPage from "@/pages/controls/PillsPage";
 import LoginPage from "@/pages/LoginPage";
 import BadgeLoginPage from "@/pages/BadgeLoginPage";
 import StaticPage from "@/pages/StaticPage";
@@ -41,6 +50,15 @@ const App = () => (
         <Route path="/interactions" element={<InteractionShowcasePage />} />
         <Route path="/life-ai" element={<LifeAiPage />} />
         <Route path="/component-showcase" element={<ComponentShowcasePage />} />
+        <Route path="/controls" element={<ControlsPage />} />
+        <Route path="/buttons" element={<ButtonsPage />} />
+        <Route path="/feedback" element={<FeedbackPage />} />
+        <Route path="/overlays" element={<OverlaysPage />} />
+        <Route path="/data-display" element={<DataDisplayPage />} />
+        <Route path="/navigation" element={<NavigationPage />} />
+        <Route path="/forms" element={<FormsPage />} />
+        <Route path="/tables" element={<TablesPage />} />
+        <Route path="/pills" element={<PillsPage />} />
       </Route>
       {/* Standalone pages (no sidebar) */}
       <Route path="/login" element={<LoginPage />} />

@@ -7,6 +7,8 @@ import {
   ChevronRight, LogOut, Palette, LogIn, IdCard,
   ExternalLink, FileText, Layers, HeartPulse,
   Loader, Menu, X, FileQuestion, Component,
+  RectangleEllipsis, MousePointerClick, Bell, Layers2,
+  Eye, Navigation, FormInput, Table, Tag,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -71,6 +73,21 @@ const NAV_GROUPS: NavGroup[] = [
       { title: "Settings", icon: Settings, path: "/settings" },
     ],
   },
+  {
+    label: "CONTROLS",
+    defaultOpen: true,
+    items: [
+      { title: "Controls", icon: RectangleEllipsis, path: "/controls" },
+      { title: "Buttons", icon: MousePointerClick, path: "/buttons" },
+      { title: "Feedback", icon: Bell, path: "/feedback" },
+      { title: "Overlays", icon: Layers2, path: "/overlays" },
+      { title: "Data Display", icon: Eye, path: "/data-display" },
+      { title: "Navigation", icon: Navigation, path: "/navigation" },
+      { title: "Forms", icon: FormInput, path: "/forms" },
+      { title: "Tables", icon: Table, path: "/tables" },
+      { title: "Pills", icon: Tag, path: "/pills" },
+    ],
+  },
 ];
 
 // Map route paths to page titles
@@ -90,6 +107,15 @@ const PAGE_TITLES: Record<string, string> = {
   "/interactions": "Interactions",
   "/life-ai": "Life.ai",
   "/component-showcase": "Component Showcase",
+  "/controls": "Controls",
+  "/buttons": "Buttons",
+  "/feedback": "Feedback",
+  "/overlays": "Overlays",
+  "/data-display": "Data Display",
+  "/navigation": "Navigation",
+  "/forms": "Forms",
+  "/tables": "Tables",
+  "/pills": "Pills",
 };
 
 // -- Nav group section --
