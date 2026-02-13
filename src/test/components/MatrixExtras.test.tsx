@@ -196,7 +196,7 @@ describe("ScrambleText", () => {
 
   it("cleans up on unmount", () => {
     const cancelSpy = vi.spyOn(window, "cancelAnimationFrame").mockImplementation(() => {});
-    vi.spyOn(window, "requestAnimationFrame").mockImplementation((cb) => {
+    vi.spyOn(window, "requestAnimationFrame").mockImplementation((_cb) => {
       return 42;
     });
 

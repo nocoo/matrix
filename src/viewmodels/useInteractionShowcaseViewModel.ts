@@ -4,7 +4,7 @@
 import { useMemo, useCallback, useState } from "react";
 import { showcaseToasts, showcaseDialogs } from "@/data/mock";
 import { toastVariantLabel, ALL_TOAST_VARIANTS } from "@/models/interaction-showcase";
-import type { ShowcaseToast, ShowcaseDialog, ToastVariant } from "@/models/types";
+import type { ShowcaseToast, ShowcaseDialog } from "@/models/types";
 
 export interface ToastDemo extends ShowcaseToast {
   variantLabel: string;

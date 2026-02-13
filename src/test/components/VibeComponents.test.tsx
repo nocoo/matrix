@@ -40,7 +40,7 @@ afterEach(() => {
 });
 
 /** Flush pending rAF callbacks */
-function flushRAF(time = 16000) {
+function _flushRAF(time = 16000) {
   const toRun = [...rafCallbacks];
   rafCallbacks = [];
   toRun.forEach((cb) => cb(time));
@@ -317,7 +317,7 @@ describe("IdentityCard", () => {
 
 describe("TopModelsPanel", () => {
   it("renders 3 rows and fills empty slots", () => {
-    const { container } = render(<TopModelsPanel />);
+    render(<TopModelsPanel />);
     // Should have rank labels 01, 02, 03
     expect(screen.getByText("01")).toBeInTheDocument();
     expect(screen.getByText("02")).toBeInTheDocument();
@@ -345,7 +345,7 @@ describe("TopModelsPanel", () => {
   });
 
   it("shows empty rows when no data", () => {
-    const { container } = render(<TopModelsPanel rows={[]} />);
+    render(<TopModelsPanel rows={[]} />);
     // All 3 rows should be empty - no model names, no % symbols
     expect(screen.queryAllByText("%").length).toBe(0);
     // Still has rank labels
