@@ -11,7 +11,7 @@ import {
   Eye, Navigation, FormInput, Table, Tag, Github,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { CircuitBackground } from "@/components/ui";
+import sidebarBg from "@/assets/bg.jpg";
 
 // -- Navigation data model --
 
@@ -321,8 +321,15 @@ export function DashboardLayout() {
 
   const sidebar = (
     <div className="relative flex h-full w-[240px] flex-col bg-[var(--matrix-bg)] border-r border-matrix-primary/20 overflow-hidden">
-      {/* Circuit board background decoration */}
-      <CircuitBackground />
+      {/* Sidebar background image */}
+      <div
+        className="absolute inset-0 pointer-events-none z-0 opacity-[0.07]"
+        style={{
+          backgroundImage: `url(${sidebarBg})`,
+          backgroundRepeat: "repeat",
+          backgroundSize: "auto",
+        }}
+      />
       {/* Header */}
       <div className="relative z-10 flex h-12 items-center justify-between px-4">
         <span className="font-mono text-sm font-bold uppercase tracking-widest text-matrix-primary glow-text">
