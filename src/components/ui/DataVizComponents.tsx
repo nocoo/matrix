@@ -636,7 +636,7 @@ export function ActivityHeatmap({
                       return (
                         <span
                           key={key}
-                          className="rounded-[2px] border border-transparent"
+                          className="border border-transparent"
                           style={{ width: CELL_SIZE, height: CELL_SIZE }}
                         />
                       );
@@ -652,7 +652,7 @@ export function ActivityHeatmap({
                       <span
                         key={key}
                         title={`${cell.day}: ${formatTokenValue(cellValue)} tokens (${tzDetail})`}
-                        className="rounded-[2px] border border-matrix-ghost"
+                        className="border border-matrix-ghost"
                         style={{
                           width: CELL_SIZE,
                           height: CELL_SIZE,
@@ -676,7 +676,7 @@ export function ActivityHeatmap({
               {[0, 1, 2, 3, 4].map((level) => (
                 <span
                   key={level}
-                  className="rounded-[2px] border border-matrix-ghost"
+                  className="border border-matrix-ghost"
                   style={{
                     width: 10,
                     height: 10,

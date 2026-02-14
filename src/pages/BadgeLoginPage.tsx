@@ -11,7 +11,7 @@ export default function BadgeLoginPage() {
         <AsciiBox title="BADGE AUTHENTICATION">
           <div className="space-y-4">
             <div className="text-center mb-4">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full border-2 border-matrix-primary/30 mb-3">
+              <div className="inline-flex items-center justify-center w-16 h-16 border-2 border-matrix-primary/30 mb-3">
                 <span className="font-mono text-2xl text-matrix-primary">[ID]</span>
               </div>
               <p className="font-mono text-xs text-matrix-dim">
@@ -28,7 +28,7 @@ export default function BadgeLoginPage() {
                 value={badgeId}
                 onChange={(e) => setBadgeId(e.target.value)}
                 placeholder="XXXX-XXXX-XXXX"
-                className="w-full bg-transparent border border-matrix-primary/20 rounded px-3 py-2 font-mono text-sm text-matrix-primary text-center tracking-widest placeholder:text-matrix-dim outline-none focus:border-matrix-primary/50"
+                className="w-full bg-transparent border border-matrix-primary/20 px-3 py-2 font-mono text-sm text-matrix-primary text-center tracking-widest placeholder:text-matrix-dim outline-none focus:border-matrix-primary/50"
               />
             </div>
 

@@ -48,7 +48,7 @@ export default function RecordListPage() {
               <span className="col-span-2 text-right">
                 <span
                   className={cn(
-                    "inline-block rounded px-1.5 py-0.5 text-[10px]",
+                    "inline-block px-1.5 py-0.5 text-[10px]",
                     record.statusVariant === "success"
                       ? "bg-matrix-primary/10 text-matrix-primary"
                       : "bg-yellow-500/10 text-yellow-500"

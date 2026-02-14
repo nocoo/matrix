@@ -18,7 +18,7 @@ function Section({
   className?: string;
 }) {
   return (
-    <div className={`matrix-panel rounded p-4 ${className}`}>
+    <div className={`matrix-panel p-4 ${className}`}>
       <div className="flex items-center gap-2 mb-4 border-b border-matrix-primary/15 pb-2">
         <span className="w-1.5 h-1.5 bg-matrix-primary" />
         <h3 className="text-xs font-mono font-bold uppercase tracking-widest text-matrix-primary">
@@ -48,7 +48,7 @@ export default function PillsPage() {
           {vm.solidPills.map((pill) => (
             <span
               key={pill.label}
-              className={cn("px-3 py-1 text-[10px] font-mono font-bold uppercase rounded-sm", pill.className)}
+              className={cn("px-3 py-1 text-[10px] font-mono font-bold uppercase", pill.className)}
             >
               {pill.label}
             </span>
@@ -62,7 +62,7 @@ export default function PillsPage() {
           {vm.softPills.map((pill) => (
             <span
               key={pill.label}
-              className={cn("px-3 py-1 text-[10px] font-mono font-bold uppercase rounded-sm", pill.className)}
+              className={cn("px-3 py-1 text-[10px] font-mono font-bold uppercase", pill.className)}
             >
               {pill.label}
             </span>
@@ -76,7 +76,7 @@ export default function PillsPage() {
           {vm.outlinePills.map((pill) => (
             <span
               key={pill.label}
-              className={cn("px-3 py-1 text-[10px] font-mono font-bold uppercase rounded-sm", pill.className)}
+              className={cn("px-3 py-1 text-[10px] font-mono font-bold uppercase", pill.className)}
             >
               {pill.label}
             </span>
@@ -96,7 +96,7 @@ export default function PillsPage() {
             ].map((pill) => (
               <span
                 key={pill.label}
-                className={cn("flex items-center gap-1.5 px-3 py-1 text-[10px] font-mono font-bold uppercase rounded-sm", pill.cls)}
+                className={cn("flex items-center gap-1.5 px-3 py-1 text-[10px] font-mono font-bold uppercase", pill.cls)}
               >
                 <span>{pill.icon}</span>
                 {pill.label}
@@ -129,7 +129,7 @@ export default function PillsPage() {
           {vm.gradientPills.map((pill) => (
             <span
               key={pill.label}
-              className={cn("px-3 py-1 text-[10px] font-mono font-bold uppercase rounded-sm", pill.className)}
+              className={cn("px-3 py-1 text-[10px] font-mono font-bold uppercase", pill.className)}
             >
               {pill.label}
             </span>
@@ -148,7 +148,7 @@ export default function PillsPage() {
             ].map((pill) => (
               <span
                 key={pill.label}
-                className={cn("flex items-center gap-1.5 px-3 py-1 text-[10px] font-mono font-bold uppercase border rounded-sm", pill.cls)}
+                className={cn("flex items-center gap-1.5 px-3 py-1 text-[10px] font-mono font-bold uppercase border", pill.cls)}
               >
                 <span className={cn("w-1.5 h-1.5 rounded-full", pill.dotColor)} />
                 {pill.label}
@@ -162,7 +162,7 @@ export default function PillsPage() {
             {closablePills.map((label) => (
               <span
                 key={label}
-                className="flex items-center gap-1.5 px-3 py-1 text-[10px] font-mono font-bold uppercase text-matrix-muted border border-matrix-ghost rounded-sm group"
+                className="flex items-center gap-1.5 px-3 py-1 text-[10px] font-mono font-bold uppercase text-matrix-muted border border-matrix-ghost group"
               >
                 {label}
                 <button

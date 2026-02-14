@@ -17,7 +17,7 @@ function Section({
   className?: string;
 }) {
   return (
-    <div className={`matrix-panel rounded p-4 ${className}`}>
+    <div className={`matrix-panel p-4 ${className}`}>
       <div className="flex items-center gap-2 mb-4 border-b border-matrix-primary/15 pb-2">
         <span className="w-1.5 h-1.5 bg-matrix-primary" />
         <h3 className="text-xs font-mono font-bold uppercase tracking-widest text-matrix-primary">
@@ -168,7 +168,7 @@ export default function ButtonsPage() {
           {/* Segmented */}
           <div>
             <p className="text-[10px] font-mono text-matrix-dim uppercase mb-2">Segmented</p>
-            <div className="inline-flex border border-matrix-ghost rounded overflow-hidden">
+            <div className="inline-flex border border-matrix-ghost overflow-hidden">
               {["LEFT", "CENTER", "RIGHT"].map((label) => (
                 <button
                   key={label}
@@ -184,8 +184,8 @@ export default function ButtonsPage() {
           <div>
             <p className="text-[10px] font-mono text-matrix-dim uppercase mb-2">Split button</p>
             <div className="inline-flex">
-              <MatrixButton primary className="!rounded-r-none">SAVE</MatrixButton>
-              <MatrixButton primary className="!rounded-l-none !border-l-0 !px-2 !min-w-0">▼</MatrixButton>
+              <MatrixButton primary>SAVE</MatrixButton>
+              <MatrixButton primary className="!border-l-0 !px-2 !min-w-0">▼</MatrixButton>
             </div>
           </div>
         </div>

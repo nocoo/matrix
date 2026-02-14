@@ -17,7 +17,7 @@ function Section({
   className?: string;
 }) {
   return (
-    <div className={`matrix-panel rounded p-4 ${className}`}>
+    <div className={`matrix-panel p-4 ${className}`}>
       <div className="flex items-center gap-2 mb-4 border-b border-matrix-primary/15 pb-2">
         <span className="w-1.5 h-1.5 bg-matrix-primary" />
         <h3 className="text-xs font-mono font-bold uppercase tracking-widest text-matrix-primary">

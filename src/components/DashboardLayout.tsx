@@ -155,7 +155,7 @@ function NavGroupSection({
                 key={item.path}
                 onClick={() => onNavigate(item.path, item.external)}
                 className={cn(
-                  "flex w-full items-center gap-2.5 rounded px-3 py-1.5 text-sm font-mono transition-colors",
+                  "flex w-full items-center gap-2.5 px-3 py-1.5 text-sm font-mono transition-colors",
                   isActive
                     ? "bg-matrix-primary/10 text-matrix-primary"
                     : "text-matrix-muted hover:bg-matrix-primary/5 hover:text-matrix-primary"
@@ -167,7 +167,7 @@ function NavGroupSection({
                   <ExternalLink className="h-3 w-3 shrink-0 text-matrix-dim" strokeWidth={1.5} />
                 )}
                 {item.badge && (
-                  <span className="flex h-4 min-w-[16px] items-center justify-center rounded bg-matrix-primary/20 px-1 text-[10px] font-mono text-matrix-primary">
+                  <span className="flex h-4 min-w-[16px] items-center justify-center bg-matrix-primary/20 px-1 text-[10px] font-mono text-matrix-primary">
                     {item.badge}
                   </span>
                 )}
@@ -222,7 +222,7 @@ function SearchDialog({
         onClick={onClose}
       />
       <div className="fixed inset-x-4 top-[20%] z-50 mx-auto max-w-md">
-        <div className="matrix-panel rounded border border-matrix-primary/30">
+        <div className="matrix-panel border border-matrix-primary/30">
           <div className="flex items-center gap-2 border-b border-matrix-primary/20 px-3 py-2">
             <Search className="h-4 w-4 text-matrix-dim" strokeWidth={1.5} />
             <input
@@ -233,7 +233,7 @@ function SearchDialog({
               placeholder="search pages..."
               className="flex-1 bg-transparent font-mono text-sm text-matrix-primary placeholder:text-matrix-dim outline-none"
             />
-            <kbd className="rounded border border-matrix-primary/20 px-1.5 py-0.5 font-mono text-[10px] text-matrix-dim">
+            <kbd className="border border-matrix-primary/20 px-1.5 py-0.5 font-mono text-[10px] text-matrix-dim">
               ESC
             </kbd>
           </div>
@@ -338,11 +338,11 @@ export function DashboardLayout() {
       <div className="px-3 pb-2">
         <button
           onClick={() => setSearchOpen(true)}
-          className="flex w-full items-center gap-2 rounded border border-matrix-primary/20 bg-matrix-primary/5 px-2.5 py-1.5 transition-colors hover:border-matrix-primary/40"
+          className="flex w-full items-center gap-2 border border-matrix-primary/20 bg-matrix-primary/5 px-2.5 py-1.5 transition-colors hover:border-matrix-primary/40"
         >
           <Search className="h-3.5 w-3.5 text-matrix-dim" strokeWidth={1.5} />
           <span className="flex-1 text-left font-mono text-xs text-matrix-dim">search...</span>
-          <kbd className="rounded border border-matrix-primary/15 px-1 py-0.5 font-mono text-[9px] text-matrix-dim">
+          <kbd className="border border-matrix-primary/15 px-1 py-0.5 font-mono text-[9px] text-matrix-dim">
             CMD+K
           </kbd>
         </button>
@@ -363,7 +363,7 @@ export function DashboardLayout() {
       {/* User footer */}
       <div className="border-t border-matrix-primary/15 px-3 py-2.5">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded border border-matrix-primary/30 bg-matrix-primary/10 font-mono text-xs text-matrix-primary">
+          <div className="flex h-7 w-7 shrink-0 items-center justify-center border border-matrix-primary/30 bg-matrix-primary/10 font-mono text-xs text-matrix-primary">
             ZL
           </div>
           <div className="flex-1 min-w-0">
@@ -387,7 +387,7 @@ export function DashboardLayout() {
     <div className="flex min-h-screen w-full bg-[var(--matrix-bg)]">
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:top-2 focus:left-2 focus:rounded focus:bg-matrix-primary focus:px-4 focus:py-2 focus:text-sm focus:font-mono focus:text-black"
+        className="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:top-2 focus:left-2 focus:bg-matrix-primary focus:px-4 focus:py-2 focus:text-sm focus:font-mono focus:text-black"
       >
         Skip to main content
       </a>

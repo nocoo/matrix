@@ -56,9 +56,9 @@ export default function PortfolioPage() {
                 {h.change}
               </span>
               <span className="col-span-2 flex items-center justify-end">
-                <div className="w-full h-2 bg-matrix-primary/10 rounded-full overflow-hidden">
+                <div className="w-full h-2 bg-matrix-primary/10 overflow-hidden">
                   <div
-                    className="h-full bg-matrix-primary rounded-full"
+                    className="h-full bg-matrix-primary"
                     style={{ width: `${h.allocation}%` }}
                   />
                 </div>

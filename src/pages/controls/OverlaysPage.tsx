@@ -17,7 +17,7 @@ function Section({
   className?: string;
 }) {
   return (
-    <div className={`matrix-panel rounded p-4 ${className}`}>
+    <div className={`matrix-panel p-4 ${className}`}>
       <div className="flex items-center gap-2 mb-4 border-b border-matrix-primary/15 pb-2">
         <span className="w-1.5 h-1.5 bg-matrix-primary" />
         <h3 className="text-xs font-mono font-bold uppercase tracking-widest text-matrix-primary">
@@ -69,12 +69,12 @@ function ToggleSwitch({ label, defaultOn = false }: { label: string; defaultOn?:
       <button
         onClick={() => setOn(!on)}
         className={cn(
-          "relative w-10 h-5 rounded-full border transition-colors",
+          "relative w-10 h-5 border transition-colors",
           on ? "bg-matrix-primary/30 border-matrix-primary" : "bg-matrix-panel-strong border-matrix-ghost"
         )}
       >
         <span className={cn(
-          "absolute top-0.5 w-4 h-4 rounded-full transition-all",
+          "absolute top-0.5 w-4 h-4 transition-all",
           on ? "left-5 bg-matrix-primary shadow-[0_0_8px_rgba(0,255,65,0.6)]" : "left-0.5 bg-matrix-dim"
         )} />
       </button>
@@ -147,7 +147,7 @@ export default function OverlaysPage() {
             {filterPop && (
               <>
                 <div className="fixed inset-0 z-30" onClick={() => setFilterPop(false)} />
-                <div className="absolute top-10 left-0 z-40 matrix-panel rounded border border-matrix-primary/30 p-3 w-56">
+                <div className="absolute top-10 left-0 z-40 matrix-panel border border-matrix-primary/30 p-3 w-56">
                   <MatrixInput label="Status" placeholder="ACTIVE" />
                   <MatrixInput label="Category" placeholder="ALL" className="mt-2" />
                   <div className="flex gap-2 mt-3">
@@ -163,7 +163,7 @@ export default function OverlaysPage() {
             {profilePop && (
               <>
                 <div className="fixed inset-0 z-30" onClick={() => setProfilePop(false)} />
-                <div className="absolute top-10 left-0 z-40 matrix-panel rounded border border-matrix-primary/30 p-3 w-56">
+                <div className="absolute top-10 left-0 z-40 matrix-panel border border-matrix-primary/30 p-3 w-56">
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-8 h-8 border border-matrix-primary/30 bg-matrix-primary/10 flex items-center justify-center text-xs font-mono text-matrix-primary font-bold">
                       NE
@@ -179,7 +179,7 @@ export default function OverlaysPage() {
                         key={item}
                         onClick={() => setProfilePop(false)}
                         className={cn(
-                          "w-full text-left px-2 py-1 text-xs font-mono transition-colors rounded",
+                          "w-full text-left px-2 py-1 text-xs font-mono transition-colors",
                           item === "SIGN OUT"
                             ? "text-red-400 hover:bg-red-500/10"
                             : "text-matrix-muted hover:bg-matrix-primary/10 hover:text-matrix-primary"
@@ -198,7 +198,7 @@ export default function OverlaysPage() {
             {settingsPop && (
               <>
                 <div className="fixed inset-0 z-30" onClick={() => setSettingsPop(false)} />
-                <div className="absolute top-10 left-0 z-40 matrix-panel rounded border border-matrix-primary/30 p-3 w-56">
+                <div className="absolute top-10 left-0 z-40 matrix-panel border border-matrix-primary/30 p-3 w-56">
                   <div className="space-y-3">
                     <ToggleSwitch label="Dark mode" defaultOn />
                     <ToggleSwitch label="Notifications" defaultOn />
@@ -214,7 +214,7 @@ export default function OverlaysPage() {
       {/* ── Collapsible Sections ─────────────── */}
       <Section title="COLLAPSIBLE SECTIONS">
         <div className="space-y-3">
-          <div className="border border-matrix-ghost rounded">
+          <div className="border border-matrix-ghost">
             <button
               onClick={() => setCollapse1(!collapse1)}
               className="w-full flex items-center justify-between p-3 text-xs font-mono font-bold uppercase text-matrix-muted hover:text-matrix-primary transition-colors"
@@ -230,7 +230,7 @@ export default function OverlaysPage() {
               </div>
             )}
           </div>
-          <div className="border border-red-500/20 rounded">
+          <div className="border border-red-500/20">
             <button
               onClick={() => setCollapse2(!collapse2)}
               className="w-full flex items-center justify-between p-3 text-xs font-mono font-bold uppercase text-red-400 hover:text-red-300 transition-colors"
@@ -331,7 +331,7 @@ export default function OverlaysPage() {
         <>
           <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm" onClick={() => setCompactDialog(false)} />
           <div className="fixed inset-x-4 top-[25%] z-50 mx-auto max-w-sm">
-            <div className="matrix-panel rounded border border-matrix-primary/30 p-5">
+            <div className="matrix-panel border border-matrix-primary/30 p-5">
               <p className="text-sm font-mono text-matrix-bright font-bold mb-2">CONFIRM ACTION</p>
               <p className="text-xs font-mono text-matrix-dim mb-4">
                 Are you sure you want to proceed with this operation?
@@ -381,7 +381,7 @@ export default function OverlaysPage() {
         <>
           <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm" />
           <div className="fixed inset-x-4 top-[25%] z-50 mx-auto max-w-sm">
-            <div className="matrix-panel rounded border border-red-500/30 p-5">
+            <div className="matrix-panel border border-red-500/30 p-5">
               <p className="text-sm font-mono text-matrix-bright font-bold mb-2">DELETE ITEM?</p>
               <p className="text-xs font-mono text-matrix-dim mb-4">
                 This item will be permanently deleted. This action cannot be undone.
@@ -405,7 +405,7 @@ export default function OverlaysPage() {
         <>
           <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm" />
           <div className="fixed inset-x-4 top-[25%] z-50 mx-auto max-w-sm">
-            <div className="matrix-panel rounded border border-matrix-primary/30 p-5">
+            <div className="matrix-panel border border-matrix-primary/30 p-5">
               <p className="text-sm font-mono text-matrix-bright font-bold mb-2">DISCARD CHANGES?</p>
               <p className="text-xs font-mono text-matrix-dim mb-4">
                 You have unsaved modifications. Discard all changes and exit?

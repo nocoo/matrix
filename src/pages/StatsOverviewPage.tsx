@@ -40,12 +40,12 @@ export default function StatsOverviewPage() {
               <span className="w-8 text-matrix-dim">{d.day}</span>
               <div className="flex-1 flex gap-1 h-4">
                 <div
-                  className="bg-matrix-primary/60 rounded-sm"
+                  className="bg-matrix-primary/60"
                   style={{ width: `${(d.income / 2000) * 100}%` }}
                   title={`Income: $${d.income}`}
                 />
                 <div
-                  className="bg-red-500/40 rounded-sm"
+                  className="bg-red-500/40"
                   style={{ width: `${(d.expense / 2000) * 100}%` }}
                   title={`Expense: $${d.expense}`}
                 />
@@ -63,9 +63,9 @@ export default function StatsOverviewPage() {
           {categoryData.map((cat) => (
             <div key={cat.name} className="flex items-center gap-3 font-mono text-xs">
               <span className="w-20 text-matrix-muted">{cat.name}</span>
-              <div className="flex-1 h-3 bg-matrix-primary/10 rounded-full overflow-hidden">
+              <div className="flex-1 h-3 bg-matrix-primary/10 overflow-hidden">
                 <div
-                  className="h-full bg-matrix-primary rounded-full"
+                  className="h-full bg-matrix-primary"
                   style={{ width: `${cat.value}%` }}
                 />
               </div>

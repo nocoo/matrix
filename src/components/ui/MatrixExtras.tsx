@@ -275,7 +275,7 @@ export function MatrixInput({ label, className = "", ...props }: MatrixInputProp
     <label className={`flex flex-col gap-2 ${className}`}>
       <span className="text-caption text-matrix-muted uppercase font-bold">{label}</span>
       <input
-        className="h-10 bg-matrix-panel border border-matrix-ghost px-3 text-body text-matrix-bright outline-none focus:border-matrix-primary focus:ring-2 focus:ring-matrix-primary/20"
+        className="h-10 bg-matrix-panel border border-matrix-ghost px-3 text-body text-matrix-bright placeholder:text-matrix-dim outline-none focus:border-matrix-primary focus:ring-2 focus:ring-matrix-primary/20"
         {...props}
       />
     </label>

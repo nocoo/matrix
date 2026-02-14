@@ -18,7 +18,7 @@ export default function PalettePage() {
           ].map((color) => (
             <div key={color.name} className="space-y-1">
               <div
-                className="h-10 rounded border border-matrix-primary/20"
+                className="h-10 border border-matrix-primary/20"
                 style={{ backgroundColor: color.value }}
               />
               <p className="font-mono text-[10px] text-matrix-dim">{color.name}</p>
@@ -33,7 +33,7 @@ export default function PalettePage() {
           {CHART_COLORS.map((color, i) => (
             <div key={i} className="text-center">
               <div
-                className="h-8 w-full rounded border border-matrix-primary/10"
+                className="h-8 w-full border border-matrix-primary/10"
                 style={{ backgroundColor: color }}
               />
               <p className="font-mono text-[8px] text-matrix-dim mt-0.5">{i + 1}</p>
@@ -47,7 +47,7 @@ export default function PalettePage() {
           {[0.1, 0.2, 0.4, 0.6, 0.8, 1.0].map((alpha) => (
             <div key={alpha} className="flex-1 text-center">
               <div
-                className="h-10 rounded"
+                className="h-10"
                 style={{ backgroundColor: withAlpha("#00FF41", alpha) }}
               />
               <p className="font-mono text-[10px] text-matrix-dim mt-1">{alpha}</p>

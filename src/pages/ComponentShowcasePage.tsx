@@ -108,7 +108,7 @@ export default function ComponentShowcasePage() {
         <SectionTitle>Matrix Clock</SectionTitle>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div
-            className="matrix-panel p-6 flex justify-center relative overflow-hidden rounded"
+            className="matrix-panel p-6 flex justify-center relative overflow-hidden"
             style={{
               backgroundImage: `
                 radial-gradient(circle at 20% 80%, rgba(0, 255, 65, 0.03) 0%, transparent 50%),
@@ -189,37 +189,37 @@ export default function ComponentShowcasePage() {
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 bg-matrix-primary rounded-sm" />
+                  <span className="w-3 h-3 bg-matrix-primary" />
                   <span className="text-xs font-mono text-matrix-muted">Primary #00FF41</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 bg-matrix-bright rounded-sm" />
+                  <span className="w-3 h-3 bg-matrix-bright" />
                   <span className="text-xs font-mono text-matrix-muted">Bright #B0FFB0</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 bg-matrix-muted rounded-sm" />
+                  <span className="w-3 h-3 bg-matrix-muted" />
                   <span className="text-xs font-mono text-matrix-muted">Muted #00CC33</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 bg-matrix-dim rounded-sm" />
+                  <span className="w-3 h-3 bg-matrix-dim" />
                   <span className="text-xs font-mono text-matrix-muted">Dim #008822</span>
                 </div>
               </div>
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 bg-green-500 rounded-sm" />
+                  <span className="w-3 h-3 bg-green-500" />
                   <span className="text-xs font-mono text-matrix-muted">Success</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 bg-red-500 rounded-sm" />
+                  <span className="w-3 h-3 bg-red-500" />
                   <span className="text-xs font-mono text-matrix-muted">Error</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 bg-yellow-500 rounded-sm" />
+                  <span className="w-3 h-3 bg-yellow-500" />
                   <span className="text-xs font-mono text-matrix-muted">Warning</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 bg-matrix-panel border border-matrix-primary/20 rounded-sm" />
+                  <span className="w-3 h-3 bg-matrix-panel border border-matrix-primary/20" />
                   <span className="text-xs font-mono text-matrix-muted">Panel</span>
                 </div>
               </div>

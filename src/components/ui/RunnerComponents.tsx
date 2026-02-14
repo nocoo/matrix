@@ -643,7 +643,7 @@ export function RunHeatmap({ data }: RunHeatmapProps) {
                         return (
                           <span
                             key={key}
-                            className="rounded-[2px] border border-transparent"
+                            className="border border-transparent"
                             style={{ width: CELL_SIZE, height: CELL_SIZE }}
                           />
                         );
@@ -657,7 +657,7 @@ export function RunHeatmap({ data }: RunHeatmapProps) {
                         <span
                           key={key}
                           title={`${dayLabels[colIdx]}${"\u65E5"} ${CHINESE_HOURS[slot]}${"\u65F6"} (${formatSlotRange(slot)}): ${cell.count} runs (${cell.success} OK, ${cell.failed} ERR)`}
-                          className="rounded-[2px] border border-matrix-ghost cursor-default"
+                          className="border border-matrix-ghost cursor-default"
                           style={{
                             width: CELL_SIZE,
                             height: CELL_SIZE,
@@ -684,7 +684,7 @@ export function RunHeatmap({ data }: RunHeatmapProps) {
               {[0, 1, 2, 3, 4].map((level) => (
                 <span
                   key={level}
-                  className="rounded-[2px] border border-matrix-ghost"
+                  className="border border-matrix-ghost"
                   style={{
                     width: 10,
                     height: 10,
@@ -1065,7 +1065,7 @@ function UpcomingTaskRow({ item, isFirst }: UpcomingTaskRowProps) {
 
   return (
     <div
-      className={`flex items-center gap-3 py-2 px-2 rounded ${
+      className={`flex items-center gap-3 py-2 px-2 ${
         isFirst
           ? "bg-matrix-panel-strong border border-matrix-ghost"
           : "hover:bg-matrix-panel/50"
@@ -1728,7 +1728,7 @@ export function RunDetailModal({ run, loading, output, outputLoading, outputErro
             </div>
 
             <div className="mt-4 text-right text-caption text-matrix-dim">
-              Press <kbd className="px-1.5 py-0.5 bg-matrix-ghost/20 rounded text-xs">Esc</kbd> to close
+              Press <kbd className="px-1.5 py-0.5 bg-matrix-ghost/20 text-xs">Esc</kbd> to close
             </div>
           </>
         ) : null}

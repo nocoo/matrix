@@ -207,7 +207,7 @@ body {
 
   .matrix-scrollbar::-webkit-scrollbar-thumb {
     background: rgba(0, 255, 65, 0.35);
-    border-radius: 999px;
+    border-radius: 0;
     border: 1px solid rgba(0, 255, 65, 0.4);
   }
 

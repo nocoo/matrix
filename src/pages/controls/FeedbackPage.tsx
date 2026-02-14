@@ -17,7 +17,7 @@ function Section({
   className?: string;
 }) {
   return (
-    <div className={`matrix-panel rounded p-4 ${className}`}>
+    <div className={`matrix-panel p-4 ${className}`}>
       <div className="flex items-center gap-2 mb-4 border-b border-matrix-primary/15 pb-2">
         <span className="w-1.5 h-1.5 bg-matrix-primary" />
         <h3 className="text-xs font-mono font-bold uppercase tracking-widest text-matrix-primary">
@@ -40,7 +40,7 @@ const ALERT_STYLES = {
 function InlineAlert({ variant, title, message }: { variant: keyof typeof ALERT_STYLES; title: string; message: string }) {
   const s = ALERT_STYLES[variant];
   return (
-    <div className={cn("border rounded p-3", s.border, s.bg)}>
+    <div className={cn("border p-3", s.border, s.bg)}>
       <div className="flex items-center gap-2 mb-1">
         <span className={cn("text-xs", s.iconColor)}>{s.icon}</span>
         <p className={cn("text-xs font-mono font-bold uppercase", s.titleColor)}>{title}</p>
@@ -52,7 +52,7 @@ function InlineAlert({ variant, title, message }: { variant: keyof typeof ALERT_
 
 // ── Skeleton ──────────────────────────────────
 function Skeleton({ className = "" }: { className?: string }) {
-  return <div className={cn("bg-matrix-primary/8 animate-pulse rounded", className)} />;
+  return <div className={cn("bg-matrix-primary/8 animate-pulse", className)} />;
 }
 
 export default function FeedbackPage() {
@@ -87,7 +87,7 @@ export default function FeedbackPage() {
               key={t.id}
               onClick={() => showToast(t.id)}
               className={cn(
-                "text-left border rounded p-3 transition-colors font-mono text-xs font-bold uppercase",
+                "text-left border p-3 transition-colors font-mono text-xs font-bold uppercase",
                 t.color,
                 "hover:opacity-80"
               )}
@@ -111,13 +111,13 @@ export default function FeedbackPage() {
       {/* ── Banners ──────────────────────────── */}
       <Section title="BANNERS">
         <div className="space-y-3">
-          <div className="bg-matrix-primary/10 border border-matrix-primary/30 rounded p-3 flex items-center justify-between">
+          <div className="bg-matrix-primary/10 border border-matrix-primary/30 p-3 flex items-center justify-between">
             <p className="text-xs font-mono text-matrix-primary font-bold">
               ↑ UPGRADE TO PRO — Unlock advanced neural processing capabilities.
             </p>
             <MatrixButton size="small" primary>UPGRADE</MatrixButton>
           </div>
-          <div className="bg-yellow-500/5 border border-yellow-500/30 rounded p-3 flex items-center justify-between">
+          <div className="bg-yellow-500/5 border border-yellow-500/30 p-3 flex items-center justify-between">
             <p className="text-xs font-mono text-yellow-400 font-bold">
               ◈ SCHEDULED MAINTENANCE — 2026-02-15 03:00–05:00 UTC
             </p>
@@ -133,7 +133,7 @@ export default function FeedbackPage() {
             <p className="text-[10px] font-mono text-matrix-dim uppercase mb-3">Card skeleton</p>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
               {[0, 1, 2].map((i) => (
-                <div key={i} className="border border-matrix-ghost rounded p-4 space-y-3">
+                <div key={i} className="border border-matrix-ghost p-4 space-y-3">
                   <Skeleton className="h-4 w-2/3" />
                   <Skeleton className="h-3 w-full" />
                   <Skeleton className="h-3 w-4/5" />
@@ -146,7 +146,7 @@ export default function FeedbackPage() {
             <p className="text-[10px] font-mono text-matrix-dim uppercase mb-3">List skeleton</p>
             <div className="space-y-2">
               {[0, 1, 2].map((i) => (
-                <div key={i} className="flex items-center gap-3 border border-matrix-ghost rounded p-3">
+                <div key={i} className="flex items-center gap-3 border border-matrix-ghost p-3">
                   <Skeleton className="w-8 h-8 rounded-full shrink-0" />
                   <div className="flex-1 space-y-2">
                     <Skeleton className="h-3 w-1/3" />
@@ -172,19 +172,19 @@ export default function FeedbackPage() {
       {/* ── Empty States ─────────────────────── */}
       <Section title="EMPTY STATES">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-          <div className="border border-dashed border-matrix-ghost rounded p-6 text-center">
+          <div className="border border-dashed border-matrix-ghost p-6 text-center">
             <p className="text-2xl font-mono text-matrix-dim mb-2">⌸</p>
             <p className="text-xs font-mono text-matrix-muted font-bold mb-1">NO DATA</p>
             <p className="text-[10px] font-mono text-matrix-dim mb-3">Create your first record to get started.</p>
             <MatrixButton size="small">CREATE RECORD</MatrixButton>
           </div>
-          <div className="border border-dashed border-matrix-ghost rounded p-6 text-center">
+          <div className="border border-dashed border-matrix-ghost p-6 text-center">
             <p className="text-2xl font-mono text-matrix-dim mb-2">⌕</p>
             <p className="text-xs font-mono text-matrix-muted font-bold mb-1">NO RESULTS</p>
             <p className="text-[10px] font-mono text-matrix-dim mb-3">Try adjusting your search filters.</p>
             <MatrixButton size="small">CLEAR FILTERS</MatrixButton>
           </div>
-          <div className="border border-dashed border-matrix-ghost rounded p-6 text-center">
+          <div className="border border-dashed border-matrix-ghost p-6 text-center">
             <p className="text-2xl font-mono text-red-400 mb-2">✕</p>
             <p className="text-xs font-mono text-matrix-muted font-bold mb-1">ERROR</p>
             <p className="text-[10px] font-mono text-matrix-dim mb-3">Something went wrong loading this data.</p>

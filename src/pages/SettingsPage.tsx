@@ -11,7 +11,7 @@ export default function SettingsPage() {
               <p className="font-mono text-sm text-matrix-primary">Theme</p>
               <p className="font-mono text-xs text-matrix-dim">Matrix terminal (always dark)</p>
             </div>
-            <span className="font-mono text-xs text-matrix-muted px-2 py-1 rounded bg-matrix-primary/10">
+            <span className="font-mono text-xs text-matrix-muted px-2 py-1 bg-matrix-primary/10">
               DARK
             </span>
           </div>

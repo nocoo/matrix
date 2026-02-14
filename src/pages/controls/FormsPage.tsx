@@ -17,7 +17,7 @@ function Section({
   className?: string;
 }) {
   return (
-    <div className={`matrix-panel rounded p-4 ${className}`}>
+    <div className={`matrix-panel p-4 ${className}`}>
       <div className="flex items-center gap-2 mb-4 border-b border-matrix-primary/15 pb-2">
         <span className="w-1.5 h-1.5 bg-matrix-primary" />
         <h3 className="text-xs font-mono font-bold uppercase tracking-widest text-matrix-primary">
@@ -72,7 +72,7 @@ export default function FormsPage() {
                 type="button"
                 onClick={() => setTwoFa(!twoFa)}
                 className={cn(
-                  "relative w-10 h-5 rounded-full border transition-colors",
+                  "relative w-10 h-5 border transition-colors",
                   twoFa
                     ? "bg-matrix-primary/30 border-matrix-primary"
                     : "bg-matrix-panel-strong border-matrix-ghost"
@@ -80,7 +80,7 @@ export default function FormsPage() {
               >
                 <span
                   className={cn(
-                    "absolute top-0.5 w-4 h-4 rounded-full transition-all",
+                    "absolute top-0.5 w-4 h-4 transition-all",
                     twoFa
                       ? "left-5 bg-matrix-primary shadow-[0_0_8px_rgba(0,255,65,0.6)]"
                       : "left-0.5 bg-matrix-dim"
@@ -120,7 +120,7 @@ export default function FormsPage() {
         </Section>
 
         <Section title="FILE UPLOAD">
-          <div className="border-2 border-dashed border-matrix-ghost rounded p-6 text-center hover:border-matrix-dim transition-colors cursor-pointer">
+          <div className="border-2 border-dashed border-matrix-ghost p-6 text-center hover:border-matrix-dim transition-colors cursor-pointer">
             <p className="text-2xl font-mono text-matrix-dim mb-2">↑</p>
             <p className="text-xs font-mono text-matrix-muted font-bold">DROP FILES HERE</p>
             <p className="text-[10px] font-mono text-matrix-dim mt-1">

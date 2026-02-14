@@ -25,7 +25,7 @@ export default function TargetCardsPage() {
                 </span>
                 <span
                   className={cn(
-                    "font-mono text-[10px] uppercase px-2 py-0.5 rounded",
+                    "font-mono text-[10px] uppercase px-2 py-0.5",
                     goal.onTrack
                       ? "bg-matrix-primary/10 text-matrix-primary"
                       : "bg-yellow-500/10 text-yellow-500"
@@ -43,10 +43,10 @@ export default function TargetCardsPage() {
                   </span>
                   <span className="text-matrix-primary">{goal.percent}%</span>
                 </div>
-                <div className="h-2 w-full bg-matrix-primary/10 rounded-full overflow-hidden">
+                <div className="h-2 w-full bg-matrix-primary/10 overflow-hidden">
                   <div
                     className={cn(
-                      "h-full rounded-full transition-all",
+                      "h-full transition-all",
                       goal.onTrack ? "bg-matrix-primary" : "bg-yellow-500"
                     )}
                     style={{ width: `${goal.percent}%` }}

@@ -106,7 +106,7 @@ export default function LifeAiPage() {
           {heatmapData.map((d) => (
             <div
               key={d.date}
-              className="w-2 h-2 rounded-[1px]"
+              className="w-2 h-2 "
               style={{
                 backgroundColor: d.value > 0
                   ? `rgba(0, 255, 65, ${Math.min(d.value / 10, 1)})`
@@ -134,7 +134,7 @@ export default function LifeAiPage() {
             {monthlySleep.map((d) => (
               <div key={d.label} className="flex-1 flex flex-col items-center">
                 <div
-                  className="w-full bg-matrix-primary/60 rounded-t"
+                  className="w-full bg-matrix-primary/60 "
                   style={{ height: `${(d.value / 10) * 100}%` }}
                 />
                 <span className="font-mono text-[8px] text-matrix-dim mt-1">{d.label}</span>
@@ -150,9 +150,9 @@ export default function LifeAiPage() {
           {activityBreakdown.map((item) => (
             <div key={item.label} className="flex items-center gap-3 font-mono text-xs">
               <span className="w-16 text-matrix-muted">{item.label}</span>
-              <div className="flex-1 h-3 bg-matrix-primary/10 rounded-full overflow-hidden">
+              <div className="flex-1 h-3 bg-matrix-primary/10 overflow-hidden">
                 <div
-                  className="h-full bg-matrix-primary rounded-full"
+                  className="h-full bg-matrix-primary"
                   style={{ width: `${item.value}%` }}
                 />
               </div>

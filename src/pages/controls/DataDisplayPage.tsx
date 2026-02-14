@@ -17,7 +17,7 @@ function Section({
   className?: string;
 }) {
   return (
-    <div className={`matrix-panel rounded p-4 ${className}`}>
+    <div className={`matrix-panel p-4 ${className}`}>
       <div className="flex items-center gap-2 mb-4 border-b border-matrix-primary/15 pb-2">
         <span className="w-1.5 h-1.5 bg-matrix-primary" />
         <h3 className="text-xs font-mono font-bold uppercase tracking-widest text-matrix-primary">
@@ -147,7 +147,7 @@ export default function DataDisplayPage() {
       <Section title="STAT TILES">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {vm.kpis.map((kpi) => (
-            <div key={kpi.label} className="border border-matrix-ghost rounded p-3">
+            <div key={kpi.label} className="border border-matrix-ghost p-3">
               <p className="text-[10px] font-mono text-matrix-dim uppercase mb-1">{kpi.label}</p>
               <p className="text-lg font-mono font-bold text-matrix-bright">{kpi.value}</p>
               <div className="flex items-center gap-1 mt-1">

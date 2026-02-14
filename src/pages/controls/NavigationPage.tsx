@@ -17,7 +17,7 @@ function Section({
   className?: string;
 }) {
   return (
-    <div className={`matrix-panel rounded p-4 ${className}`}>
+    <div className={`matrix-panel p-4 ${className}`}>
       <div className="flex items-center gap-2 mb-4 border-b border-matrix-primary/15 pb-2">
         <span className="w-1.5 h-1.5 bg-matrix-primary" />
         <h3 className="text-xs font-mono font-bold uppercase tracking-widest text-matrix-primary">
@@ -156,7 +156,7 @@ export default function NavigationPage() {
           </div>
           <div>
             <p className="text-[10px] font-mono text-matrix-dim uppercase mb-2">Inside a card</p>
-            <div className="border border-matrix-ghost rounded p-3">
+            <div className="border border-matrix-ghost p-3">
               <Breadcrumb items={["DASHBOARD", "SETTINGS", "NOTIFICATIONS"]} />
               <div className="mt-3 pt-3 border-t border-matrix-ghost">
                 <p className="text-xs font-mono text-matrix-dim">
@@ -181,7 +181,7 @@ export default function NavigationPage() {
           </div>
           <div>
             <p className="text-[10px] font-mono text-matrix-dim uppercase mb-2">With context</p>
-            <div className="border border-matrix-ghost rounded p-3 flex items-center justify-between">
+            <div className="border border-matrix-ghost p-3 flex items-center justify-between">
               <span className="text-[10px] font-mono text-matrix-dim">
                 Showing {(vm.page2 - 1) * 10 + 1}–{Math.min(vm.page2 * 10, 200)} of 200 results
               </span>
@@ -329,13 +329,13 @@ export default function NavigationPage() {
           {/* Pill */}
           <div>
             <p className="text-[10px] font-mono text-matrix-dim uppercase mb-2">Pill style</p>
-            <div className="inline-flex bg-matrix-panel-strong rounded-full p-0.5 border border-matrix-ghost">
+            <div className="inline-flex bg-matrix-panel-strong p-0.5 border border-matrix-ghost">
               {["day", "week", "month", "year"].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => vm.setNavPill(tab)}
                   className={cn(
-                    "px-4 py-1 text-xs font-mono uppercase font-bold rounded-full transition-colors",
+                    "px-4 py-1 text-xs font-mono uppercase font-bold transition-colors",
                     vm.navPill === tab
                       ? "bg-matrix-primary text-black shadow-[0_0_8px_rgba(0,255,65,0.3)]"
                       : "text-matrix-dim hover:text-matrix-muted"

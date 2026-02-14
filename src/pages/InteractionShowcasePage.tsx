@@ -29,7 +29,7 @@ export default function InteractionShowcasePage() {
               key={toast.id}
               onClick={() => setActiveToast(activeToast === toast.id ? null : toast.id)}
               className={cn(
-                "text-left border rounded p-3 transition-colors font-mono",
+                "text-left border p-3 transition-colors font-mono",
                 activeToast === toast.id
                   ? "border-matrix-primary/40 bg-matrix-primary/10"
                   : "border-matrix-primary/15 hover:border-matrix-primary/30"
@@ -38,7 +38,7 @@ export default function InteractionShowcasePage() {
               <div className="flex items-center gap-2 mb-1">
                 <span
                   className={cn(
-                    "text-[10px] uppercase px-1.5 py-0.5 rounded",
+                    "text-[10px] uppercase px-1.5 py-0.5",
                     toast.variant === "success" && "bg-matrix-primary/20 text-matrix-primary",
                     toast.variant === "error" && "bg-red-500/20 text-red-400",
                     toast.variant === "warning" && "bg-yellow-500/20 text-yellow-400",
@@ -62,7 +62,7 @@ export default function InteractionShowcasePage() {
           {variantLabels.map(({ variant, label }) => (
             <span
               key={variant}
-              className="font-mono text-xs border border-matrix-primary/20 rounded px-2 py-1 text-matrix-muted"
+              className="font-mono text-xs border border-matrix-primary/20 px-2 py-1 text-matrix-muted"
             >
               {label}
             </span>
@@ -99,7 +99,7 @@ export default function InteractionShowcasePage() {
                     <input
                       type="text"
                       placeholder="type your feedback..."
-                      className="w-full bg-transparent border border-matrix-primary/20 rounded px-3 py-2 font-mono text-sm text-matrix-primary placeholder:text-matrix-dim outline-none focus:border-matrix-primary/40"
+                      className="w-full bg-transparent border border-matrix-primary/20 px-3 py-2 font-mono text-sm text-matrix-primary placeholder:text-matrix-dim outline-none focus:border-matrix-primary/40"
                     />
                   </div>
                 )}

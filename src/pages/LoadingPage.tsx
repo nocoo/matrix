@@ -35,7 +35,7 @@ export default function LoadingPage() {
   return (
     <div className="min-h-screen bg-[var(--matrix-bg)] flex items-center justify-center p-4">
       <div className="w-full max-w-lg">
-        <div className="border border-matrix-primary/20 rounded p-6 matrix-panel">
+        <div className="border border-matrix-primary/20 p-6 matrix-panel">
           {/* Header */}
           <div className="text-center mb-6">
             <p className="font-mono text-lg text-matrix-primary glow-text">[MATRIX]</p>
@@ -59,9 +59,9 @@ export default function LoadingPage() {
 
           {/* Progress bar */}
           <div className="space-y-1">
-            <div className="h-1.5 w-full bg-matrix-primary/10 rounded-full overflow-hidden">
+            <div className="h-1.5 w-full bg-matrix-primary/10 overflow-hidden">
               <div
-                className="h-full bg-matrix-primary rounded-full transition-all duration-300"
+                className="h-full bg-matrix-primary transition-all duration-300"
                 style={{ width: `${progress}%` }}
               />
             </div>

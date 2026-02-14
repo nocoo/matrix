@@ -30,7 +30,7 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="operator@matrix.sys"
-                  className="w-full bg-transparent border border-matrix-primary/20 rounded px-3 py-2 font-mono text-sm text-matrix-primary placeholder:text-matrix-dim outline-none focus:border-matrix-primary/50"
+                  className="w-full bg-transparent border border-matrix-primary/20 px-3 py-2 font-mono text-sm text-matrix-primary placeholder:text-matrix-dim outline-none focus:border-matrix-primary/50"
                 />
               </div>
               <div>
@@ -42,7 +42,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-transparent border border-matrix-primary/20 rounded px-3 py-2 font-mono text-sm text-matrix-primary placeholder:text-matrix-dim outline-none focus:border-matrix-primary/50"
+                  className="w-full bg-transparent border border-matrix-primary/20 px-3 py-2 font-mono text-sm text-matrix-primary placeholder:text-matrix-dim outline-none focus:border-matrix-primary/50"
                 />
               </div>
             </div>

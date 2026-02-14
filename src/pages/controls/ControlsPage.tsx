@@ -19,7 +19,7 @@ function Section({
   className?: string;
 }) {
   return (
-    <div className={`matrix-panel rounded p-4 ${className}`}>
+    <div className={`matrix-panel p-4 ${className}`}>
       <div className="flex items-center gap-2 mb-4 border-b border-matrix-primary/15 pb-2">
         <span className="w-1.5 h-1.5 bg-matrix-primary" />
         <h3 className="text-xs font-mono font-bold uppercase tracking-widest text-matrix-primary">
@@ -78,7 +78,7 @@ export default function ControlsPage() {
               <button
                 onClick={() => vm.setSwitchA(!vm.switchA)}
                 className={cn(
-                  "relative w-10 h-5 rounded-full border transition-colors",
+                  "relative w-10 h-5 border transition-colors",
                   vm.switchA
                     ? "bg-matrix-primary/30 border-matrix-primary"
                     : "bg-matrix-panel-strong border-matrix-ghost"
@@ -86,7 +86,7 @@ export default function ControlsPage() {
               >
                 <span
                   className={cn(
-                    "absolute top-0.5 w-4 h-4 rounded-full transition-all",
+                    "absolute top-0.5 w-4 h-4 transition-all",
                     vm.switchA
                       ? "left-5 bg-matrix-primary shadow-[0_0_8px_rgba(0,255,65,0.6)]"
                       : "left-0.5 bg-matrix-dim"
@@ -100,7 +100,7 @@ export default function ControlsPage() {
               <button
                 onClick={() => vm.setSwitchB(!vm.switchB)}
                 className={cn(
-                  "relative w-10 h-5 rounded-full border transition-colors",
+                  "relative w-10 h-5 border transition-colors",
                   vm.switchB
                     ? "bg-matrix-primary/30 border-matrix-primary"
                     : "bg-matrix-panel-strong border-matrix-ghost"
@@ -108,7 +108,7 @@ export default function ControlsPage() {
               >
                 <span
                   className={cn(
-                    "absolute top-0.5 w-4 h-4 rounded-full transition-all",
+                    "absolute top-0.5 w-4 h-4 transition-all",
                     vm.switchB
                       ? "left-5 bg-matrix-primary shadow-[0_0_8px_rgba(0,255,65,0.6)]"
                       : "left-0.5 bg-matrix-dim"
@@ -166,7 +166,7 @@ export default function ControlsPage() {
                 max={100}
                 value={vm.sliderValue}
                 onChange={(e) => vm.setSliderValue(Number(e.target.value))}
-                className="w-full h-1 bg-matrix-ghost rounded appearance-none cursor-pointer accent-[#00ff41]"
+                className="w-full h-1 bg-matrix-ghost appearance-none cursor-pointer accent-[#00ff41]"
               />
             </div>
             <div>
@@ -181,7 +181,7 @@ export default function ControlsPage() {
                 step={5}
                 value={vm.sliderValue2}
                 onChange={(e) => vm.setSliderValue2(Number(e.target.value))}
-                className="w-full h-1 bg-matrix-ghost rounded appearance-none cursor-pointer accent-yellow-400"
+                className="w-full h-1 bg-matrix-ghost appearance-none cursor-pointer accent-yellow-400"
               />
             </div>
           </div>
@@ -278,7 +278,7 @@ export default function ControlsPage() {
               [HOVER FOR DETAILS]
             </button>
             {hoverCardVisible && (
-              <div className="absolute top-8 left-0 z-20 matrix-panel rounded p-3 w-64 border border-matrix-primary/30 shadow-[0_0_20px_rgba(0,255,65,0.15)]">
+              <div className="absolute top-8 left-0 z-20 matrix-panel p-3 w-64 border border-matrix-primary/30 shadow-[0_0_20px_rgba(0,255,65,0.15)]">
                 <p className="text-xs font-mono text-matrix-primary font-bold mb-1">MATRIX SYSTEMS</p>
                 <p className="text-xs font-mono text-matrix-dim">
                   Neural interface framework. Active since 2026. Processing 1.2M daily operations.
@@ -293,11 +293,11 @@ export default function ControlsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <Section title="ALERTS">
           <div className="space-y-3">
-            <div className="border border-yellow-500/30 bg-yellow-500/5 p-3 rounded">
+            <div className="border border-yellow-500/30 bg-yellow-500/5 p-3">
               <p className="text-xs font-mono text-yellow-400 font-bold">⚠ SYSTEM WARNING</p>
               <p className="text-xs font-mono text-matrix-dim mt-1">Memory allocation at 80% capacity. Consider optimizing.</p>
             </div>
-            <div className="border border-blue-500/30 bg-blue-500/5 p-3 rounded">
+            <div className="border border-blue-500/30 bg-blue-500/5 p-3">
               <p className="text-xs font-mono text-blue-400 font-bold">◈ MAINTENANCE</p>
               <p className="text-xs font-mono text-matrix-dim mt-1">Scheduled downtime: 2026-02-15 03:00 UTC.</p>
             </div>
@@ -358,7 +358,7 @@ export default function ControlsPage() {
             {vm.dropdownOpen && (
               <>
                 <div className="fixed inset-0 z-30" onClick={() => vm.setDropdownOpen(false)} />
-                <div className="absolute top-10 left-0 z-40 matrix-panel rounded border border-matrix-primary/30 py-1 min-w-[160px]">
+                <div className="absolute top-10 left-0 z-40 matrix-panel border border-matrix-primary/30 py-1 min-w-[160px]">
                   {["PROFILE", "TEAM"].map((item) => (
                     <button
                       key={item}
@@ -389,7 +389,7 @@ export default function ControlsPage() {
             {vm.popoverOpen && (
               <>
                 <div className="fixed inset-0 z-30" onClick={() => vm.setPopoverOpen(false)} />
-                <div className="absolute top-10 left-0 z-40 matrix-panel rounded border border-matrix-primary/30 p-3 w-56">
+                <div className="absolute top-10 left-0 z-40 matrix-panel border border-matrix-primary/30 p-3 w-56">
                   <p className="text-xs font-mono text-matrix-primary font-bold mb-1">RELEASE SCHEDULE</p>
                   <p className="text-xs font-mono text-matrix-dim">Next deployment: 2026-02-20. All modules staged for release.</p>
                 </div>
@@ -399,7 +399,7 @@ export default function ControlsPage() {
         </Section>
 
         <Section title="MENUBAR">
-          <div className="flex border border-matrix-ghost rounded overflow-hidden">
+          <div className="flex border border-matrix-ghost overflow-hidden">
             {[
               { label: "FILE", items: ["NEW", "DUPLICATE", "SHARE"] },
               { label: "EDIT", items: ["UNDO", "REDO"] },
@@ -419,7 +419,7 @@ export default function ControlsPage() {
                 {menubarOpen === menu.label && (
                   <>
                     <div className="fixed inset-0 z-30" onClick={() => setMenubarOpen(null)} />
-                    <div className="absolute top-full left-0 z-40 matrix-panel rounded border border-matrix-primary/30 py-1 min-w-[120px]">
+                    <div className="absolute top-full left-0 z-40 matrix-panel border border-matrix-primary/30 py-1 min-w-[120px]">
                       {menu.items.map((item) => (
                         <button
                           key={item}
@@ -442,7 +442,7 @@ export default function ControlsPage() {
       <Section title="CONTEXT MENU">
         <div
           onContextMenu={vm.handleContextMenu}
-          className="border border-dashed border-matrix-ghost rounded p-6 text-center cursor-context-menu"
+          className="border border-dashed border-matrix-ghost p-6 text-center cursor-context-menu"
         >
           <p className="text-xs font-mono text-matrix-dim uppercase">Right-click this area</p>
         </div>
@@ -450,7 +450,7 @@ export default function ControlsPage() {
           <>
             <div className="fixed inset-0 z-50" onClick={() => vm.setContextMenuOpen(false)} />
             <div
-              className="fixed z-50 matrix-panel rounded border border-matrix-primary/30 py-1 min-w-[140px]"
+              className="fixed z-50 matrix-panel border border-matrix-primary/30 py-1 min-w-[140px]"
               style={{ top: vm.contextMenuPos.y, left: vm.contextMenuPos.x }}
             >
               {["RENAME", "DUPLICATE", "ARCHIVE"].map((item) => (
@@ -477,7 +477,7 @@ export default function ControlsPage() {
           ].map((item) => (
             <div key={item.label} className="group relative">
               <MatrixButton size="small">{item.label}</MatrixButton>
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 matrix-panel rounded border border-matrix-primary/30 text-[10px] font-mono text-matrix-muted whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 matrix-panel border border-matrix-primary/30 text-[10px] font-mono text-matrix-muted whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                 {item.tip}
                 <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-matrix-primary/30" />
               </div>
@@ -555,7 +555,7 @@ export default function ControlsPage() {
         </Section>
 
         <Section title="TOGGLE GROUP">
-          <div className="inline-flex border border-matrix-ghost rounded overflow-hidden">
+          <div className="inline-flex border border-matrix-ghost overflow-hidden">
             {["left", "center", "right"].map((align) => (
               <button
                 key={align}
@@ -619,7 +619,7 @@ export default function ControlsPage() {
         <>
           <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm" onClick={() => vm.setCommandOpen(false)} />
           <div className="fixed inset-x-4 top-[20%] z-50 mx-auto max-w-md">
-            <div className="matrix-panel rounded border border-matrix-primary/30">
+            <div className="matrix-panel border border-matrix-primary/30">
               <div className="flex items-center gap-2 border-b border-matrix-primary/20 px-3 py-2">
                 <span className="text-matrix-dim font-mono text-xs">$</span>
                 <input
@@ -628,7 +628,7 @@ export default function ControlsPage() {
                   placeholder="type a command..."
                   className="flex-1 bg-transparent font-mono text-sm text-matrix-primary placeholder:text-matrix-dim outline-none"
                 />
-                <kbd className="rounded border border-matrix-primary/20 px-1.5 py-0.5 font-mono text-[10px] text-matrix-dim">ESC</kbd>
+                <kbd className="border border-matrix-primary/20 px-1.5 py-0.5 font-mono text-[10px] text-matrix-dim">ESC</kbd>
               </div>
               <div className="py-1">
                 <p className="px-3 py-1 text-[10px] font-mono text-matrix-dim uppercase">Suggestions</p>
@@ -666,7 +666,7 @@ export default function ControlsPage() {
         <>
           <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm" />
           <div className="fixed inset-x-4 top-[25%] z-50 mx-auto max-w-sm">
-            <div className="matrix-panel rounded border border-red-500/30 p-5">
+            <div className="matrix-panel border border-red-500/30 p-5">
               <p className="text-sm font-mono text-matrix-bright font-bold mb-2">DELETE PROJECT?</p>
               <p className="text-xs font-mono text-matrix-dim mb-4">
                 This action is irreversible. All data, configurations, and deployment history will be permanently erased.

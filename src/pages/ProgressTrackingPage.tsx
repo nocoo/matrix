@@ -41,9 +41,9 @@ export default function ProgressTrackingPage() {
                   ${cat.spent} / ${cat.limit}
                 </span>
               </div>
-              <div className="h-2 w-full bg-matrix-primary/10 rounded-full overflow-hidden">
+              <div className="h-2 w-full bg-matrix-primary/10 overflow-hidden">
                 <div
-                  className="h-full rounded-full transition-all"
+                  className="h-full transition-all"
                   style={{
                     width: `${Math.min(cat.progress, 100)}%`,
                     backgroundColor: cat.color,

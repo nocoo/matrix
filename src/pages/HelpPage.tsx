@@ -27,7 +27,7 @@ export default function HelpPage() {
           {resources.map((res) => (
             <div
               key={res.title}
-              className="border border-matrix-primary/15 rounded p-3 hover:border-matrix-primary/30 transition-colors"
+              className="border border-matrix-primary/15 p-3 hover:border-matrix-primary/30 transition-colors"
             >
               <p className="font-mono text-xs text-matrix-dim mb-1">[{res.icon}]</p>
               <p className="font-mono text-sm text-matrix-primary">{res.title}</p>

@@ -50,10 +50,10 @@ export default function CardShowcasePage() {
                   <span>utilization</span>
                   <span>{card.utilization}%</span>
                 </div>
-                <div className="h-1.5 w-full bg-matrix-primary/10 rounded-full overflow-hidden">
+                <div className="h-1.5 w-full bg-matrix-primary/10 overflow-hidden">
                   <div
                     className={cn(
-                      "h-full rounded-full transition-all",
+                      "h-full transition-all",
                       card.utilization > 80 ? "bg-red-500" :
                       card.utilization > 50 ? "bg-yellow-500" :
                       "bg-matrix-primary"
