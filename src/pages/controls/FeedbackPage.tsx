@@ -31,10 +31,10 @@ function Section({
 
 // ── Inline Alert ──────────────────────────────
 const ALERT_STYLES = {
-  info: { border: "border-blue-500/30", bg: "bg-blue-500/5", icon: "◈", iconColor: "text-blue-400", titleColor: "text-blue-400" },
-  success: { border: "border-green-500/30", bg: "bg-green-500/5", icon: "✓", iconColor: "text-green-400", titleColor: "text-green-400" },
-  warning: { border: "border-yellow-500/30", bg: "bg-yellow-500/5", icon: "⚠", iconColor: "text-yellow-400", titleColor: "text-yellow-400" },
-  error: { border: "border-red-500/30", bg: "bg-red-500/5", icon: "✕", iconColor: "text-red-400", titleColor: "text-red-400" },
+  info: { border: "border-blue-500/30", bg: "bg-blue-500/5", icon: "◈", iconColor: "text-blue-400", titleColor: "text-blue-400", bodyColor: "text-blue-400/60" },
+  success: { border: "border-green-500/30", bg: "bg-green-500/5", icon: "✓", iconColor: "text-green-400", titleColor: "text-green-400", bodyColor: "text-green-400/60" },
+  warning: { border: "border-yellow-500/30", bg: "bg-yellow-500/5", icon: "⚠", iconColor: "text-yellow-400", titleColor: "text-yellow-400", bodyColor: "text-yellow-400/60" },
+  error: { border: "border-red-500/30", bg: "bg-red-500/5", icon: "✕", iconColor: "text-red-400", titleColor: "text-red-400", bodyColor: "text-red-400/60" },
 };
 
 function InlineAlert({ variant, title, message }: { variant: keyof typeof ALERT_STYLES; title: string; message: string }) {
@@ -45,7 +45,7 @@ function InlineAlert({ variant, title, message }: { variant: keyof typeof ALERT_
         <span className={cn("text-xs", s.iconColor)}>{s.icon}</span>
         <p className={cn("text-xs font-mono font-bold uppercase", s.titleColor)}>{title}</p>
       </div>
-      <p className="text-xs font-mono text-matrix-dim ml-5">{message}</p>
+      <p className={cn("text-xs font-mono ml-5", s.bodyColor)}>{message}</p>
     </div>
   );
 }
@@ -121,7 +121,7 @@ export default function FeedbackPage() {
             <p className="text-xs font-mono text-yellow-400 font-bold">
               ◈ SCHEDULED MAINTENANCE — 2026-02-15 03:00–05:00 UTC
             </p>
-            <MatrixButton size="small">DISMISS</MatrixButton>
+            <MatrixButton size="small" className="!border-yellow-500/30 !text-yellow-400 hover:!bg-yellow-500/10">DISMISS</MatrixButton>
           </div>
         </div>
       </Section>

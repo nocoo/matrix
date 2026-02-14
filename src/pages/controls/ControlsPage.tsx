@@ -252,14 +252,14 @@ export default function ControlsPage() {
                 <button
                   onClick={() => vm.setRadioValue(opt)}
                   className={cn(
-                    "w-4 h-4 rounded-full border-2 flex items-center justify-center transition-colors",
+                    "w-4 h-4 border-2 flex items-center justify-center transition-colors",
                     vm.radioValue === opt
                       ? "border-matrix-primary"
                       : "border-matrix-ghost hover:border-matrix-dim"
                   )}
                 >
                   {vm.radioValue === opt && (
-                    <span className="w-2 h-2 rounded-full bg-matrix-primary shadow-[0_0_6px_rgba(0,255,65,0.6)]" />
+                    <span className="w-2 h-2 bg-matrix-primary shadow-[0_0_6px_rgba(0,255,65,0.6)]" />
                   )}
                 </button>
                 <span className="text-xs font-mono text-matrix-muted uppercase">{opt}</span>
@@ -295,11 +295,11 @@ export default function ControlsPage() {
           <div className="space-y-3">
             <div className="border border-yellow-500/30 bg-yellow-500/5 p-3">
               <p className="text-xs font-mono text-yellow-400 font-bold">⚠ SYSTEM WARNING</p>
-              <p className="text-xs font-mono text-matrix-dim mt-1">Memory allocation at 80% capacity. Consider optimizing.</p>
+              <p className="text-xs font-mono text-yellow-400/60 mt-1">Memory allocation at 80% capacity. Consider optimizing.</p>
             </div>
             <div className="border border-blue-500/30 bg-blue-500/5 p-3">
               <p className="text-xs font-mono text-blue-400 font-bold">◈ MAINTENANCE</p>
-              <p className="text-xs font-mono text-matrix-dim mt-1">Scheduled downtime: 2026-02-15 03:00 UTC.</p>
+              <p className="text-xs font-mono text-blue-400/60 mt-1">Scheduled downtime: 2026-02-15 03:00 UTC.</p>
             </div>
           </div>
         </Section>
@@ -667,12 +667,15 @@ export default function ControlsPage() {
           <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm" />
           <div className="fixed inset-x-4 top-[25%] z-50 mx-auto max-w-sm">
             <div className="matrix-panel border border-red-500/30 p-5">
-              <p className="text-sm font-mono text-matrix-bright font-bold mb-2">DELETE PROJECT?</p>
-              <p className="text-xs font-mono text-matrix-dim mb-4">
+              <p className="text-sm font-mono text-red-400 font-bold mb-2">DELETE PROJECT?</p>
+              <p className="text-xs font-mono text-red-400/60 mb-4">
                 This action is irreversible. All data, configurations, and deployment history will be permanently erased.
               </p>
               <div className="flex justify-end gap-2">
-                <MatrixButton onClick={() => vm.setAlertDialogOpen(false)}>CANCEL</MatrixButton>
+                <MatrixButton
+                  onClick={() => vm.setAlertDialogOpen(false)}
+                  className="!border-red-500/30 !text-red-400 hover:!bg-red-500/10"
+                >CANCEL</MatrixButton>
                 <MatrixButton
                   onClick={() => vm.setAlertDialogOpen(false)}
                   className="!bg-red-500/20 !border-red-500/40 !text-red-400 hover:!bg-red-500/30"

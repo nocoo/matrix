@@ -240,7 +240,7 @@ export default function OverlaysPage() {
             </button>
             {collapse2 && (
               <div className="px-3 pb-3 border-t border-red-500/20 pt-3">
-                <p className="text-xs font-mono text-matrix-dim mb-3">
+                <p className="text-xs font-mono text-red-400/60 mb-3">
                   Permanently delete this workspace and all associated data.
                 </p>
                 <MatrixButton className="!bg-red-500/10 !border-red-500/30 !text-red-400 hover:!bg-red-500/20">
@@ -382,12 +382,15 @@ export default function OverlaysPage() {
           <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm" />
           <div className="fixed inset-x-4 top-[25%] z-50 mx-auto max-w-sm">
             <div className="matrix-panel border border-red-500/30 p-5">
-              <p className="text-sm font-mono text-matrix-bright font-bold mb-2">DELETE ITEM?</p>
-              <p className="text-xs font-mono text-matrix-dim mb-4">
+              <p className="text-sm font-mono text-red-400 font-bold mb-2">DELETE ITEM?</p>
+              <p className="text-xs font-mono text-red-400/60 mb-4">
                 This item will be permanently deleted. This action cannot be undone.
               </p>
               <div className="flex justify-end gap-2">
-                <MatrixButton onClick={() => setDeleteAlert(false)}>CANCEL</MatrixButton>
+                <MatrixButton
+                  onClick={() => setDeleteAlert(false)}
+                  className="!border-red-500/30 !text-red-400 hover:!bg-red-500/10"
+                >CANCEL</MatrixButton>
                 <MatrixButton
                   onClick={() => setDeleteAlert(false)}
                   className="!bg-red-500/20 !border-red-500/40 !text-red-400"
@@ -406,8 +409,8 @@ export default function OverlaysPage() {
           <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm" />
           <div className="fixed inset-x-4 top-[25%] z-50 mx-auto max-w-sm">
             <div className="matrix-panel border border-matrix-primary/30 p-5">
-              <p className="text-sm font-mono text-matrix-bright font-bold mb-2">DISCARD CHANGES?</p>
-              <p className="text-xs font-mono text-matrix-dim mb-4">
+              <p className="text-sm font-mono text-matrix-primary font-bold mb-2">DISCARD CHANGES?</p>
+              <p className="text-xs font-mono text-matrix-muted mb-4">
                 You have unsaved modifications. Discard all changes and exit?
               </p>
               <div className="flex justify-end gap-2">
