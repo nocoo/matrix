@@ -14,7 +14,7 @@ export default function CardShowcasePage() {
         <p className="font-mono text-xs text-matrix-dim">
           {cardCount} cards in vault
         </p>
-        <MatrixButton size="sm" onClick={() => setShowBalance(!showBalance)}>
+        <MatrixButton size="small" onClick={() => setShowBalance(!showBalance)}>
           {showBalance ? "[HIDE]" : "[SHOW]"}
         </MatrixButton>
       </div>

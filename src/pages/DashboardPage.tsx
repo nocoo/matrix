@@ -1,5 +1,5 @@
 import { AsciiBox } from "@/components/ui/AsciiBox";
-import { Sparkline } from "@/components/ui/MatrixExtras";
+import { Sparkline, TypewriterText, ConnectionStatus } from "@/components/ui/MatrixExtras";
 import { useAccountsViewModel } from "@/viewmodels/useAccountsViewModel";
 import { cn } from "@/lib/utils";
 
@@ -10,13 +10,18 @@ export default function DashboardPage() {
     <div className="space-y-4">
       {/* Welcome banner */}
       <AsciiBox title="SYSTEM STATUS">
-        <div className="flex flex-col gap-1">
-          <p className="font-mono text-sm text-matrix-primary">
-            &gt; welcome back, operator
-          </p>
-          <p className="font-mono text-xs text-matrix-muted">
-            all systems nominal. {accountList.length} accounts active.
-          </p>
+        <div className="flex flex-col gap-2">
+          <TypewriterText
+            text="> welcome back, operator"
+            className="font-mono text-sm text-matrix-primary"
+            speedMs={30}
+          />
+          <div className="flex items-center gap-3">
+            <ConnectionStatus status="STABLE" />
+            <span className="font-mono text-xs text-matrix-muted">
+              {accountList.length} accounts active
+            </span>
+          </div>
         </div>
       </AsciiBox>
 

@@ -1,10 +1,23 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import LoginPage from "@/pages/LoginPage";
 
-// Mock MatrixRain since it uses canvas
+// Mock MatrixRain (canvas), DecodingText (animation), and provide real MatrixInput
 vi.mock("@/components/ui/MatrixExtras", () => ({
   MatrixRain: () => <div data-testid="matrix-rain" />,
+  DecodingText: ({ text, className }: { text: string; className?: string }) => (
+    <span className={className}>{text}</span>
+  ),
+  MatrixInput: ({
+    label,
+    className = "",
+    ...props
+  }: { label: string; className?: string } & React.InputHTMLAttributes<HTMLInputElement>) => (
+    <label className={className}>
+      <span>{label}</span>
+      <input {...props} />
+    </label>
+  ),
 }));
 
 describe("LoginPage", () => {

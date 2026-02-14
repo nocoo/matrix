@@ -19,8 +19,7 @@ export default function PortfolioPage() {
       <AsciiBox title="12-MONTH PERFORMANCE">
         <TrendMonitor
           data={performanceData.map((d) => d.value)}
-          labels={performanceData.map((d) => d.month)}
-          height={160}
+          label={performanceData.map((d) => d.month).join(", ")}
           color="var(--matrix-ink)"
         />
       </AsciiBox>

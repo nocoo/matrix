@@ -12,8 +12,9 @@ export default function HelpPage() {
       {/* Search */}
       <AsciiBox title="SEARCH">
         <MatrixInput
+          label="search"
           value={searchQuery}
-          onChange={setSearchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="search help topics..."
         />
         <p className="font-mono text-[10px] text-matrix-dim mt-1">

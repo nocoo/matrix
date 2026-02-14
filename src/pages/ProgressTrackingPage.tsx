@@ -62,8 +62,7 @@ export default function ProgressTrackingPage() {
       <AsciiBox title="BUDGET VS ACTUAL">
         <TrendMonitor
           data={comparisonData.map((d) => d.actual)}
-          labels={comparisonData.map((d) => d.month)}
-          height={160}
+          label={comparisonData.map((d) => d.month).join(", ")}
           color="var(--matrix-ink)"
         />
       </AsciiBox>

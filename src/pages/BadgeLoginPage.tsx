@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { AsciiBox } from "@/components/ui/AsciiBox";
 import { MatrixButton } from "@/components/ui/MatrixButton";
+import { MatrixInput, TypewriterText } from "@/components/ui/MatrixExtras";
 
 export default function BadgeLoginPage() {
   const [badgeId, setBadgeId] = useState("");
@@ -14,23 +15,21 @@ export default function BadgeLoginPage() {
               <div className="inline-flex items-center justify-center w-16 h-16 border-2 border-matrix-primary/30 mb-3">
                 <span className="font-mono text-2xl text-matrix-primary">[ID]</span>
               </div>
-              <p className="font-mono text-xs text-matrix-dim">
-                scan your badge or enter ID
-              </p>
-            </div>
-
-            <div>
-              <label className="font-mono text-[10px] uppercase text-matrix-dim block mb-1">
-                badge id
-              </label>
-              <input
-                type="text"
-                value={badgeId}
-                onChange={(e) => setBadgeId(e.target.value)}
-                placeholder="XXXX-XXXX-XXXX"
-                className="w-full bg-transparent border border-matrix-primary/20 px-3 py-2 font-mono text-sm text-matrix-primary text-center tracking-widest placeholder:text-matrix-dim outline-none focus:border-matrix-primary/50"
+              <TypewriterText
+                text="scan your badge or enter ID"
+                className="font-mono text-xs text-matrix-dim block"
+                speedMs={30}
               />
             </div>
+
+            <MatrixInput
+              label="badge id"
+              type="text"
+              value={badgeId}
+              onChange={(e) => setBadgeId(e.target.value)}
+              placeholder="XXXX-XXXX-XXXX"
+              className="text-center tracking-widest"
+            />
 
             <MatrixButton className="w-full">[VERIFY]</MatrixButton>
 

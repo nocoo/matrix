@@ -26,8 +26,7 @@ export default function StatsOverviewPage() {
       <AsciiBox title="30-DAY TREND">
         <TrendMonitor
           data={trendData.map((d) => d.value)}
-          labels={trendData.map((d) => `${d.day}`)}
-          height={180}
+          label={trendData.map((d) => `${d.day}`).join(", ")}
           color="var(--matrix-ink)"
         />
       </AsciiBox>

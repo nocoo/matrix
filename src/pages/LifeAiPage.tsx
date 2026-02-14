@@ -1,6 +1,6 @@
 import { AsciiBox } from "@/components/ui/AsciiBox";
 import { MatrixButton } from "@/components/ui/MatrixButton";
-import { TrendMonitor } from "@/components/ui/DataVizComponents";
+import { TrendMonitor, TrendChart } from "@/components/ui/DataVizComponents";
 import { Sparkline } from "@/components/ui/MatrixExtras";
 import { useLifeAiViewModel } from "@/viewmodels/useLifeAiViewModel";
 import { cn } from "@/lib/utils";
@@ -33,11 +33,11 @@ export default function LifeAiPage() {
       {/* Date navigation */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <MatrixButton size="sm" onClick={goToPrevDay}>[&lt;]</MatrixButton>
+          <MatrixButton size="small" onClick={goToPrevDay}>[&lt;]</MatrixButton>
           <span className="font-mono text-sm text-matrix-primary">{dateStr}</span>
-          <MatrixButton size="sm" onClick={goToNextDay}>[&gt;]</MatrixButton>
+          <MatrixButton size="small" onClick={goToNextDay}>[&gt;]</MatrixButton>
         </div>
-        <MatrixButton size="sm" variant="ghost" onClick={goToToday}>
+        <MatrixButton size="small" variant="ghost" onClick={goToToday}>
           [TODAY]
         </MatrixButton>
       </div>
@@ -123,24 +123,18 @@ export default function LifeAiPage() {
         <AsciiBox title="WEEKLY STEPS">
           <TrendMonitor
             data={weeklySteps.map((d) => d.value)}
-            labels={weeklySteps.map((d) => d.label)}
-            height={120}
+            label={weeklySteps.map((d) => d.label).join(", ")}
             color="var(--matrix-ink)"
           />
         </AsciiBox>
 
         <AsciiBox title="MONTHLY SLEEP (HOURS)">
-          <div className="flex items-end gap-1 h-24">
-            {monthlySleep.map((d) => (
-              <div key={d.label} className="flex-1 flex flex-col items-center">
-                <div
-                  className="w-full bg-matrix-primary/60 "
-                  style={{ height: `${(d.value / 10) * 100}%` }}
-                />
-                <span className="font-mono text-[8px] text-matrix-dim mt-1">{d.label}</span>
-              </div>
-            ))}
-          </div>
+          <TrendChart
+            data={monthlySleep.map((d) => d.value)}
+            unitLabel="hrs"
+            leftLabel="JAN"
+            rightLabel="DEC"
+          />
         </AsciiBox>
       </div>
 

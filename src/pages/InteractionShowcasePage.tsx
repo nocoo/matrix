@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { AsciiBox } from "@/components/ui/AsciiBox";
 import { MatrixButton } from "@/components/ui/MatrixButton";
+import { MatrixInput } from "@/components/ui/MatrixExtras";
 import { useInteractionShowcaseViewModel } from "@/viewmodels/useInteractionShowcaseViewModel";
 import { cn } from "@/lib/utils";
 
@@ -96,10 +97,10 @@ export default function InteractionShowcasePage() {
                 </p>
                 {currentDialog.style === "form" && (
                   <div className="space-y-2">
-                    <input
+                    <MatrixInput
+                      label="feedback"
                       type="text"
                       placeholder="type your feedback..."
-                      className="w-full bg-transparent border border-matrix-primary/20 px-3 py-2 font-mono text-sm text-matrix-primary placeholder:text-matrix-dim outline-none focus:border-matrix-primary/40"
                     />
                   </div>
                 )}

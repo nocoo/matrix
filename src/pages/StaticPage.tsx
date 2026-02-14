@@ -1,4 +1,6 @@
 import { AsciiBox } from "@/components/ui/AsciiBox";
+import { DecodingText } from "@/components/ui/MatrixExtras";
+import { MatrixButton } from "@/components/ui/MatrixButton";
 
 export default function StaticPage() {
   return (
@@ -7,7 +9,10 @@ export default function StaticPage() {
         <AsciiBox title="TERMS OF SERVICE">
           <div className="space-y-4 font-mono text-xs text-matrix-muted leading-relaxed">
             <p>
-              &gt; last updated: 2026-02-13
+              <DecodingText
+                text="> last updated: 2026-02-13"
+                className="text-matrix-dim"
+              />
             </p>
             <p>
               By accessing and using the Matrix Dashboard System, you agree to be bound by these
@@ -28,12 +33,12 @@ export default function StaticPage() {
         </AsciiBox>
 
         <div className="text-center">
-          <a
-            href="/"
-            className="font-mono text-xs text-matrix-muted hover:text-matrix-primary transition-colors"
+          <MatrixButton
+            variant="ghost"
+            onClick={() => { window.location.href = "/"; }}
           >
             &gt; return to dashboard
-          </a>
+          </MatrixButton>
         </div>
       </div>
     </div>

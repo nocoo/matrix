@@ -2,6 +2,20 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import DashboardPage from "@/pages/DashboardPage";
 
+// Mock animated components
+vi.mock("@/components/ui/MatrixExtras", async () => {
+  const actual = await vi.importActual("@/components/ui/MatrixExtras");
+  return {
+    ...actual,
+    TypewriterText: ({ text, className }: { text: string; className?: string }) => (
+      <span className={className}>{text}</span>
+    ),
+    ConnectionStatus: ({ status, className }: { status?: string; className?: string }) => (
+      <span className={className} data-testid="connection-status">{status ?? "STABLE"}</span>
+    ),
+  };
+});
+
 const mockState = vi.hoisted(() => ({
   accountList: [
     { name: "Checking", balance: 5000, change: "+2.4%" },
@@ -24,9 +38,14 @@ describe("DashboardPage", () => {
     expect(screen.getByText("SYSTEM STATUS")).toBeInTheDocument();
   });
 
-  it("renders welcome message", () => {
+  it("renders welcome message via TypewriterText", () => {
     render(<DashboardPage />);
     expect(screen.getByText(/welcome back, operator/)).toBeInTheDocument();
+  });
+
+  it("renders ConnectionStatus component", () => {
+    render(<DashboardPage />);
+    expect(screen.getByTestId("connection-status")).toBeInTheDocument();
   });
 
   it("renders activity log section", () => {
@@ -53,7 +72,6 @@ describe("DashboardPage", () => {
 
   it("renders positive net in flow summary", () => {
     render(<DashboardPage />);
-    // net >= 0 should use matrix-primary color
     expect(screen.getByText("$1400")).toBeInTheDocument();
   });
 });
