@@ -11,6 +11,7 @@ import {
   Eye, Navigation, FormInput, Table, Tag, Github,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { CircuitBackground } from "@/components/ui";
 
 // -- Navigation data model --
 
@@ -319,9 +320,11 @@ export function DashboardLayout() {
   );
 
   const sidebar = (
-    <div className="flex h-full w-[240px] flex-col bg-[var(--matrix-bg)] border-r border-matrix-primary/20">
+    <div className="relative flex h-full w-[240px] flex-col bg-[var(--matrix-bg)] border-r border-matrix-primary/20 overflow-hidden">
+      {/* Circuit board background decoration */}
+      <CircuitBackground />
       {/* Header */}
-      <div className="flex h-12 items-center justify-between px-4">
+      <div className="relative z-10 flex h-12 items-center justify-between px-4">
         <span className="font-mono text-sm font-bold uppercase tracking-widest text-matrix-primary glow-text">
           [MATRIX]
         </span>
@@ -334,7 +337,7 @@ export function DashboardLayout() {
       </div>
 
       {/* Search trigger */}
-      <div className="px-3 pb-2">
+      <div className="relative z-10 px-3 pb-2">
         <button
           onClick={() => setSearchOpen(true)}
           className="flex w-full items-center gap-2 border border-matrix-primary/20 bg-matrix-primary/5 px-2.5 py-1.5 transition-colors hover:border-matrix-primary/40"
@@ -348,7 +351,7 @@ export function DashboardLayout() {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto matrix-scrollbar pt-1">
+      <nav className="relative z-10 flex-1 overflow-y-auto matrix-scrollbar pt-1">
         {NAV_GROUPS.map((group) => (
           <NavGroupSection
             key={group.label}
@@ -360,7 +363,7 @@ export function DashboardLayout() {
       </nav>
 
       {/* User footer */}
-      <div className="border-t border-matrix-primary/15 px-3 py-2.5">
+      <div className="relative z-10 border-t border-matrix-primary/15 px-3 py-2.5">
         <div className="flex items-center gap-2.5">
           <div className="flex h-7 w-7 shrink-0 items-center justify-center border border-matrix-primary/30 bg-matrix-primary/10 font-mono text-xs text-matrix-primary">
             ZL

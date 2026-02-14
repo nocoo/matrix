@@ -782,6 +782,191 @@ export function MatrixRain() {
 }
 
 // ============================================
+// CircuitBackground - Cyberpunk circuit board sidebar decoration
+// ============================================
+
+export function CircuitBackground() {
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+      <svg
+        className="absolute inset-0 w-full h-full"
+        viewBox="0 0 240 900"
+        preserveAspectRatio="xMidYMid slice"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          {/* Glow filter for LED nodes */}
+          <filter id="led-glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+
+          {/* Stronger glow for active LEDs */}
+          <filter id="led-glow-strong" x="-100%" y="-100%" width="300%" height="300%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur1" />
+            <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur2" />
+            <feMerge>
+              <feMergeNode in="blur1" />
+              <feMergeNode in="blur2" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+
+          {/* Energy pulse gradient */}
+          <linearGradient id="pulse-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#00ff41" stopOpacity="0" />
+            <stop offset="40%" stopColor="#00ff41" stopOpacity="0.6" />
+            <stop offset="50%" stopColor="#e8ffe9" stopOpacity="0.9" />
+            <stop offset="60%" stopColor="#00ff41" stopOpacity="0.6" />
+            <stop offset="100%" stopColor="#00ff41" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+
+        {/* ── Circuit traces (very subtle) ── */}
+        <g stroke="rgba(0,255,65,0.06)" strokeWidth="1" fill="none">
+          {/* Left vertical bus */}
+          <path d="M 20 0 V 900" />
+          <path d="M 35 0 V 900" />
+
+          {/* Right vertical bus */}
+          <path d="M 220 0 V 900" />
+
+          {/* Horizontal traces with right-angle routing */}
+          <path d="M 20 80 H 90 V 120 H 160 V 80 H 220" />
+          <path d="M 35 200 H 70 V 240 H 140" />
+          <path d="M 140 240 H 180 V 200 H 220" />
+          <path d="M 20 340 H 60 V 380 H 120 V 340 H 180 V 380 H 220" />
+          <path d="M 35 460 H 100 V 500 H 170 V 460 H 220" />
+          <path d="M 20 580 H 80 V 620 H 150" />
+          <path d="M 150 620 V 580 H 220" />
+          <path d="M 35 700 H 50 V 740 H 130 V 700 H 200 V 740 H 220" />
+          <path d="M 20 820 H 110 V 860 H 190 V 820 H 220" />
+
+          {/* Diagonal bus traces */}
+          <path d="M 35 150 L 55 170 H 90" />
+          <path d="M 35 540 L 60 560 H 100" />
+          <path d="M 160 300 L 185 320 V 360" />
+          <path d="M 100 660 L 120 680 H 170" />
+        </g>
+
+        {/* ── Via holes / solder pads ── */}
+        <g fill="rgba(0,255,65,0.08)" stroke="rgba(0,255,65,0.12)" strokeWidth="0.5">
+          {/* Junction points as square pads */}
+          <rect x="18" y="78" width="4" height="4" />
+          <rect x="88" y="118" width="4" height="4" />
+          <rect x="158" y="78" width="4" height="4" />
+          <rect x="68" y="238" width="4" height="4" />
+          <rect x="138" y="238" width="4" height="4" />
+          <rect x="58" y="378" width="4" height="4" />
+          <rect x="118" y="338" width="4" height="4" />
+          <rect x="178" y="378" width="4" height="4" />
+          <rect x="98" y="498" width="4" height="4" />
+          <rect x="168" y="458" width="4" height="4" />
+          <rect x="78" y="618" width="4" height="4" />
+          <rect x="148" y="618" width="4" height="4" />
+          <rect x="48" y="738" width="4" height="4" />
+          <rect x="128" y="698" width="4" height="4" />
+          <rect x="198" y="738" width="4" height="4" />
+          <rect x="108" y="858" width="4" height="4" />
+          <rect x="188" y="818" width="4" height="4" />
+        </g>
+
+        {/* ── IC chip outlines (very faint) ── */}
+        <g fill="none" stroke="rgba(0,255,65,0.05)" strokeWidth="0.5">
+          <rect x="70" y="105" width="30" height="16" />
+          <rect x="100" y="355" width="24" height="12" />
+          <rect x="130" y="610" width="28" height="14" />
+          <rect x="55" y="725" width="22" height="12" />
+          {/* IC pin traces */}
+          <line x1="75" y1="105" x2="75" y2="98" />
+          <line x1="85" y1="105" x2="85" y2="98" />
+          <line x1="95" y1="105" x2="95" y2="98" />
+          <line x1="75" y1="121" x2="75" y2="128" />
+          <line x1="85" y1="121" x2="85" y2="128" />
+          <line x1="95" y1="121" x2="95" y2="128" />
+        </g>
+
+        {/* ── LED nodes with pulse animations ── */}
+        <g filter="url(#led-glow)">
+          {/* LED 1 - top area */}
+          <rect x="88.5" y="118.5" width="3" height="3" fill="#00ff41" opacity="0.15">
+            <animate attributeName="opacity" values="0.05;0.25;0.05" dur="4s" repeatCount="indefinite" />
+          </rect>
+
+          {/* LED 2 - mid-left */}
+          <rect x="59" y="379" width="3" height="3" fill="#00ff41" opacity="0.1">
+            <animate attributeName="opacity" values="0.04;0.2;0.04" dur="5.5s" repeatCount="indefinite" />
+          </rect>
+
+          {/* LED 3 - mid-right */}
+          <rect x="169" y="459" width="3" height="3" fill="#00ff41" opacity="0.12">
+            <animate attributeName="opacity" values="0.03;0.22;0.03" dur="3.8s" repeatCount="indefinite" />
+          </rect>
+
+          {/* LED 4 - lower area */}
+          <rect x="149" y="619" width="3" height="3" fill="#00ff41" opacity="0.1">
+            <animate attributeName="opacity" values="0.05;0.18;0.05" dur="6.2s" repeatCount="indefinite" />
+          </rect>
+
+          {/* LED 5 - bottom */}
+          <rect x="129" y="699" width="3" height="3" fill="#00ff41" opacity="0.12">
+            <animate attributeName="opacity" values="0.04;0.24;0.04" dur="4.5s" repeatCount="indefinite" />
+          </rect>
+        </g>
+
+        {/* ── Brighter active LED with stronger glow ── */}
+        <g filter="url(#led-glow-strong)">
+          <rect x="19" y="79" width="3" height="3" fill="#00ff41" opacity="0.08">
+            <animate attributeName="opacity" values="0.03;0.3;0.03" dur="7s" repeatCount="indefinite" begin="1s" />
+          </rect>
+          <rect x="199" y="739" width="3" height="3" fill="#e8ffe9" opacity="0.06">
+            <animate attributeName="opacity" values="0.02;0.2;0.02" dur="8s" repeatCount="indefinite" begin="3s" />
+          </rect>
+        </g>
+
+        {/* ── Energy pulse traveling along traces ── */}
+        {/* Pulse 1: horizontal trace at y=80 */}
+        <rect width="20" height="1" fill="url(#pulse-grad)" opacity="0.15">
+          <animateMotion dur="8s" repeatCount="indefinite" path="M 20 80 H 90 V 120 H 160 V 80 H 220" />
+        </rect>
+
+        {/* Pulse 2: trace at y=340 */}
+        <rect width="16" height="1" fill="url(#pulse-grad)" opacity="0.12">
+          <animateMotion dur="10s" repeatCount="indefinite" begin="2s" path="M 20 340 H 60 V 380 H 120 V 340 H 180 V 380 H 220" />
+        </rect>
+
+        {/* Pulse 3: lower trace */}
+        <rect width="14" height="1" fill="url(#pulse-grad)" opacity="0.1">
+          <animateMotion dur="12s" repeatCount="indefinite" begin="5s" path="M 35 700 H 50 V 740 H 130 V 700 H 200 V 740 H 220" />
+        </rect>
+
+        {/* Pulse on left vertical bus - slow downward */}
+        <rect width="1" height="12" fill="url(#pulse-grad)" opacity="0.08">
+          <animateMotion dur="20s" repeatCount="indefinite" path="M 20 0 V 900" />
+        </rect>
+
+        {/* Pulse on right vertical bus - slow upward */}
+        <rect width="1" height="10" fill="url(#pulse-grad)" opacity="0.06">
+          <animateMotion dur="25s" repeatCount="indefinite" begin="8s" path="M 220 900 V 0" />
+        </rect>
+      </svg>
+
+      {/* ── Subtle scanline overlay (sidebar-specific) ── */}
+      <div
+        className="absolute inset-0"
+        style={{
+          backgroundImage:
+            "repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,255,65,0.015) 3px, rgba(0,255,65,0.015) 4px)",
+        }}
+      />
+    </div>
+  );
+}
+
+// ============================================
 // BootScreen - Loading/boot screen
 // ============================================
 

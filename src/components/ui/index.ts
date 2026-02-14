@@ -22,6 +22,7 @@ export {
   LiveSniffer,
   Sparkline,
   MatrixRain,
+  CircuitBackground,
   BootScreen,
 } from "./MatrixExtras";
 
