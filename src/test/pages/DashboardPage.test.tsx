@@ -58,10 +58,6 @@ const mockState = vi.hoisted(() => ({
     { category: "Food & Dining", spent: 420, limit: 600, percent: 70, overBudget: false },
     { category: "Utilities", spent: 245, limit: 250, percent: 98, overBudget: false },
   ],
-  statCards: [
-    { label: "Avg. Daily Spend", value: "$142", change: "-3.2%", isPositive: false },
-    { label: "Savings Rate", value: "24%", change: "+2.1%", isPositive: true },
-  ],
   trendData: [5000, 6000, 5500, 7000, 6500],
   flowData: [
     { month: "Jan", inflow: 6800, outflow: 5300, net: 1500 },
@@ -81,6 +77,12 @@ const mockState = vi.hoisted(() => ({
   pixelHeatmapRows: 9,
   pixelHeatmapCols: 26,
   pixelHeatmapMax: 10,
+  signalRows: [
+    { label: "CPU LOAD", value: "23%", trend: [12, 18, 15, 22, 19, 23], status: "nominal" },
+    { label: "NET I/O", value: "1.2 GB/s", trend: [800, 950, 1100, 900], status: "nominal" },
+    { label: "MEM USAGE", value: "67%", trend: [55, 58, 60, 63, 61, 67], status: "warning" },
+    { label: "DISK OPS", value: "340/s", trend: [280, 300, 320, 340], status: "nominal" },
+  ],
 }));
 
 vi.mock("@/viewmodels/useDashboardViewModel", () => ({
@@ -166,12 +168,15 @@ describe("DashboardPage", () => {
     expect(screen.getByText("-1.2%")).toBeInTheDocument();
   });
 
-  it("renders quick stats cards", () => {
+  it("renders signal monitor card with signal rows", () => {
     render(<DashboardPage />);
-    expect(screen.getByText("AVG. DAILY SPEND")).toBeInTheDocument();
-    expect(screen.getByText("SAVINGS RATE")).toBeInTheDocument();
-    expect(screen.getByText("$142")).toBeInTheDocument();
-    expect(screen.getByText("24%")).toBeInTheDocument();
+    expect(screen.getByText("SIGNAL MONITOR")).toBeInTheDocument();
+    expect(screen.getByText("CPU LOAD")).toBeInTheDocument();
+    expect(screen.getByText("NET I/O")).toBeInTheDocument();
+    expect(screen.getByText("MEM USAGE")).toBeInTheDocument();
+    expect(screen.getByText("DISK OPS")).toBeInTheDocument();
+    expect(screen.getByText("23%")).toBeInTheDocument();
+    expect(screen.getByText("1.2 GB/s")).toBeInTheDocument();
   });
 
   it("renders budget tracker", () => {

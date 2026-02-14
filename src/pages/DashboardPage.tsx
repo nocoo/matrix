@@ -3,7 +3,6 @@ import {
   Sparkline,
   TypewriterText,
   ConnectionStatus,
-  SignalBox,
 } from "@/components/ui/MatrixExtras";
 import { TrendMonitor } from "@/components/ui/DataVizComponents";
 import { MatrixClock } from "@/components/ui/RunnerComponents";
@@ -34,7 +33,6 @@ export default function DashboardPage() {
     activitySummary,
     goals,
     budgetRows,
-    statCards,
     trendData,
     flowData,
     portfolioRows,
@@ -43,12 +41,13 @@ export default function DashboardPage() {
     pixelHeatmapRows,
     pixelHeatmapCols,
     pixelHeatmapMax,
+    signalRows,
   } = useDashboardViewModel();
 
   return (
     <div className="space-y-3">
-      {/* Row 1: Status + Clock + Identity — 3-col on lg */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+      {/* Row 1: Status + Clock + Identity + Signal — 4-col on xl */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
         <AsciiBox title="SYSTEM STATUS">
           <div className="flex flex-col gap-2">
             <TypewriterText
@@ -83,18 +82,52 @@ export default function DashboardPage() {
           scanlines
           avatarSize={64}
         />
+
+        <AsciiBox title="SIGNAL MONITOR">
+          <div className="flex flex-col gap-2">
+            {signalRows.map((sig) => (
+              <div key={sig.label} className="flex items-center justify-between gap-2">
+                <div className="flex flex-col min-w-0">
+                  <span className="font-mono text-[10px] text-matrix-dim uppercase">{sig.label}</span>
+                  <span
+                    className={cn(
+                      "font-mono text-sm font-bold",
+                      sig.status === "critical" ? "text-red-400" :
+                      sig.status === "warning" ? "text-yellow-400" :
+                      "text-matrix-primary",
+                    )}
+                  >
+                    {sig.value}
+                  </span>
+                </div>
+                <Sparkline
+                  data={sig.trend}
+                  width={64}
+                  height={20}
+                  color={
+                    sig.status === "critical" ? "#f87171" :
+                    sig.status === "warning" ? "#facc15" :
+                    "#00FF41"
+                  }
+                />
+              </div>
+            ))}
+          </div>
+        </AsciiBox>
       </div>
 
-      {/* Row 2: Heatmap + Quick stats side by side */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-        <AsciiBox title="DATA VISUALIZATION">
-          <div className="space-y-2">
-            <div className="flex items-center justify-between font-mono text-[10px]">
-              <span className="text-matrix-dim uppercase">contribution density</span>
-              <span className="text-matrix-muted">// pixel render: 2026</span>
-            </div>
+      {/* Row 2: Heatmap full-width */}
+      <AsciiBox title="DATA VISUALIZATION">
+        <div className="space-y-2">
+          <div className="flex items-center justify-between font-mono text-[10px]">
+            <span className="text-matrix-dim uppercase">contribution density</span>
+            <span className="text-matrix-muted">// pixel render: 2026</span>
+          </div>
+          <div
+            className="flex justify-center"
+          >
             <div
-              className="inline-grid mx-auto"
+              className="inline-grid"
               style={{
                 gridTemplateColumns: `repeat(${pixelHeatmapCols}, 10px)`,
                 gridTemplateRows: `repeat(${pixelHeatmapRows}, 10px)`,
@@ -119,46 +152,26 @@ export default function DashboardPage() {
                 />
               ))}
             </div>
-            <div className="flex items-center justify-center gap-2 font-mono text-[10px] text-matrix-muted">
-              <span>less</span>
-              <div className="flex gap-0.5">
-                {[0, 2, 4, 6, 8, 10].map((v) => (
-                  <span
-                    key={v}
-                    className="border border-matrix-ghost/30"
-                    style={{
-                      width: 10,
-                      height: 10,
-                      background: heatmapColor(v, pixelHeatmapMax),
-                    }}
-                  />
-                ))}
-              </div>
-              <span>more</span>
-            </div>
           </div>
-        </AsciiBox>
-
-        <div className="grid grid-cols-2 gap-3">
-          {statCards.map((stat) => (
-            <SignalBox key={stat.label} title={stat.label.toUpperCase()}>
-              <div className="text-center py-1">
-                <p className="font-mono text-xl font-bold text-matrix-bright glow-text">
-                  {stat.value}
-                </p>
-                <p
-                  className={cn(
-                    "font-mono text-xs mt-1",
-                    stat.isPositive ? "text-matrix-primary" : "text-red-400",
-                  )}
-                >
-                  {stat.change}
-                </p>
-              </div>
-            </SignalBox>
-          ))}
+          <div className="flex items-center justify-center gap-2 font-mono text-[10px] text-matrix-muted">
+            <span>less</span>
+            <div className="flex gap-0.5">
+              {[0, 2, 4, 6, 8, 10].map((v) => (
+                <span
+                  key={v}
+                  className="border border-matrix-ghost/30"
+                  style={{
+                    width: 10,
+                    height: 10,
+                    background: heatmapColor(v, pixelHeatmapMax),
+                  }}
+                />
+              ))}
+            </div>
+            <span>more</span>
+          </div>
         </div>
-      </div>
+      </AsciiBox>
 
       {/* Row 3: Target goals */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">

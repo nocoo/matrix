@@ -6,7 +6,6 @@ import {
   accounts,
   walletActivity,
   budgets,
-  analyticsStats,
   analyticsTrend,
   monthlyFlow,
   portfolio,
@@ -36,13 +35,6 @@ export interface BudgetRow {
   overBudget: boolean;
 }
 
-export interface StatCard {
-  label: string;
-  value: string;
-  change: string;
-  isPositive: boolean;
-}
-
 export interface FlowPoint {
   month: string;
   inflow: number;
@@ -56,6 +48,13 @@ export interface PortfolioRow {
   allocation: number;
   change: string;
   up: boolean;
+}
+
+export interface SignalRow {
+  label: string;
+  value: string;
+  trend: number[];
+  status: "nominal" | "warning" | "critical";
 }
 
 export function useDashboardViewModel() {
@@ -89,17 +88,6 @@ export function useDashboardViewModel() {
         limit: b.limit,
         percent: Math.round((b.spent / b.limit) * 100),
         overBudget: b.spent > b.limit,
-      })),
-    [],
-  );
-
-  const statCards: StatCard[] = useMemo(
-    () =>
-      analyticsStats.map((s) => ({
-        label: s.label,
-        value: s.value,
-        change: s.change,
-        isPositive: s.change.startsWith("+"),
       })),
     [],
   );
@@ -139,13 +127,22 @@ export function useDashboardViewModel() {
 
   const pixelHeatmap: HeatmapCell[] = useMemo(() => generatePixelHeatmap(), []);
 
+  const signalRows: SignalRow[] = useMemo(
+    () => [
+      { label: "CPU LOAD", value: "23%", trend: [12, 18, 15, 22, 19, 23, 20, 25, 23], status: "nominal" },
+      { label: "NET I/O", value: "1.2 GB/s", trend: [800, 950, 1100, 900, 1050, 1200, 1150, 1180, 1200], status: "nominal" },
+      { label: "MEM USAGE", value: "67%", trend: [55, 58, 60, 63, 61, 65, 64, 66, 67], status: "warning" },
+      { label: "DISK OPS", value: "340/s", trend: [280, 300, 320, 310, 330, 350, 340, 345, 340], status: "nominal" },
+    ],
+    [],
+  );
+
   return {
     accountList,
     activityList,
     activitySummary,
     goals: enrichedGoals,
     budgetRows,
-    statCards,
     trendData,
     flowData,
     portfolioRows,
@@ -154,5 +151,6 @@ export function useDashboardViewModel() {
     pixelHeatmapRows: HEATMAP_ROWS,
     pixelHeatmapCols: HEATMAP_COLS,
     pixelHeatmapMax: HEATMAP_MAX,
+    signalRows,
   };
 }
