@@ -3,8 +3,8 @@
 // Matrix cyberpunk style replica of Basalt's OverlaysPage.
 // ============================================
 
-import { useState } from "react";
-import { AsciiBox, MatrixButton, MatrixInput } from "@/components/ui";
+import { useState, useRef } from "react";
+import { AsciiBox, MatrixButton, MatrixInput, FloatingPortal } from "@/components/ui";
 import { cn } from "@/lib/utils";
 
 function Section({
@@ -95,6 +95,11 @@ export default function OverlaysPage() {
   const [collapse1, setCollapse1] = useState(false);
   const [collapse2, setCollapse2] = useState(false);
 
+  // Refs for portal-based floating panels
+  const filterRef = useRef<HTMLButtonElement>(null);
+  const profileRef = useRef<HTMLButtonElement>(null);
+  const settingsRef = useRef<HTMLButtonElement>(null);
+
   return (
     <div className="space-y-4">
       <AsciiBox title="OVERLAYS" subtitle="layered surfaces">
@@ -142,71 +147,74 @@ export default function OverlaysPage() {
       {/* ── Popovers ────────────────────────── */}
       <Section title="POPOVERS">
         <div className="flex flex-wrap gap-3">
-          <div className="relative">
-            <MatrixButton size="small" onClick={() => setFilterPop(!filterPop)}>FILTER</MatrixButton>
-            {filterPop && (
-              <>
-                <div className="fixed inset-0 z-30" onClick={() => setFilterPop(false)} />
-                <div className="absolute top-10 left-0 z-40 matrix-panel border border-matrix-primary/30 p-3 w-56">
-                  <MatrixInput label="Status" placeholder="ACTIVE" />
-                  <MatrixInput label="Category" placeholder="ALL" className="mt-2" />
-                  <div className="flex gap-2 mt-3">
-                    <MatrixButton size="small" onClick={() => setFilterPop(false)}>RESET</MatrixButton>
-                    <MatrixButton size="small" primary onClick={() => setFilterPop(false)}>APPLY</MatrixButton>
-                  </div>
-                </div>
-              </>
-            )}
+          <div>
+            <MatrixButton ref={filterRef} size="small" onClick={() => setFilterPop(!filterPop)}>FILTER</MatrixButton>
+            <FloatingPortal
+              triggerRef={filterRef}
+              open={filterPop}
+              onClose={() => setFilterPop(false)}
+              className="matrix-panel border border-matrix-primary/30 p-3 shadow-[0_0_20px_rgba(0,255,65,0.1)]"
+              minWidth={224}
+            >
+              <MatrixInput label="Status" placeholder="ACTIVE" />
+              <MatrixInput label="Category" placeholder="ALL" className="mt-2" />
+              <div className="flex gap-2 mt-3">
+                <MatrixButton size="small" onClick={() => setFilterPop(false)}>RESET</MatrixButton>
+                <MatrixButton size="small" primary onClick={() => setFilterPop(false)}>APPLY</MatrixButton>
+              </div>
+            </FloatingPortal>
           </div>
-          <div className="relative">
-            <MatrixButton size="small" onClick={() => setProfilePop(!profilePop)}>PROFILE</MatrixButton>
-            {profilePop && (
-              <>
-                <div className="fixed inset-0 z-30" onClick={() => setProfilePop(false)} />
-                <div className="absolute top-10 left-0 z-40 matrix-panel border border-matrix-primary/30 p-3 w-56">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-8 h-8 border border-matrix-primary/30 bg-matrix-primary/10 flex items-center justify-center text-xs font-mono text-matrix-primary font-bold">
-                      NE
-                    </div>
-                    <div>
-                      <p className="text-xs font-mono text-matrix-primary font-bold">NEO</p>
-                      <p className="text-[10px] font-mono text-matrix-dim">neo@matrix.zion</p>
-                    </div>
-                  </div>
-                  <div className="border-t border-matrix-ghost pt-2 space-y-1">
-                    {["PROFILE SETTINGS", "BILLING", "TEAM", "SIGN OUT"].map((item) => (
-                      <button
-                        key={item}
-                        onClick={() => setProfilePop(false)}
-                        className={cn(
-                          "w-full text-left px-2 py-1 text-xs font-mono transition-colors",
-                          item === "SIGN OUT"
-                            ? "text-red-400 hover:bg-red-500/10"
-                            : "text-matrix-muted hover:bg-matrix-primary/10 hover:text-matrix-primary"
-                        )}
-                      >
-                        {item}
-                      </button>
-                    ))}
-                  </div>
+          <div>
+            <MatrixButton ref={profileRef} size="small" onClick={() => setProfilePop(!profilePop)}>PROFILE</MatrixButton>
+            <FloatingPortal
+              triggerRef={profileRef}
+              open={profilePop}
+              onClose={() => setProfilePop(false)}
+              className="matrix-panel border border-matrix-primary/30 p-3 shadow-[0_0_20px_rgba(0,255,65,0.1)]"
+              minWidth={224}
+            >
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-8 h-8 border border-matrix-primary/30 bg-matrix-primary/10 flex items-center justify-center text-xs font-mono text-matrix-primary font-bold">
+                  NE
                 </div>
-              </>
-            )}
+                <div>
+                  <p className="text-xs font-mono text-matrix-primary font-bold">NEO</p>
+                  <p className="text-[10px] font-mono text-matrix-dim">neo@matrix.zion</p>
+                </div>
+              </div>
+              <div className="border-t border-matrix-ghost pt-2 space-y-1">
+                {["PROFILE SETTINGS", "BILLING", "TEAM", "SIGN OUT"].map((item) => (
+                  <button
+                    key={item}
+                    onClick={() => setProfilePop(false)}
+                    className={cn(
+                      "w-full text-left px-2 py-1 text-xs font-mono transition-colors",
+                      item === "SIGN OUT"
+                        ? "text-red-400 hover:bg-red-500/10"
+                        : "text-matrix-muted hover:bg-matrix-primary/10 hover:text-matrix-primary"
+                    )}
+                  >
+                    {item}
+                  </button>
+                ))}
+              </div>
+            </FloatingPortal>
           </div>
-          <div className="relative">
-            <MatrixButton size="small" onClick={() => setSettingsPop(!settingsPop)}>SETTINGS</MatrixButton>
-            {settingsPop && (
-              <>
-                <div className="fixed inset-0 z-30" onClick={() => setSettingsPop(false)} />
-                <div className="absolute top-10 left-0 z-40 matrix-panel border border-matrix-primary/30 p-3 w-56">
-                  <div className="space-y-3">
-                    <ToggleSwitch label="Stealth mode" defaultOn />
-                    <ToggleSwitch label="Notifications" defaultOn />
-                    <ToggleSwitch label="Compact view" />
-                  </div>
-                </div>
-              </>
-            )}
+          <div>
+            <MatrixButton ref={settingsRef} size="small" onClick={() => setSettingsPop(!settingsPop)}>SETTINGS</MatrixButton>
+            <FloatingPortal
+              triggerRef={settingsRef}
+              open={settingsPop}
+              onClose={() => setSettingsPop(false)}
+              className="matrix-panel border border-matrix-primary/30 p-3 shadow-[0_0_20px_rgba(0,255,65,0.1)]"
+              minWidth={224}
+            >
+              <div className="space-y-3">
+                <ToggleSwitch label="Stealth mode" defaultOn />
+                <ToggleSwitch label="Notifications" defaultOn />
+                <ToggleSwitch label="Compact view" />
+              </div>
+            </FloatingPortal>
           </div>
         </div>
       </Section>

@@ -3,8 +3,8 @@
 // 1:1 replica of Basalt's ControlsPage in Matrix cyberpunk style.
 // ============================================
 
-import { useState } from "react";
-import { AsciiBox, MatrixButton, MatrixInput, MatrixSelect, SignalBox } from "@/components/ui";
+import { useState, useRef } from "react";
+import { AsciiBox, MatrixButton, MatrixInput, MatrixSelect, SignalBox, FloatingPortal } from "@/components/ui";
 import { useControlsViewModel } from "@/viewmodels/useControlsViewModel";
 import { cn } from "@/lib/utils";
 
@@ -36,6 +36,12 @@ export default function ControlsPage() {
   const [hoverCardVisible, setHoverCardVisible] = useState(false);
   const [menubarOpen, setMenubarOpen] = useState<string | null>(null);
   const [dialogRole, setDialogRole] = useState("operator");
+
+  // Refs for portal-based floating panels
+  const dropdownRef = useRef<HTMLButtonElement>(null);
+  const popoverRef = useRef<HTMLButtonElement>(null);
+  const hoverCardRef = useRef<HTMLButtonElement>(null);
+  const menubarRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 
   return (
     <div className="space-y-4">
@@ -267,22 +273,27 @@ export default function ControlsPage() {
         </Section>
 
         <Section title="HOVER CARD">
-          <div className="relative">
+          <div>
             <button
+              ref={hoverCardRef}
               className="text-xs font-mono text-matrix-primary underline underline-offset-4 decoration-matrix-ghost hover:decoration-matrix-primary transition-colors"
               onMouseEnter={() => setHoverCardVisible(true)}
               onMouseLeave={() => setHoverCardVisible(false)}
             >
               [HOVER FOR DETAILS]
             </button>
-            {hoverCardVisible && (
-              <div className="absolute top-8 left-0 z-20 matrix-panel p-3 w-64 border border-matrix-primary/30 shadow-[0_0_20px_rgba(0,255,65,0.15)]">
-                <p className="text-xs font-mono text-matrix-primary font-bold mb-1">MATRIX SYSTEMS</p>
-                <p className="text-xs font-mono text-matrix-dim">
-                  Neural interface framework. Active since 2026. Processing 1.2M daily operations.
-                </p>
-              </div>
-            )}
+            <FloatingPortal
+              triggerRef={hoverCardRef}
+              open={hoverCardVisible}
+              onClose={() => setHoverCardVisible(false)}
+              className="matrix-panel p-3 border border-matrix-primary/30 shadow-[0_0_20px_rgba(0,255,65,0.15)]"
+              minWidth={256}
+            >
+              <p className="text-xs font-mono text-matrix-primary font-bold mb-1">MATRIX SYSTEMS</p>
+              <p className="text-xs font-mono text-matrix-dim">
+                Neural interface framework. Active since 2026. Processing 1.2M daily operations.
+              </p>
+            </FloatingPortal>
           </div>
         </Section>
       </div>
@@ -349,50 +360,52 @@ export default function ControlsPage() {
       {/* ── Row 6: Dropdown + Popover + Menubar ── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <Section title="DROPDOWN MENU">
-          <div className="relative">
-            <MatrixButton size="small" onClick={() => vm.setDropdownOpen(!vm.dropdownOpen)}>
+          <div>
+            <MatrixButton ref={dropdownRef} size="small" onClick={() => vm.setDropdownOpen(!vm.dropdownOpen)}>
               OPTIONS ▼
             </MatrixButton>
-            {vm.dropdownOpen && (
-              <>
-                <div className="fixed inset-0 z-30" onClick={() => vm.setDropdownOpen(false)} />
-                <div className="absolute top-10 left-0 z-40 matrix-panel border border-matrix-primary/30 py-1 min-w-[160px]">
-                  {["PROFILE", "TEAM"].map((item) => (
-                    <button
-                      key={item}
-                      onClick={() => vm.setDropdownOpen(false)}
-                      className="w-full text-left px-3 py-1.5 text-xs font-mono text-matrix-muted hover:bg-matrix-primary/10 hover:text-matrix-primary transition-colors"
-                    >
-                      {item}
-                    </button>
-                  ))}
-                  <div className="border-t border-matrix-ghost my-1" />
-                  <button
-                    onClick={() => vm.setDropdownOpen(false)}
-                    className="w-full text-left px-3 py-1.5 text-xs font-mono text-red-400 hover:bg-red-500/10 transition-colors"
-                  >
-                    LOGOUT
-                  </button>
-                </div>
-              </>
-            )}
+            <FloatingPortal
+              triggerRef={dropdownRef}
+              open={vm.dropdownOpen}
+              onClose={() => vm.setDropdownOpen(false)}
+              className="matrix-panel border border-matrix-primary/30 py-1 shadow-[0_0_20px_rgba(0,255,65,0.1)]"
+              minWidth={160}
+            >
+              {["PROFILE", "TEAM"].map((item) => (
+                <button
+                  key={item}
+                  onClick={() => vm.setDropdownOpen(false)}
+                  className="w-full text-left px-3 py-1.5 text-xs font-mono text-matrix-muted hover:bg-matrix-primary/10 hover:text-matrix-primary transition-colors"
+                >
+                  {item}
+                </button>
+              ))}
+              <div className="border-t border-matrix-ghost my-1" />
+              <button
+                onClick={() => vm.setDropdownOpen(false)}
+                className="w-full text-left px-3 py-1.5 text-xs font-mono text-red-400 hover:bg-red-500/10 transition-colors"
+              >
+                LOGOUT
+              </button>
+            </FloatingPortal>
           </div>
         </Section>
 
         <Section title="POPOVER">
-          <div className="relative">
-            <MatrixButton size="small" onClick={() => vm.setPopoverOpen(!vm.popoverOpen)}>
+          <div>
+            <MatrixButton ref={popoverRef} size="small" onClick={() => vm.setPopoverOpen(!vm.popoverOpen)}>
               VIEW DETAILS
             </MatrixButton>
-            {vm.popoverOpen && (
-              <>
-                <div className="fixed inset-0 z-30" onClick={() => vm.setPopoverOpen(false)} />
-                <div className="absolute top-10 left-0 z-40 matrix-panel border border-matrix-primary/30 p-3 w-56">
-                  <p className="text-xs font-mono text-matrix-primary font-bold mb-1">RELEASE SCHEDULE</p>
-                  <p className="text-xs font-mono text-matrix-dim">Next deployment: 2026-02-20. All modules staged for release.</p>
-                </div>
-              </>
-            )}
+            <FloatingPortal
+              triggerRef={popoverRef}
+              open={vm.popoverOpen}
+              onClose={() => vm.setPopoverOpen(false)}
+              className="matrix-panel border border-matrix-primary/30 p-3 shadow-[0_0_20px_rgba(0,255,65,0.1)]"
+              minWidth={224}
+            >
+              <p className="text-xs font-mono text-matrix-primary font-bold mb-1">RELEASE SCHEDULE</p>
+              <p className="text-xs font-mono text-matrix-dim">Next deployment: 2026-02-20. All modules staged for release.</p>
+            </FloatingPortal>
           </div>
         </Section>
 
@@ -402,8 +415,9 @@ export default function ControlsPage() {
               { label: "FILE", items: ["NEW", "DUPLICATE", "SHARE"] },
               { label: "EDIT", items: ["UNDO", "REDO"] },
             ].map((menu) => (
-              <div key={menu.label} className="relative">
+              <div key={menu.label}>
                 <button
+                  ref={(el) => { menubarRefs.current[menu.label] = el; }}
                   onClick={() => setMenubarOpen(menubarOpen === menu.label ? null : menu.label)}
                   className={cn(
                     "px-3 py-1.5 text-xs font-mono uppercase font-bold transition-colors",
@@ -414,22 +428,23 @@ export default function ControlsPage() {
                 >
                   {menu.label}
                 </button>
-                {menubarOpen === menu.label && (
-                  <>
-                    <div className="fixed inset-0 z-30" onClick={() => setMenubarOpen(null)} />
-                    <div className="absolute top-full left-0 z-40 matrix-panel border border-matrix-primary/30 py-1 min-w-[120px]">
-                      {menu.items.map((item) => (
-                        <button
-                          key={item}
-                          onClick={() => setMenubarOpen(null)}
-                          className="w-full text-left px-3 py-1.5 text-xs font-mono text-matrix-muted hover:bg-matrix-primary/10 hover:text-matrix-primary transition-colors"
-                        >
-                          {item}
-                        </button>
-                      ))}
-                    </div>
-                  </>
-                )}
+                <FloatingPortal
+                  triggerRef={{ current: menubarRefs.current[menu.label] ?? null }}
+                  open={menubarOpen === menu.label}
+                  onClose={() => setMenubarOpen(null)}
+                  className="matrix-panel border border-matrix-primary/30 py-1 shadow-[0_0_20px_rgba(0,255,65,0.1)]"
+                  minWidth={120}
+                >
+                  {menu.items.map((item) => (
+                    <button
+                      key={item}
+                      onClick={() => setMenubarOpen(null)}
+                      className="w-full text-left px-3 py-1.5 text-xs font-mono text-matrix-muted hover:bg-matrix-primary/10 hover:text-matrix-primary transition-colors"
+                    >
+                      {item}
+                    </button>
+                  ))}
+                </FloatingPortal>
               </div>
             ))}
           </div>

@@ -24,6 +24,7 @@ export {
   MatrixRain,
   CircuitBackground,
   BootScreen,
+  FloatingPortal,
 } from "./MatrixExtras";
 
 // Pure utility functions (separated for react-refresh compatibility)

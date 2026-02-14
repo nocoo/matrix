@@ -1,37 +1,27 @@
-import type { ReactNode, ButtonHTMLAttributes, AnchorHTMLAttributes, ElementType } from "react";
+import { forwardRef, type ReactNode, type ButtonHTMLAttributes, type AnchorHTMLAttributes, type ElementType, type Ref } from "react";
 
-type ButtonBaseProps = {
+export type MatrixButtonProps = {
   children: ReactNode;
   primary?: boolean;
   size?: "default" | "header" | "small";
   loading?: boolean;
   className?: string;
-};
+  as?: ElementType;
+} & Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> &
+  Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "children">;
 
-type AsButtonProps = ButtonBaseProps & {
-  as?: "button";
-} & ButtonHTMLAttributes<HTMLButtonElement>;
-
-type AsAnchorProps = ButtonBaseProps & {
-  as: "a";
-} & AnchorHTMLAttributes<HTMLAnchorElement>;
-
-type AsElementProps = ButtonBaseProps & {
-  as: ElementType;
-  [key: string]: unknown;
-};
-
-export type MatrixButtonProps = AsButtonProps | AsAnchorProps | AsElementProps;
-
-export function MatrixButton({
-  as: Comp = "button",
-  children,
-  primary = false,
-  size = "default",
-  loading = false,
-  className = "",
-  ...props
-}: MatrixButtonProps) {
+export const MatrixButton = forwardRef<HTMLButtonElement, MatrixButtonProps>(function MatrixButton(
+  {
+    as: Comp = "button",
+    children,
+    primary = false,
+    size = "default",
+    loading = false,
+    className = "",
+    ...rest
+  },
+  ref,
+) {
   const base =
     size === "header"
       ? "matrix-header-chip matrix-header-action text-caption uppercase font-bold tracking-[0.2em] select-none"
@@ -49,13 +39,15 @@ export function MatrixButton({
   const disabledStyle =
     "disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-matrix-panel";
 
-  const isDisabled = "disabled" in props ? props.disabled : false;
+  const isDisabled = rest.disabled;
+  const Tag = Comp as ElementType;
 
   return (
-    <Comp
+    <Tag
+      ref={ref as Ref<never>}
       className={`${base} ${variant} ${disabledStyle} ${className}`}
       disabled={isDisabled || loading}
-      {...props}
+      {...rest}
     >
       {loading ? (
         <span className="flex items-center gap-2">
@@ -65,6 +57,6 @@ export function MatrixButton({
       ) : (
         children
       )}
-    </Comp>
+    </Tag>
   );
-}
+});

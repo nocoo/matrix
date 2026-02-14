@@ -1011,4 +1011,80 @@ export function BootScreen({ onSkip }: BootScreenProps) {
 // Motion Preference Utilities
 // ============================================
 
+// ============================================
+// FloatingPortal - Portal-based floating panel
+// Prevents clipping by overflow:hidden parents.
+// Uses same pattern as MatrixSelect.
+// ============================================
+
+interface FloatingPortalProps {
+  triggerRef: React.RefObject<HTMLElement | null>;
+  open: boolean;
+  onClose: () => void;
+  children: ReactNode;
+  className?: string;
+  /** Offset in pixels below the trigger element */
+  offsetY?: number;
+  /** Alignment relative to trigger */
+  align?: "left" | "right";
+  /** Minimum width in pixels (defaults to trigger width) */
+  minWidth?: number;
+}
+
+export function FloatingPortal({
+  triggerRef,
+  open,
+  onClose,
+  children,
+  className = "",
+  offsetY = 1,
+  align = "left",
+  minWidth,
+}: FloatingPortalProps) {
+  const [pos, setPos] = useState({ top: 0, left: 0, width: 0 });
+
+  const updatePos = useCallback(() => {
+    if (!triggerRef.current) return;
+    const rect = triggerRef.current.getBoundingClientRect();
+    setPos({
+      top: rect.bottom + offsetY,
+      left: align === "right" ? rect.right : rect.left,
+      width: rect.width,
+    });
+  }, [triggerRef, offsetY, align]);
+
+  useEffect(() => {
+    if (!open) return;
+    updatePos();
+    window.addEventListener("scroll", updatePos, true);
+    window.addEventListener("resize", updatePos);
+    return () => {
+      window.removeEventListener("scroll", updatePos, true);
+      window.removeEventListener("resize", updatePos);
+    };
+  }, [open, updatePos]);
+
+  if (!open) return null;
+
+  const style: React.CSSProperties = {
+    top: pos.top,
+    left: align === "right" ? undefined : pos.left,
+    right: align === "right" ? window.innerWidth - pos.left : undefined,
+    minWidth: minWidth ?? pos.width,
+  };
+
+  return createPortal(
+    <>
+      <div className="fixed inset-0 z-[9998]" onClick={onClose} />
+      <div
+        className={`fixed z-[9999] ${className}`}
+        style={style}
+      >
+        {children}
+      </div>
+    </>,
+    document.body,
+  );
+}
+
 

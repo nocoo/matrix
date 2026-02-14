@@ -228,7 +228,7 @@ export default function FeedbackPage() {
                 { size: "w-8 h-8", label: "LG" },
               ].map((s) => (
                 <div key={s.label} className="flex flex-col items-center gap-2">
-                  <div className={cn("border-2 border-matrix-ghost border-t-matrix-primary rounded-full animate-spin", s.size)} />
+                  <div className={cn("border-2 border-matrix-ghost border-t-matrix-primary animate-spin", s.size)} />
                   <span className="text-[10px] font-mono text-matrix-dim">{s.label}</span>
                 </div>
               ))}
@@ -238,13 +238,13 @@ export default function FeedbackPage() {
           {/* Multi-step */}
           <div>
             <p className="text-[10px] font-mono text-matrix-dim uppercase mb-3">Multi-step progress</p>
-            <div className="flex items-center justify-between">
+            <div className="flex items-start justify-between">
               {["UPLOAD", "PROCESS", "REVIEW", "COMPLETE"].map((step, i) => (
-                <div key={step} className="flex items-center">
+                <div key={step} className="flex items-start flex-1 last:flex-none">
                   <div className="flex flex-col items-center">
                     <div
                       className={cn(
-                        "w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-mono font-bold border",
+                        "w-7 h-7 flex items-center justify-center text-[10px] font-mono font-bold border",
                         i < 2
                           ? "bg-matrix-primary/20 border-matrix-primary text-matrix-primary"
                           : i === 2
@@ -258,7 +258,7 @@ export default function FeedbackPage() {
                   </div>
                   {i < 3 && (
                     <div className={cn(
-                      "w-8 lg:w-16 h-px mx-1",
+                      "flex-1 h-px mt-[14px]",
                       i < 2 ? "bg-matrix-primary" : "bg-matrix-ghost"
                     )} />
                   )}

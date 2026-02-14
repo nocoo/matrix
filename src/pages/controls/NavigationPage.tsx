@@ -197,13 +197,13 @@ export default function NavigationPage() {
           {/* Horizontal */}
           <div>
             <p className="text-[10px] font-mono text-matrix-dim uppercase mb-4">Horizontal</p>
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-start justify-between mb-4">
               {vm.stepperSteps.map((step, i) => (
-                <div key={step.label} className="flex items-center">
+                <div key={step.label} className="flex items-start flex-1 last:flex-none">
                   <div className="flex flex-col items-center">
                     <div
                       className={cn(
-                        "w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-mono font-bold border transition-colors",
+                        "w-7 h-7 flex items-center justify-center text-[10px] font-mono font-bold border transition-colors",
                         i < vm.stepperIndex
                           ? "bg-matrix-primary/20 border-matrix-primary text-matrix-primary"
                           : i === vm.stepperIndex
@@ -217,7 +217,7 @@ export default function NavigationPage() {
                   </div>
                   {i < vm.stepperSteps.length - 1 && (
                     <div className={cn(
-                      "w-6 lg:w-12 h-px mx-1",
+                      "flex-1 h-px mt-[14px]",
                       i < vm.stepperIndex ? "bg-matrix-primary" : "bg-matrix-ghost"
                     )} />
                   )}
@@ -244,7 +244,7 @@ export default function NavigationPage() {
                   <div className="flex flex-col items-center">
                     <div
                       className={cn(
-                        "w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-mono font-bold border shrink-0",
+                        "w-6 h-6 flex items-center justify-center text-[10px] font-mono font-bold border shrink-0",
                         i < vm.stepperIndex
                           ? "bg-matrix-primary/20 border-matrix-primary text-matrix-primary"
                           : i === vm.stepperIndex
