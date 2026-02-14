@@ -76,7 +76,6 @@ const mockState = vi.hoisted(() => ({
     { label: "CPU LOAD", value: "23%", trend: [12, 18, 15, 22, 19, 23], status: "nominal" },
     { label: "NET I/O", value: "1.2 GB/s", trend: [800, 950, 1100, 900], status: "nominal" },
     { label: "MEM USAGE", value: "67%", trend: [55, 58, 60, 63, 61, 67], status: "warning" },
-    { label: "DISK OPS", value: "340/s", trend: [280, 300, 320, 340], status: "nominal" },
   ],
 }));
 
@@ -169,7 +168,6 @@ describe("DashboardPage", () => {
     expect(screen.getByText("CPU LOAD")).toBeInTheDocument();
     expect(screen.getByText("NET I/O")).toBeInTheDocument();
     expect(screen.getByText("MEM USAGE")).toBeInTheDocument();
-    expect(screen.getByText("DISK OPS")).toBeInTheDocument();
     expect(screen.getByText("23%")).toBeInTheDocument();
     expect(screen.getByText("1.2 GB/s")).toBeInTheDocument();
   });

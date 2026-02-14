@@ -106,7 +106,6 @@ export function useDashboardViewModel() {
       { label: "CPU LOAD", value: "23%", trend: [12, 18, 15, 22, 19, 23, 20, 25, 23], status: "nominal" },
       { label: "NET I/O", value: "1.2 GB/s", trend: [800, 950, 1100, 900, 1050, 1200, 1150, 1180, 1200], status: "nominal" },
       { label: "MEM USAGE", value: "67%", trend: [55, 58, 60, 63, 61, 65, 64, 66, 67], status: "warning" },
-      { label: "DISK OPS", value: "340/s", trend: [280, 300, 320, 310, 330, 350, 340, 345, 340], status: "nominal" },
     ],
     [],
   );
