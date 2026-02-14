@@ -215,6 +215,51 @@ body {
     background: rgba(0, 255, 65, 0.6);
   }
 
+  /* ── Slider thumb: square, no border-radius ── */
+  .matrix-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    border: 1px solid var(--matrix-ink);
+    background: var(--matrix-ink);
+    border-radius: 0;
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(0, 255, 65, 0.5);
+  }
+
+  .matrix-slider::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border: 1px solid var(--matrix-ink);
+    background: var(--matrix-ink);
+    border-radius: 0;
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(0, 255, 65, 0.5);
+  }
+
+  .matrix-slider-warning::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    border: 1px solid var(--color-warning);
+    background: var(--color-warning);
+    border-radius: 0;
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+  }
+
+  .matrix-slider-warning::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border: 1px solid var(--color-warning);
+    background: var(--color-warning);
+    border-radius: 0;
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+  }
+
   .matrix-scanlines {
     background-image: linear-gradient(
       to bottom,

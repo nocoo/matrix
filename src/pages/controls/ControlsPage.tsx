@@ -166,7 +166,7 @@ export default function ControlsPage() {
                 max={100}
                 value={vm.sliderValue}
                 onChange={(e) => vm.setSliderValue(Number(e.target.value))}
-                className="w-full h-1 bg-matrix-ghost appearance-none cursor-pointer accent-[#00ff41]"
+                className="w-full h-1 bg-matrix-ghost appearance-none cursor-pointer matrix-slider"
               />
             </div>
             <div>
@@ -181,7 +181,7 @@ export default function ControlsPage() {
                 step={5}
                 value={vm.sliderValue2}
                 onChange={(e) => vm.setSliderValue2(Number(e.target.value))}
-                className="w-full h-1 bg-matrix-ghost appearance-none cursor-pointer accent-yellow-400"
+                className="w-full h-1 bg-matrix-ghost appearance-none cursor-pointer matrix-slider-warning"
               />
             </div>
           </div>
