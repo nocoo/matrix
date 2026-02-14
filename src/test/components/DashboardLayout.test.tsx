@@ -50,9 +50,9 @@ describe("DashboardLayout", () => {
 
     it("renders all five nav group labels", () => {
       renderLayout();
-      expect(screen.getByText("PAGES")).toBeInTheDocument();
+      expect(screen.getByText("BLOCKS")).toBeInTheDocument();
       expect(screen.getByText("CHARTS")).toBeInTheDocument();
-      expect(screen.getByText("STANDALONE")).toBeInTheDocument();
+      expect(screen.getByText("PAGES")).toBeInTheDocument();
       expect(screen.getByText("SYSTEM")).toBeInTheDocument();
       expect(screen.getByText("CONTROLS")).toBeInTheDocument();
     });
@@ -203,12 +203,12 @@ describe("DashboardLayout", () => {
   describe("nav group toggle", () => {
     it("collapses a nav group when group label is clicked", () => {
       renderLayout("/");
-      // PAGES group is open by default — Dashboard should be visible
+      // BLOCKS group is open by default — Dashboard should be visible
       expect(screen.getByRole("button", { name: /Dashboard/i })).toBeInTheDocument();
-      // Click the PAGES label button to collapse
-      const pagesToggle = screen.getByRole("button", { name: /PAGES/i });
-      fireEvent.click(pagesToggle);
-      // Now the items under PAGES should be hidden
+      // Click the BLOCKS label button to collapse
+      const blocksToggle = screen.getByRole("button", { name: /BLOCKS/i });
+      fireEvent.click(blocksToggle);
+      // Now the items under BLOCKS should be hidden
       // Dashboard button in the sidebar should be gone (only the header h1 remains)
       const dashboardButtons = screen.getAllByText("Dashboard");
       // Should only have the h1 title, not the sidebar nav button
@@ -217,11 +217,11 @@ describe("DashboardLayout", () => {
 
     it("expands a collapsed nav group when clicked again", () => {
       renderLayout("/");
-      const pagesToggle = screen.getByRole("button", { name: /PAGES/i });
+      const blocksToggle = screen.getByRole("button", { name: /BLOCKS/i });
       // Collapse
-      fireEvent.click(pagesToggle);
+      fireEvent.click(blocksToggle);
       // Expand
-      fireEvent.click(pagesToggle);
+      fireEvent.click(blocksToggle);
       // Dashboard nav item should be back
       const dashboardButtons = screen.getAllByText("Dashboard");
       expect(dashboardButtons.length).toBe(2); // h1 + nav item

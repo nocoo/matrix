@@ -30,7 +30,7 @@ interface NavGroup {
 
 const NAV_GROUPS: NavGroup[] = [
   {
-    label: "PAGES",
+    label: "BLOCKS",
     defaultOpen: true,
     items: [
       { title: "Dashboard", icon: LayoutDashboard, path: "/" },
@@ -53,7 +53,7 @@ const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
-    label: "STANDALONE",
+    label: "PAGES",
     defaultOpen: true,
     items: [
       { title: "Login", icon: LogIn, path: "/login", external: true },
