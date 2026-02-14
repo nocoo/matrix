@@ -62,8 +62,8 @@ describe("DashboardLayout", () => {
       // "Dashboard" appears as both nav item and h1 — use getAllByText
       expect(screen.getAllByText("Dashboard").length).toBeGreaterThanOrEqual(2);
       expect(screen.getByText("Accounts")).toBeInTheDocument();
-      expect(screen.getByText("Stats Overview")).toBeInTheDocument();
-      expect(screen.getByText("Help Center")).toBeInTheDocument();
+      expect(screen.getByText("Stats")).toBeInTheDocument();
+      expect(screen.getByText("Help")).toBeInTheDocument();
       expect(screen.getByText("Settings")).toBeInTheDocument();
     });
 
@@ -107,10 +107,10 @@ describe("DashboardLayout", () => {
       expect(header).toHaveTextContent("Accounts");
     });
 
-    it("shows 'Help Center' title on /help path", () => {
+    it("shows 'Help' title on /help path", () => {
       renderLayout("/help");
       const header = screen.getByRole("heading", { level: 1 });
-      expect(header).toHaveTextContent("Help Center");
+      expect(header).toHaveTextContent("Help");
     });
 
     it("shows 'Settings' title on /settings path", () => {
@@ -310,7 +310,7 @@ describe("DashboardLayout", () => {
       renderLayout("/");
       fireEvent.keyDown(document, { key: "k", metaKey: true });
       const dialog = screen.getByPlaceholderText("search pages...").closest(".matrix-panel") as HTMLElement;
-      const helpBtn = within(dialog).getByText("Help Center");
+      const helpBtn = within(dialog).getByText("Help");
       fireEvent.click(helpBtn);
       // Search should close
       expect(screen.queryByPlaceholderText("search pages...")).not.toBeInTheDocument();

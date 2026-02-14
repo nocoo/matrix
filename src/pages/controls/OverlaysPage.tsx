@@ -200,7 +200,7 @@ export default function OverlaysPage() {
                 <div className="fixed inset-0 z-30" onClick={() => setSettingsPop(false)} />
                 <div className="absolute top-10 left-0 z-40 matrix-panel border border-matrix-primary/30 p-3 w-56">
                   <div className="space-y-3">
-                    <ToggleSwitch label="Dark mode" defaultOn />
+                    <ToggleSwitch label="Stealth mode" defaultOn />
                     <ToggleSwitch label="Notifications" defaultOn />
                     <ToggleSwitch label="Compact view" />
                   </div>

@@ -8,7 +8,7 @@ import {
   ExternalLink, FileText, Layers, HeartPulse,
   Loader, Menu, X, FileQuestion, Component,
   RectangleEllipsis, MousePointerClick, Bell, Layers2,
-  Eye, Navigation, FormInput, Table, Tag,
+  Eye, Navigation, FormInput, Table, Tag, Github,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -35,20 +35,20 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { title: "Dashboard", icon: LayoutDashboard, path: "/" },
       { title: "Accounts", icon: Wallet, path: "/accounts" },
-      { title: "Card Showcase", icon: CreditCard, path: "/card-showcase" },
+      { title: "Cards", icon: CreditCard, path: "/card-showcase" },
       { title: "Records", icon: ArrowLeftRight, path: "/records", badge: 6 },
-      { title: "Progress Tracking", icon: PiggyBank, path: "/progress-tracking" },
+      { title: "Progress", icon: PiggyBank, path: "/progress-tracking" },
       { title: "Targets", icon: Target, path: "/targets" },
       { title: "Life.ai", icon: HeartPulse, path: "/life-ai" },
-      { title: "Component Showcase", icon: Component, path: "/component-showcase" },
+      { title: "Components", icon: Component, path: "/component-showcase" },
     ],
   },
   {
     label: "CHARTS",
     defaultOpen: true,
     items: [
-      { title: "Stats Overview", icon: BarChart3, path: "/stats" },
-      { title: "Flow Comparison", icon: TrendingUp, path: "/flow-comparison", badge: 2 },
+      { title: "Stats", icon: BarChart3, path: "/stats" },
+      { title: "Flows", icon: TrendingUp, path: "/flow-comparison", badge: 2 },
       { title: "Portfolio", icon: LineChart, path: "/portfolio" },
     ],
   },
@@ -57,18 +57,18 @@ const NAV_GROUPS: NavGroup[] = [
     defaultOpen: true,
     items: [
       { title: "Login", icon: LogIn, path: "/login", external: true },
-      { title: "Badge Login", icon: IdCard, path: "/badge-login", external: true },
-      { title: "Static Page", icon: FileText, path: "/static-page", external: true },
+      { title: "Badge", icon: IdCard, path: "/badge-login", external: true },
+      { title: "Static", icon: FileText, path: "/static-page", external: true },
       { title: "Loading", icon: Loader, path: "/loading", external: true },
-      { title: "404 Page", icon: FileQuestion, path: "/404", external: true },
+      { title: "404", icon: FileQuestion, path: "/404", external: true },
     ],
   },
   {
     label: "SYSTEM",
     defaultOpen: true,
     items: [
-      { title: "Help Center", icon: HelpCircle, path: "/help" },
-      { title: "Color Palette", icon: Palette, path: "/palette" },
+      { title: "Help", icon: HelpCircle, path: "/help" },
+      { title: "Palette", icon: Palette, path: "/palette" },
       { title: "Interactions", icon: Layers, path: "/interactions" },
       { title: "Settings", icon: Settings, path: "/settings" },
     ],
@@ -81,7 +81,7 @@ const NAV_GROUPS: NavGroup[] = [
       { title: "Buttons", icon: MousePointerClick, path: "/buttons" },
       { title: "Feedback", icon: Bell, path: "/feedback" },
       { title: "Overlays", icon: Layers2, path: "/overlays" },
-      { title: "Data Display", icon: Eye, path: "/data-display" },
+      { title: "Data", icon: Eye, path: "/data-display" },
       { title: "Navigation", icon: Navigation, path: "/navigation" },
       { title: "Forms", icon: FormInput, path: "/forms" },
       { title: "Tables", icon: Table, path: "/tables" },
@@ -94,24 +94,24 @@ const NAV_GROUPS: NavGroup[] = [
 const PAGE_TITLES: Record<string, string> = {
   "/": "Dashboard",
   "/accounts": "Accounts",
-  "/card-showcase": "Card Showcase",
+  "/card-showcase": "Cards",
   "/records": "Records",
-  "/progress-tracking": "Progress Tracking",
+  "/progress-tracking": "Progress",
   "/targets": "Targets",
-  "/stats": "Stats Overview",
-  "/flow-comparison": "Flow Comparison",
+  "/stats": "Stats",
+  "/flow-comparison": "Flows",
   "/portfolio": "Portfolio",
-  "/help": "Help Center",
+  "/help": "Help",
   "/settings": "Settings",
-  "/palette": "Color Palette",
+  "/palette": "Palette",
   "/interactions": "Interactions",
   "/life-ai": "Life.ai",
-  "/component-showcase": "Component Showcase",
+  "/component-showcase": "Components",
   "/controls": "Controls",
   "/buttons": "Buttons",
   "/feedback": "Feedback",
   "/overlays": "Overlays",
-  "/data-display": "Data Display",
+  "/data-display": "Data",
   "/navigation": "Navigation",
   "/forms": "Forms",
   "/tables": "Tables",
@@ -162,7 +162,7 @@ function NavGroupSection({
                 )}
               >
                 <item.icon className="h-3.5 w-3.5 shrink-0" strokeWidth={1.5} />
-                <span className="flex-1 text-left truncate">{item.title}</span>
+                <span className="flex-1 text-left truncate uppercase">{item.title}</span>
                 {item.external && (
                   <ExternalLink className="h-3 w-3 shrink-0 text-matrix-dim" strokeWidth={1.5} />
                 )}
@@ -433,6 +433,15 @@ export function DashboardLayout() {
               {new Date().toLocaleTimeString("en-US", { hour12: false })}
             </span>
             <span className="h-1.5 w-1.5 rounded-full bg-matrix-primary animate-pulse" />
+            <a
+              href="https://github.com/nocoo/matrix"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub repository"
+              className="flex h-7 w-7 items-center justify-center text-matrix-dim hover:text-matrix-primary transition-colors"
+            >
+              <Github className="h-4 w-4" strokeWidth={1.5} />
+            </a>
           </div>
         </header>
 

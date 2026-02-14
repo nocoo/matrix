@@ -86,13 +86,13 @@ export default function DataDisplayPage() {
 
           <div>
             <p className="text-[10px] font-mono text-matrix-dim uppercase mb-3">Stacked group</p>
-            <div className="flex -space-x-2">
-              {["neo", "morpheus", "trinity", "oracle", "tank"].map((name) => (
-                <div key={name} className="relative z-10 hover:z-20">
+            <div className="flex items-center">
+              {["neo", "morpheus", "trinity", "oracle", "tank"].map((name, i) => (
+                <div key={name} className="hover:z-20" style={{ zIndex: 5 - i, marginLeft: i === 0 ? 0 : -8 }}>
                   <MatrixAvatar name={name} size={32} className="border-2 border-[var(--matrix-bg)]" />
                 </div>
               ))}
-              <div className="w-8 h-8 rounded-full border-2 border-[var(--matrix-bg)] bg-matrix-panel-strong flex items-center justify-center font-mono text-[10px] text-matrix-dim z-10">
+              <div className="w-8 h-8 border-2 border-[var(--matrix-bg)] bg-matrix-panel-strong flex items-center justify-center font-mono text-[10px] text-matrix-dim" style={{ zIndex: 0, marginLeft: -8 }}>
                 +3
               </div>
             </div>

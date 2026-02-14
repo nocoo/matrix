@@ -79,19 +79,19 @@ describe("App", () => {
     const layoutRoutes = [
       { path: "/", testId: "page-dashboard", title: "Dashboard" },
       { path: "/accounts", testId: "page-accounts", title: "Accounts" },
-      { path: "/card-showcase", testId: "page-card-showcase", title: "Card Showcase" },
+      { path: "/card-showcase", testId: "page-card-showcase", title: "Cards" },
       { path: "/records", testId: "page-records", title: "Records" },
-      { path: "/progress-tracking", testId: "page-progress", title: "Progress Tracking" },
+      { path: "/progress-tracking", testId: "page-progress", title: "Progress" },
       { path: "/targets", testId: "page-targets", title: "Targets" },
-      { path: "/stats", testId: "page-stats", title: "Stats Overview" },
-      { path: "/flow-comparison", testId: "page-flow", title: "Flow Comparison" },
+      { path: "/stats", testId: "page-stats", title: "Stats" },
+      { path: "/flow-comparison", testId: "page-flow", title: "Flows" },
       { path: "/portfolio", testId: "page-portfolio", title: "Portfolio" },
-      { path: "/help", testId: "page-help", title: "Help Center" },
+      { path: "/help", testId: "page-help", title: "Help" },
       { path: "/settings", testId: "page-settings", title: "Settings" },
-      { path: "/palette", testId: "page-palette", title: "Color Palette" },
+      { path: "/palette", testId: "page-palette", title: "Palette" },
       { path: "/interactions", testId: "page-interactions", title: "Interactions" },
       { path: "/life-ai", testId: "page-life-ai", title: "Life.ai" },
-      { path: "/component-showcase", testId: "page-component-showcase", title: "Component Showcase" },
+      { path: "/component-showcase", testId: "page-component-showcase", title: "Components" },
     ];
 
     layoutRoutes.forEach(({ path, testId, title }) => {
@@ -107,8 +107,8 @@ describe("App", () => {
   describe("standalone routes (without DashboardLayout)", () => {
     const standaloneRoutes = [
       { path: "/login", testId: "page-login", title: "Login" },
-      { path: "/badge-login", testId: "page-badge-login", title: "Badge Login" },
-      { path: "/static-page", testId: "page-static", title: "Static Page" },
+      { path: "/badge-login", testId: "page-badge-login", title: "Badge" },
+      { path: "/static-page", testId: "page-static", title: "Static" },
       { path: "/loading", testId: "page-loading", title: "Loading" },
     ];
 
