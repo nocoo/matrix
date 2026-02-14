@@ -44,6 +44,21 @@ const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
+    label: "CONTROLS",
+    defaultOpen: true,
+    items: [
+      { title: "Controls", icon: RectangleEllipsis, path: "/controls" },
+      { title: "Buttons", icon: MousePointerClick, path: "/buttons" },
+      { title: "Feedback", icon: Bell, path: "/feedback" },
+      { title: "Overlays", icon: Layers2, path: "/overlays" },
+      { title: "Data", icon: Eye, path: "/data-display" },
+      { title: "Navigation", icon: Navigation, path: "/navigation" },
+      { title: "Forms", icon: FormInput, path: "/forms" },
+      { title: "Tables", icon: Table, path: "/tables" },
+      { title: "Pills", icon: Tag, path: "/pills" },
+    ],
+  },
+  {
     label: "CHARTS",
     defaultOpen: true,
     items: [
@@ -71,21 +86,6 @@ const NAV_GROUPS: NavGroup[] = [
       { title: "Palette", icon: Palette, path: "/palette" },
       { title: "Interactions", icon: Layers, path: "/interactions" },
       { title: "Settings", icon: Settings, path: "/settings" },
-    ],
-  },
-  {
-    label: "CONTROLS",
-    defaultOpen: true,
-    items: [
-      { title: "Controls", icon: RectangleEllipsis, path: "/controls" },
-      { title: "Buttons", icon: MousePointerClick, path: "/buttons" },
-      { title: "Feedback", icon: Bell, path: "/feedback" },
-      { title: "Overlays", icon: Layers2, path: "/overlays" },
-      { title: "Data", icon: Eye, path: "/data-display" },
-      { title: "Navigation", icon: Navigation, path: "/navigation" },
-      { title: "Forms", icon: FormInput, path: "/forms" },
-      { title: "Tables", icon: Table, path: "/tables" },
-      { title: "Pills", icon: Tag, path: "/pills" },
     ],
   },
 ];

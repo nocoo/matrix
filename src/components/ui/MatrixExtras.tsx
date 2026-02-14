@@ -283,6 +283,78 @@ export function MatrixInput({ label, className = "", ...props }: MatrixInputProp
 }
 
 // ============================================
+// MatrixSelect - Custom dropdown select
+// ============================================
+
+interface MatrixSelectOption {
+  value: string;
+  label: string;
+}
+
+interface MatrixSelectProps {
+  label?: string;
+  value: string;
+  onChange: (value: string) => void;
+  options: MatrixSelectOption[];
+  className?: string;
+}
+
+export function MatrixSelect({
+  label,
+  value,
+  onChange,
+  options,
+  className = "",
+}: MatrixSelectProps) {
+  const [open, setOpen] = useState(false);
+  const selected = options.find((o) => o.value === value);
+
+  return (
+    <div className={`relative ${className}`}>
+      {label && (
+        <span className="text-caption text-matrix-muted uppercase font-bold block mb-2">
+          {label}
+        </span>
+      )}
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className={`w-full h-10 bg-matrix-panel border px-3 text-body font-mono text-matrix-primary uppercase outline-none flex items-center justify-between transition-colors cursor-pointer ${
+          open ? "border-matrix-primary" : "border-matrix-ghost hover:border-matrix-dim"
+        }`}
+      >
+        <span>{selected?.label ?? ""}</span>
+        <span className={`text-matrix-dim text-caption transition-transform ${open ? "rotate-180" : ""}`}>▼</span>
+      </button>
+      {open && (
+        <>
+          <div className="fixed inset-0 z-30" onClick={() => setOpen(false)} />
+          <div className="absolute left-0 right-0 top-full z-40 mt-px matrix-panel border border-matrix-primary/30 py-1 shadow-[0_0_20px_rgba(0,255,65,0.1)]">
+            {options.map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => {
+                  onChange(opt.value);
+                  setOpen(false);
+                }}
+                className={`w-full text-left px-3 py-2 text-caption font-mono uppercase font-bold transition-colors ${
+                  opt.value === value
+                    ? "bg-matrix-primary/15 text-matrix-primary"
+                    : "text-matrix-muted hover:bg-matrix-primary/10 hover:text-matrix-primary"
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+// ============================================
 // TypewriterText - Typewriter effect
 // ============================================
 

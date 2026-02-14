@@ -1065,10 +1065,13 @@ describe("AddTaskModal", () => {
     // Switch to http
     fireEvent.click(screen.getByText("http"));
 
-    // Change method
-    const methodSelect = screen.getByDisplayValue("GET") as HTMLSelectElement;
-    fireEvent.change(methodSelect, { target: { value: "POST" } });
-    expect(methodSelect.value).toBe("POST");
+    // Change method (custom MatrixSelect)
+    const methodButton = screen.getByRole("button", { name: /GET/i });
+    fireEvent.click(methodButton);
+    const postOption = screen.getByRole("button", { name: /^POST$/i });
+    fireEvent.click(postOption);
+    // After selection, the button text should now show POST
+    expect(screen.getByRole("button", { name: /POST/i })).toBeInTheDocument();
 
     // Change URL
     const urlInput = screen.getByPlaceholderText("https://api.example.com/webhook") as HTMLInputElement;

@@ -64,18 +64,18 @@ function Sheet({
 function ToggleSwitch({ label, defaultOn = false }: { label: string; defaultOn?: boolean }) {
   const [on, setOn] = useState(defaultOn);
   return (
-    <label className="flex items-center justify-between cursor-pointer">
+    <label className="flex items-center justify-between cursor-pointer gap-3">
       <span className="text-xs font-mono text-matrix-muted uppercase">{label}</span>
       <button
         onClick={() => setOn(!on)}
         className={cn(
-          "relative w-10 h-5 border transition-colors",
+          "relative w-11 h-6 border overflow-hidden shrink-0 transition-colors",
           on ? "bg-matrix-primary/30 border-matrix-primary" : "bg-matrix-panel-strong border-matrix-ghost"
         )}
       >
         <span className={cn(
-          "absolute top-0.5 w-4 h-4 transition-all",
-          on ? "left-5 bg-matrix-primary shadow-[0_0_8px_rgba(0,255,65,0.6)]" : "left-0.5 bg-matrix-dim"
+          "absolute top-1 w-4 h-4 transition-all",
+          on ? "left-[22px] bg-matrix-primary shadow-[0_0_8px_rgba(0,255,65,0.6)]" : "left-1 bg-matrix-dim"
         )} />
       </button>
     </label>

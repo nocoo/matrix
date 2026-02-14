@@ -14,6 +14,7 @@ export {
   DecodingText,
   SignalBox,
   MatrixInput,
+  MatrixSelect,
   TypewriterText,
   ConnectionStatus,
   DataRow,

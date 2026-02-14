@@ -4,7 +4,7 @@
 // ============================================
 
 import { useState } from "react";
-import { AsciiBox, MatrixButton, MatrixInput, SignalBox } from "@/components/ui";
+import { AsciiBox, MatrixButton, MatrixInput, MatrixSelect, SignalBox } from "@/components/ui";
 import { useControlsViewModel } from "@/viewmodels/useControlsViewModel";
 import { cn } from "@/lib/utils";
 
@@ -35,6 +35,7 @@ export default function ControlsPage() {
   const vm = useControlsViewModel();
   const [hoverCardVisible, setHoverCardVisible] = useState(false);
   const [menubarOpen, setMenubarOpen] = useState<string | null>(null);
+  const [dialogRole, setDialogRole] = useState("operator");
 
   return (
     <div className="space-y-4">
@@ -73,12 +74,12 @@ export default function ControlsPage() {
         <Section title="TOGGLES & CHECKS">
           <div className="space-y-4">
             {/* Switch A */}
-            <label className="flex items-center justify-between cursor-pointer group">
+            <label className="flex items-center justify-between cursor-pointer group gap-3">
               <span className="text-xs font-mono text-matrix-muted uppercase">Enable alerts</span>
               <button
                 onClick={() => vm.setSwitchA(!vm.switchA)}
                 className={cn(
-                  "relative w-10 h-5 border transition-colors",
+                  "relative w-11 h-6 border overflow-hidden shrink-0 transition-colors",
                   vm.switchA
                     ? "bg-matrix-primary/30 border-matrix-primary"
                     : "bg-matrix-panel-strong border-matrix-ghost"
@@ -86,21 +87,21 @@ export default function ControlsPage() {
               >
                 <span
                   className={cn(
-                    "absolute top-0.5 w-4 h-4 transition-all",
+                    "absolute top-1 w-4 h-4 transition-all",
                     vm.switchA
-                      ? "left-5 bg-matrix-primary shadow-[0_0_8px_rgba(0,255,65,0.6)]"
-                      : "left-0.5 bg-matrix-dim"
+                      ? "left-[22px] bg-matrix-primary shadow-[0_0_8px_rgba(0,255,65,0.6)]"
+                      : "left-1 bg-matrix-dim"
                   )}
                 />
               </button>
             </label>
             {/* Switch B */}
-            <label className="flex items-center justify-between cursor-pointer group">
+            <label className="flex items-center justify-between cursor-pointer group gap-3">
               <span className="text-xs font-mono text-matrix-muted uppercase">Auto-sync data</span>
               <button
                 onClick={() => vm.setSwitchB(!vm.switchB)}
                 className={cn(
-                  "relative w-10 h-5 border transition-colors",
+                  "relative w-11 h-6 border overflow-hidden shrink-0 transition-colors",
                   vm.switchB
                     ? "bg-matrix-primary/30 border-matrix-primary"
                     : "bg-matrix-panel-strong border-matrix-ghost"
@@ -108,10 +109,10 @@ export default function ControlsPage() {
               >
                 <span
                   className={cn(
-                    "absolute top-0.5 w-4 h-4 transition-all",
+                    "absolute top-1 w-4 h-4 transition-all",
                     vm.switchB
-                      ? "left-5 bg-matrix-primary shadow-[0_0_8px_rgba(0,255,65,0.6)]"
-                      : "left-0.5 bg-matrix-dim"
+                      ? "left-[22px] bg-matrix-primary shadow-[0_0_8px_rgba(0,255,65,0.6)]"
+                      : "left-1 bg-matrix-dim"
                   )}
                 />
               </button>
@@ -138,19 +139,16 @@ export default function ControlsPage() {
       {/* ── Row 2: Select + Slider + Tabs ──────── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <Section title="SELECT">
-          <div className="relative">
-            <label className="text-xs font-mono text-matrix-muted uppercase font-bold block mb-2">Protocol</label>
-            <select
-              value={vm.selectValue}
-              onChange={(e) => vm.setSelectValue(e.target.value)}
-              className="w-full h-10 bg-matrix-panel border border-matrix-ghost px-3 text-sm font-mono text-matrix-bright outline-none focus:border-matrix-primary appearance-none cursor-pointer"
-            >
-              <option value="standard">STANDARD</option>
-              <option value="growth">GROWTH</option>
-              <option value="enterprise">ENTERPRISE</option>
-            </select>
-            <span className="absolute right-3 bottom-3 text-matrix-dim font-mono text-xs pointer-events-none">▼</span>
-          </div>
+          <MatrixSelect
+            label="Protocol"
+            value={vm.selectValue}
+            onChange={(v) => vm.setSelectValue(v)}
+            options={[
+              { value: "standard", label: "STANDARD" },
+              { value: "growth", label: "GROWTH" },
+              { value: "enterprise", label: "ENTERPRISE" },
+            ]}
+          />
         </Section>
 
         <Section title="SLIDER">
@@ -596,14 +594,16 @@ export default function ControlsPage() {
             <AsciiBox title="INVITE COLLABORATOR">
               <div className="space-y-3">
                 <MatrixInput label="Email" placeholder="operator@zion.net" type="email" />
-                <div>
-                  <label className="text-xs font-mono text-matrix-muted uppercase font-bold block mb-2">Role</label>
-                  <select className="w-full h-10 bg-matrix-panel border border-matrix-ghost px-3 text-sm font-mono text-matrix-bright outline-none focus:border-matrix-primary appearance-none">
-                    <option>OPERATOR</option>
-                    <option>VIEWER</option>
-                    <option>ADMIN</option>
-                  </select>
-                </div>
+                <MatrixSelect
+                  label="Role"
+                  value={dialogRole}
+                  onChange={setDialogRole}
+                  options={[
+                    { value: "operator", label: "OPERATOR" },
+                    { value: "viewer", label: "VIEWER" },
+                    { value: "admin", label: "ADMIN" },
+                  ]}
+                />
                 <div className="flex justify-end gap-2 pt-2">
                   <MatrixButton onClick={() => vm.setDialogOpen(false)}>CANCEL</MatrixButton>
                   <MatrixButton primary onClick={() => vm.setDialogOpen(false)}>SEND</MatrixButton>

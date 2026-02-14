@@ -14,7 +14,7 @@ import type {
   TrendPoint,
   UpcomingTask,
 } from "@/models/types";
-import { AsciiBox, MatrixButton, MatrixInput } from "@/components/ui";
+import { AsciiBox, MatrixButton, MatrixInput, MatrixSelect } from "@/components/ui";
 import { formatScheduleTime, getWeekday, getDateKey } from "@/lib/date";
 import { formatTimeUTC8, formatDurationMs, formatDuration, formatDate, formatExitCode } from "@/lib/format";
 
@@ -1310,22 +1310,18 @@ export function AddTaskModal({ open, onClose }: AddTaskModalProps) {
               <>
                 <div className="flex gap-4">
                   <div className="w-28">
-                    <label className="flex flex-col gap-2">
-                      <span className="text-caption text-matrix-muted uppercase font-bold">
-                        Method
-                      </span>
-                      <select
-                        className="h-10 bg-matrix-panel border border-matrix-ghost px-3 text-body text-matrix-bright outline-none focus:border-matrix-primary"
-                        value={formData.method}
-                        onChange={(e) => updateField("method", e.target.value)}
-                      >
-                        <option value="GET">GET</option>
-                        <option value="POST">POST</option>
-                        <option value="PUT">PUT</option>
-                        <option value="PATCH">PATCH</option>
-                        <option value="DELETE">DELETE</option>
-                      </select>
-                    </label>
+                    <MatrixSelect
+                      label="Method"
+                      value={formData.method}
+                      onChange={(v) => updateField("method", v)}
+                      options={[
+                        { value: "GET", label: "GET" },
+                        { value: "POST", label: "POST" },
+                        { value: "PUT", label: "PUT" },
+                        { value: "PATCH", label: "PATCH" },
+                        { value: "DELETE", label: "DELETE" },
+                      ]}
+                    />
                   </div>
                   <div className="flex-1">
                     <MatrixInput

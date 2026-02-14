@@ -72,7 +72,7 @@ export default function FormsPage() {
                 type="button"
                 onClick={() => setTwoFa(!twoFa)}
                 className={cn(
-                  "relative w-10 h-5 border transition-colors",
+                  "relative w-11 h-6 border overflow-hidden shrink-0 transition-colors",
                   twoFa
                     ? "bg-matrix-primary/30 border-matrix-primary"
                     : "bg-matrix-panel-strong border-matrix-ghost"
@@ -80,10 +80,10 @@ export default function FormsPage() {
               >
                 <span
                   className={cn(
-                    "absolute top-0.5 w-4 h-4 transition-all",
+                    "absolute top-1 w-4 h-4 transition-all",
                     twoFa
-                      ? "left-5 bg-matrix-primary shadow-[0_0_8px_rgba(0,255,65,0.6)]"
-                      : "left-0.5 bg-matrix-dim"
+                      ? "left-[22px] bg-matrix-primary shadow-[0_0_8px_rgba(0,255,65,0.6)]"
+                      : "left-1 bg-matrix-dim"
                   )}
                 />
               </button>
