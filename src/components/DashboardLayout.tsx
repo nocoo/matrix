@@ -327,7 +327,7 @@ export function DashboardLayout() {
         style={{
           backgroundImage: `url(${sidebarBg})`,
           backgroundRepeat: "repeat",
-          backgroundSize: "auto",
+          backgroundSize: "240px auto",
         }}
       />
       {/* Header */}
