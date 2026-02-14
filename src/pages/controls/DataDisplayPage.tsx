@@ -3,7 +3,7 @@
 // Matrix cyberpunk style replica of Basalt's DataDisplayPage.
 // ============================================
 
-import { AsciiBox, MatrixAvatar, DataRow, Sparkline } from "@/components/ui";
+import { AsciiBox, MatrixAvatar, DataRow } from "@/components/ui";
 import { useControlsViewModel } from "@/viewmodels/useControlsViewModel";
 import { cn } from "@/lib/utils";
 

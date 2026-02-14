@@ -3,7 +3,7 @@
 // Matrix cyberpunk style replica of Basalt's TablesPage.
 // ============================================
 
-import { AsciiBox, MatrixButton, MatrixInput } from "@/components/ui";
+import { AsciiBox, MatrixButton } from "@/components/ui";
 import { useControlsViewModel } from "@/viewmodels/useControlsViewModel";
 import { cn } from "@/lib/utils";
 

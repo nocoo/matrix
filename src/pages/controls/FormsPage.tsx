@@ -4,7 +4,7 @@
 // ============================================
 
 import { useState } from "react";
-import { AsciiBox, MatrixButton, MatrixInput, SignalBox } from "@/components/ui";
+import { AsciiBox, MatrixButton, MatrixInput } from "@/components/ui";
 import { cn } from "@/lib/utils";
 
 function Section({
