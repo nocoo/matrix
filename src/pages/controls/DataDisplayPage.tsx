@@ -149,7 +149,7 @@ export default function DataDisplayPage() {
           {vm.kpis.map((kpi) => (
             <div key={kpi.label} className="border border-matrix-ghost p-3">
               <p className="text-[10px] font-mono text-matrix-dim uppercase mb-1">{kpi.label}</p>
-              <p className="text-lg font-mono font-bold text-matrix-bright">{kpi.value}</p>
+              <p className="text-lg font-mono font-bold text-matrix-primary">{kpi.value}</p>
               <div className="flex items-center gap-1 mt-1">
                 <span className={cn(
                   "text-[10px] font-mono font-bold",
@@ -187,7 +187,7 @@ export default function DataDisplayPage() {
               </div>
               {/* Content */}
               <div className="pb-2">
-                <p className="text-xs font-mono text-matrix-bright font-bold">{event.title}</p>
+                <p className="text-xs font-mono text-matrix-primary font-bold">{event.title}</p>
                 <p className="text-[10px] font-mono text-matrix-dim">{event.description}</p>
                 <p className="text-[10px] font-mono text-matrix-ghost mt-0.5">{event.time}</p>
               </div>
@@ -204,7 +204,7 @@ export default function DataDisplayPage() {
               <div key={person.name} className="flex items-center gap-3 py-2 border-b border-matrix-ghost last:border-b-0 hover:bg-matrix-panel transition-colors px-2">
                 <MatrixAvatar name={person.name} size={28} />
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-mono text-matrix-bright font-bold uppercase truncate">{person.name}</p>
+                  <p className="text-xs font-mono text-matrix-primary font-bold uppercase truncate">{person.name}</p>
                   <p className="text-[10px] font-mono text-matrix-dim truncate">{person.email}</p>
                 </div>
                 <span className={cn(

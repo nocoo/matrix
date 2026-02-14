@@ -77,9 +77,11 @@ export function createOutlinePills(): PillData[] {
 
 export function createGradientPills(): PillData[] {
   return [
-    { label: "SUNSET", className: "bg-gradient-to-r from-amber-500 to-rose-500 text-black" },
-    { label: "OCEAN", className: "bg-gradient-to-r from-blue-500 to-teal-500 text-black" },
-    { label: "MIDNIGHT", className: "bg-gradient-to-r from-indigo-500 to-purple-500 text-white" },
+    { label: "PHOSPHOR", className: "bg-gradient-to-r from-green-800 to-green-400 text-black" },
+    { label: "TERMINAL", className: "bg-gradient-to-br from-emerald-700 to-lime-400 text-black" },
+    { label: "CYPHER", className: "bg-gradient-to-b from-green-500 to-emerald-900 text-black" },
+    { label: "NEON", className: "bg-gradient-to-tl from-lime-500 to-green-700 text-black" },
+    { label: "MATRIX", className: "bg-gradient-to-tr from-emerald-400 to-green-900 text-black" },
   ];
 }
 
