@@ -50,7 +50,10 @@ export interface SignalRow {
 
 export function useDashboardViewModel() {
   const accountList: AccountItem[] = useMemo(
-    () => accounts.map((a) => ({ name: a.name, balance: a.balance, change: a.change })),
+    () =>
+      accounts
+        .filter((a) => a.name !== "Investment")
+        .map((a) => ({ name: a.name, balance: a.balance, change: a.change })),
     [],
   );
 
