@@ -1,4 +1,5 @@
-import { useState, useEffect, useMemo, useRef, type ReactNode } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 
 // ============================================
 // MatrixAvatar - Procedural avatar generator
@@ -307,7 +308,26 @@ export function MatrixSelect({
   className = "",
 }: MatrixSelectProps) {
   const [open, setOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const [pos, setPos] = useState({ top: 0, left: 0, width: 0 });
   const selected = options.find((o) => o.value === value);
+
+  const updatePos = useCallback(() => {
+    if (!triggerRef.current) return;
+    const rect = triggerRef.current.getBoundingClientRect();
+    setPos({ top: rect.bottom + 1, left: rect.left, width: rect.width });
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    updatePos();
+    window.addEventListener("scroll", updatePos, true);
+    window.addEventListener("resize", updatePos);
+    return () => {
+      window.removeEventListener("scroll", updatePos, true);
+      window.removeEventListener("resize", updatePos);
+    };
+  }, [open, updatePos]);
 
   return (
     <div className={`relative ${className}`}>
@@ -317,6 +337,7 @@ export function MatrixSelect({
         </span>
       )}
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => setOpen(!open)}
         className={`w-full h-10 bg-matrix-panel border px-3 text-body font-mono text-matrix-primary uppercase outline-none flex items-center justify-between transition-colors cursor-pointer ${
@@ -326,30 +347,35 @@ export function MatrixSelect({
         <span>{selected?.label ?? ""}</span>
         <span className={`text-matrix-dim text-caption transition-transform ${open ? "rotate-180" : ""}`}>▼</span>
       </button>
-      {open && (
-        <>
-          <div className="fixed inset-0 z-30" onClick={() => setOpen(false)} />
-          <div className="absolute left-0 right-0 top-full z-40 mt-px matrix-panel border border-matrix-primary/30 py-1 shadow-[0_0_20px_rgba(0,255,65,0.1)]">
-            {options.map((opt) => (
-              <button
-                key={opt.value}
-                type="button"
-                onClick={() => {
-                  onChange(opt.value);
-                  setOpen(false);
-                }}
-                className={`w-full text-left px-3 py-2 text-caption font-mono uppercase font-bold transition-colors ${
-                  opt.value === value
-                    ? "bg-matrix-primary/15 text-matrix-primary"
-                    : "text-matrix-muted hover:bg-matrix-primary/10 hover:text-matrix-primary"
-                }`}
-              >
-                {opt.label}
-              </button>
-            ))}
-          </div>
-        </>
-      )}
+      {open &&
+        createPortal(
+          <>
+            <div className="fixed inset-0 z-[9998]" onClick={() => setOpen(false)} />
+            <div
+              className="fixed z-[9999] matrix-panel border border-matrix-primary/30 py-1 shadow-[0_0_20px_rgba(0,255,65,0.1)]"
+              style={{ top: pos.top, left: pos.left, width: pos.width }}
+            >
+              {options.map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => {
+                    onChange(opt.value);
+                    setOpen(false);
+                  }}
+                  className={`w-full text-left px-3 py-2 text-caption font-mono uppercase font-bold transition-colors ${
+                    opt.value === value
+                      ? "bg-matrix-primary/15 text-matrix-primary"
+                      : "text-matrix-muted hover:bg-matrix-primary/10 hover:text-matrix-primary"
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </>,
+          document.body,
+        )}
     </div>
   );
 }
