@@ -35,8 +35,6 @@ export default function DashboardPage() {
     budgetRows,
     trendData,
     flowData,
-    portfolioRows,
-    totalPortfolioValue,
     pixelHeatmap,
     pixelHeatmapRows,
     pixelHeatmapCols,
@@ -287,94 +285,52 @@ export default function DashboardPage() {
         />
       </div>
 
-      {/* Row 6: Portfolio + Cash flow side by side */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-        {/* Portfolio allocation */}
-        <AsciiBox title="PORTFOLIO">
-          <div className="space-y-3">
-            <div className="flex items-center justify-between font-mono text-xs border-b border-matrix-ghost pb-2">
-              <span className="text-matrix-dim uppercase">Total value</span>
-              <span className="text-matrix-bright font-bold glow-text">
-                ${totalPortfolioValue.toLocaleString()}
-              </span>
-            </div>
-            {portfolioRows.map((asset) => (
-              <div key={asset.name} className="space-y-1">
-                <div className="flex items-center justify-between font-mono text-xs">
-                  <span className="text-matrix-muted uppercase">{asset.name}</span>
-                  <div className="flex items-center gap-3">
-                    <span
-                      className={cn(
-                        "text-[10px]",
-                        asset.up ? "text-matrix-primary" : "text-red-400",
-                      )}
-                    >
-                      {asset.change}
-                    </span>
-                    <span className="text-matrix-dim">{asset.allocation}%</span>
-                  </div>
-                </div>
-                <div className="h-1 w-full bg-matrix-primary/10 overflow-hidden">
-                  <div
+      {/* Row 6: Cash flow */}
+      <AsciiBox title="CASH FLOW">
+        <div className="space-y-2">
+          {flowData.map((flow) => {
+            const maxVal = Math.max(
+              ...flowData.map((f) => Math.max(f.inflow, f.outflow)),
+            );
+            return (
+              <div key={flow.month} className="space-y-0.5">
+                <div className="flex items-center justify-between font-mono text-[10px]">
+                  <span className="text-matrix-dim uppercase w-8">{flow.month}</span>
+                  <span
                     className={cn(
-                      "h-full transition-all",
-                      asset.up ? "bg-matrix-primary" : "bg-red-400",
+                      flow.net >= 0 ? "text-matrix-primary" : "text-red-400",
                     )}
-                    style={{ width: `${asset.allocation}%` }}
-                  />
+                  >
+                    {flow.net >= 0 ? "+" : ""}${flow.net.toLocaleString()}
+                  </span>
+                </div>
+                <div className="flex gap-1 h-1.5">
+                  <div className="flex-1 bg-matrix-primary/10 overflow-hidden">
+                    <div
+                      className="h-full bg-matrix-primary/60"
+                      style={{ width: `${(flow.inflow / maxVal) * 100}%` }}
+                    />
+                  </div>
+                  <div className="flex-1 bg-red-400/10 overflow-hidden">
+                    <div
+                      className="h-full bg-red-400/60"
+                      style={{ width: `${(flow.outflow / maxVal) * 100}%` }}
+                    />
+                  </div>
                 </div>
               </div>
-            ))}
+            );
+          })}
+          <div className="flex items-center gap-4 font-mono text-[10px] text-matrix-dim pt-1 border-t border-matrix-ghost">
+            <span className="flex items-center gap-1">
+              <span className="w-2 h-2 bg-matrix-primary/60" /> inflow
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="w-2 h-2 bg-red-400/60" /> outflow
+            </span>
           </div>
-        </AsciiBox>
-
-        {/* Cash flow */}
-        <AsciiBox title="CASH FLOW">
-          <div className="space-y-2">
-            {flowData.map((flow) => {
-              const maxVal = Math.max(
-                ...flowData.map((f) => Math.max(f.inflow, f.outflow)),
-              );
-              return (
-                <div key={flow.month} className="space-y-0.5">
-                  <div className="flex items-center justify-between font-mono text-[10px]">
-                    <span className="text-matrix-dim uppercase w-8">{flow.month}</span>
-                    <span
-                      className={cn(
-                        flow.net >= 0 ? "text-matrix-primary" : "text-red-400",
-                      )}
-                    >
-                      {flow.net >= 0 ? "+" : ""}${flow.net.toLocaleString()}
-                    </span>
-                  </div>
-                  <div className="flex gap-1 h-1.5">
-                    <div className="flex-1 bg-matrix-primary/10 overflow-hidden">
-                      <div
-                        className="h-full bg-matrix-primary/60"
-                        style={{ width: `${(flow.inflow / maxVal) * 100}%` }}
-                      />
-                    </div>
-                    <div className="flex-1 bg-red-400/10 overflow-hidden">
-                      <div
-                        className="h-full bg-red-400/60"
-                        style={{ width: `${(flow.outflow / maxVal) * 100}%` }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-            <div className="flex items-center gap-4 font-mono text-[10px] text-matrix-dim pt-1 border-t border-matrix-ghost">
-              <span className="flex items-center gap-1">
-                <span className="w-2 h-2 bg-matrix-primary/60" /> inflow
-              </span>
-              <span className="flex items-center gap-1">
-                <span className="w-2 h-2 bg-red-400/60" /> outflow
-              </span>
-            </div>
-          </div>
-        </AsciiBox>
-      </div>
+        </div>
+      </AsciiBox>
 
       {/* Activity log + Flow summary */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">

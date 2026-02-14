@@ -8,7 +8,6 @@ import {
   budgets,
   analyticsTrend,
   monthlyFlow,
-  portfolio,
   goals,
 } from "@/data/mock";
 import {
@@ -40,14 +39,6 @@ export interface FlowPoint {
   inflow: number;
   outflow: number;
   net: number;
-}
-
-export interface PortfolioRow {
-  name: string;
-  value: number;
-  allocation: number;
-  change: string;
-  up: boolean;
 }
 
 export interface SignalRow {
@@ -108,23 +99,6 @@ export function useDashboardViewModel() {
     [],
   );
 
-  const portfolioRows: PortfolioRow[] = useMemo(
-    () =>
-      portfolio.map((p) => ({
-        name: p.name,
-        value: p.value,
-        allocation: p.allocation,
-        change: p.change,
-        up: p.up,
-      })),
-    [],
-  );
-
-  const totalPortfolioValue = useMemo(
-    () => portfolio.reduce((sum, p) => sum + p.value, 0),
-    [],
-  );
-
   const pixelHeatmap: HeatmapCell[] = useMemo(() => generatePixelHeatmap(), []);
 
   const signalRows: SignalRow[] = useMemo(
@@ -145,8 +119,6 @@ export function useDashboardViewModel() {
     budgetRows,
     trendData,
     flowData,
-    portfolioRows,
-    totalPortfolioValue,
     pixelHeatmap,
     pixelHeatmapRows: HEATMAP_ROWS,
     pixelHeatmapCols: HEATMAP_COLS,

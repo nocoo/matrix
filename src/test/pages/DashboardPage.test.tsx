@@ -63,11 +63,6 @@ const mockState = vi.hoisted(() => ({
     { month: "Jan", inflow: 6800, outflow: 5300, net: 1500 },
     { month: "Feb", inflow: 7900, outflow: 5100, net: 2800 },
   ],
-  portfolioRows: [
-    { name: "Stocks", value: 45000, allocation: 45, change: "+12.4%", up: true },
-    { name: "Crypto", value: 10000, allocation: 10, change: "-5.1%", up: false },
-  ],
-  totalPortfolioValue: 100000,
   pixelHeatmap: [
     { row: 0, col: 0, value: 2 },
     { row: 0, col: 1, value: 10 },
@@ -190,18 +185,6 @@ describe("DashboardPage", () => {
     render(<DashboardPage />);
     expect(screen.getByTestId("trend-monitor")).toBeInTheDocument();
     expect(screen.getByText("30-DAY TREND")).toBeInTheDocument();
-  });
-
-  it("renders portfolio section with total value", () => {
-    render(<DashboardPage />);
-    expect(screen.getByText("PORTFOLIO")).toBeInTheDocument();
-    expect(screen.getByText("$100,000")).toBeInTheDocument();
-  });
-
-  it("renders portfolio assets with positive and negative changes", () => {
-    render(<DashboardPage />);
-    expect(screen.getByText("+12.4%")).toBeInTheDocument();
-    expect(screen.getByText("-5.1%")).toBeInTheDocument();
   });
 
   it("renders cash flow section", () => {

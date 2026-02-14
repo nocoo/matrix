@@ -260,7 +260,7 @@ export function TrendMonitor({
         </div>
       </div>
 
-      <div className="flex-1 relative overflow-hidden border border-matrix-ghost bg-matrix-panel">
+      <div className="flex-1 relative overflow-hidden border border-matrix-ghost bg-matrix-panel min-h-[200px]">
         <div
           className="absolute inset-0 opacity-10 pointer-events-none"
           style={{
