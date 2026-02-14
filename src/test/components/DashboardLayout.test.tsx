@@ -17,7 +17,7 @@ function renderLayout(initialPath = "/") {
           <Route path="/card-showcase" element={<div data-testid="card-outlet">Card Content</div>} />
           <Route path="/records" element={<div data-testid="records-outlet">Records Content</div>} />
           <Route path="/progress-tracking" element={<div data-testid="progress-outlet">Progress Content</div>} />
-          <Route path="/targets" element={<div data-testid="targets-outlet">Targets Content</div>} />
+
           <Route path="/stats" element={<div data-testid="stats-outlet">Stats Content</div>} />
           <Route path="/flow-comparison" element={<div data-testid="flow-outlet">Flow Content</div>} />
           <Route path="/portfolio" element={<div data-testid="portfolio-outlet">Portfolio Content</div>} />
@@ -265,8 +265,8 @@ describe("DashboardLayout", () => {
       const dialog = screen.getByPlaceholderText("search pages...").closest(".matrix-panel") as HTMLElement;
       // Should have buttons for all nav items
       const buttons = within(dialog).getAllByRole("button");
-      // All nav items from all groups: 8 + 4 + 3 + 9 + 4 = 28
-      expect(buttons.length).toBe(28);
+      // All nav items from all groups: 7 + 4 + 3 + 9 + 4 = 27
+      expect(buttons.length).toBe(27);
     });
 
     it("filters results based on search query", () => {

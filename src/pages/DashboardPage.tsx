@@ -1,10 +1,34 @@
 import { AsciiBox } from "@/components/ui/AsciiBox";
-import { Sparkline, TypewriterText, ConnectionStatus } from "@/components/ui/MatrixExtras";
-import { useAccountsViewModel } from "@/viewmodels/useAccountsViewModel";
+import {
+  Sparkline,
+  TypewriterText,
+  ConnectionStatus,
+  SignalBox,
+} from "@/components/ui/MatrixExtras";
+import { TrendMonitor } from "@/components/ui/DataVizComponents";
+import { useDashboardViewModel } from "@/viewmodels/useDashboardViewModel";
 import { cn } from "@/lib/utils";
 
+const ICON_MAP: Record<string, string> = {
+  shield: "[#]",
+  plane: "[>]",
+  car: "[=]",
+  home: "[^]",
+};
+
 export default function DashboardPage() {
-  const { accountList, activityList, activitySummary } = useAccountsViewModel();
+  const {
+    accountList,
+    activityList,
+    activitySummary,
+    goals,
+    budgetRows,
+    statCards,
+    trendData,
+    flowData,
+    portfolioRows,
+    totalPortfolioValue,
+  } = useDashboardViewModel();
 
   return (
     <div className="space-y-4">
@@ -19,11 +43,59 @@ export default function DashboardPage() {
           <div className="flex items-center gap-3">
             <ConnectionStatus status="STABLE" />
             <span className="font-mono text-xs text-matrix-muted">
-              {accountList.length} accounts active
+              {`${accountList.length} accounts active \u00B7 ${goals.length} targets tracked`}
             </span>
           </div>
         </div>
       </AsciiBox>
+
+      {/* Target goals (merged from Targets page) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+        {goals.map((goal) => (
+          <AsciiBox key={goal.name} title={goal.name.toUpperCase()}>
+            <div className="space-y-2.5">
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-lg text-matrix-primary">
+                  {ICON_MAP[goal.icon] ?? "[?]"}
+                </span>
+                <span
+                  className={cn(
+                    "font-mono text-[10px] uppercase px-2 py-0.5 flex items-center gap-1",
+                    goal.onTrack
+                      ? "bg-matrix-primary/10 text-matrix-primary"
+                      : "bg-yellow-500/10 text-yellow-500",
+                  )}
+                >
+                  <ConnectionStatus
+                    status={goal.onTrack ? "STABLE" : "UNSTABLE"}
+                  />
+                  {goal.onTrack ? "on track" : "behind"}
+                </span>
+              </div>
+              <div>
+                <div className="flex items-center justify-between font-mono text-xs mb-1">
+                  <span className="text-matrix-muted">
+                    ${goal.saved.toLocaleString()} / ${goal.target.toLocaleString()}
+                  </span>
+                  <span className="text-matrix-primary">{goal.percent}%</span>
+                </div>
+                <div className="h-1.5 w-full bg-matrix-primary/10 overflow-hidden">
+                  <div
+                    className={cn(
+                      "h-full transition-all",
+                      goal.onTrack ? "bg-matrix-primary" : "bg-yellow-500",
+                    )}
+                    style={{ width: `${goal.percent}%` }}
+                  />
+                </div>
+              </div>
+              <div className="font-mono text-[10px] text-matrix-dim">
+                need ${goal.monthlyTarget.toLocaleString()}/month
+              </div>
+            </div>
+          </AsciiBox>
+        ))}
+      </div>
 
       {/* Account cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -37,7 +109,7 @@ export default function DashboardPage() {
                 <span
                   className={cn(
                     "font-mono text-xs",
-                    account.change.startsWith("+") ? "text-matrix-primary" : "text-red-500"
+                    account.change.startsWith("+") ? "text-matrix-primary" : "text-red-500",
                   )}
                 >
                   {account.change}
@@ -54,7 +126,153 @@ export default function DashboardPage() {
         ))}
       </div>
 
-      {/* Activity summary */}
+      {/* Quick stats */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        {statCards.map((stat) => (
+          <SignalBox key={stat.label} title={stat.label.toUpperCase()}>
+            <div className="text-center py-1">
+              <p className="font-mono text-xl font-bold text-matrix-bright glow-text">
+                {stat.value}
+              </p>
+              <p
+                className={cn(
+                  "font-mono text-xs mt-1",
+                  stat.isPositive ? "text-matrix-primary" : "text-red-400",
+                )}
+              >
+                {stat.change}
+              </p>
+            </div>
+          </SignalBox>
+        ))}
+      </div>
+
+      {/* Budget tracker */}
+      <AsciiBox title="BUDGET TRACKER">
+        <div className="space-y-3">
+          {budgetRows.map((budget) => (
+            <div key={budget.category} className="space-y-1">
+              <div className="flex items-center justify-between font-mono text-xs">
+                <span className="text-matrix-muted uppercase">{budget.category}</span>
+                <span
+                  className={cn(
+                    budget.overBudget ? "text-red-400" : "text-matrix-primary",
+                  )}
+                >
+                  ${budget.spent} / ${budget.limit}
+                </span>
+              </div>
+              <div className="h-1.5 w-full bg-matrix-primary/10 overflow-hidden">
+                <div
+                  className={cn(
+                    "h-full transition-all",
+                    budget.overBudget ? "bg-red-400" : "bg-matrix-primary",
+                  )}
+                  style={{ width: `${Math.min(budget.percent, 100)}%` }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      </AsciiBox>
+
+      {/* 30-day trend */}
+      <TrendMonitor
+        data={trendData}
+        label="30-DAY TREND"
+        color="#00FF41"
+      />
+
+      {/* Portfolio + Cash flow side by side */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+        {/* Portfolio allocation */}
+        <AsciiBox title="PORTFOLIO">
+          <div className="space-y-3">
+            <div className="flex items-center justify-between font-mono text-xs border-b border-matrix-ghost pb-2">
+              <span className="text-matrix-dim uppercase">Total value</span>
+              <span className="text-matrix-bright font-bold glow-text">
+                ${totalPortfolioValue.toLocaleString()}
+              </span>
+            </div>
+            {portfolioRows.map((asset) => (
+              <div key={asset.name} className="space-y-1">
+                <div className="flex items-center justify-between font-mono text-xs">
+                  <span className="text-matrix-muted uppercase">{asset.name}</span>
+                  <div className="flex items-center gap-3">
+                    <span
+                      className={cn(
+                        "text-[10px]",
+                        asset.up ? "text-matrix-primary" : "text-red-400",
+                      )}
+                    >
+                      {asset.change}
+                    </span>
+                    <span className="text-matrix-dim">{asset.allocation}%</span>
+                  </div>
+                </div>
+                <div className="h-1 w-full bg-matrix-primary/10 overflow-hidden">
+                  <div
+                    className={cn(
+                      "h-full transition-all",
+                      asset.up ? "bg-matrix-primary" : "bg-red-400",
+                    )}
+                    style={{ width: `${asset.allocation}%` }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </AsciiBox>
+
+        {/* Cash flow */}
+        <AsciiBox title="CASH FLOW">
+          <div className="space-y-2">
+            {flowData.map((flow) => {
+              const maxVal = Math.max(
+                ...flowData.map((f) => Math.max(f.inflow, f.outflow)),
+              );
+              return (
+                <div key={flow.month} className="space-y-0.5">
+                  <div className="flex items-center justify-between font-mono text-[10px]">
+                    <span className="text-matrix-dim uppercase w-8">{flow.month}</span>
+                    <span
+                      className={cn(
+                        flow.net >= 0 ? "text-matrix-primary" : "text-red-400",
+                      )}
+                    >
+                      {flow.net >= 0 ? "+" : ""}${flow.net.toLocaleString()}
+                    </span>
+                  </div>
+                  <div className="flex gap-1 h-1.5">
+                    <div className="flex-1 bg-matrix-primary/10 overflow-hidden">
+                      <div
+                        className="h-full bg-matrix-primary/60"
+                        style={{ width: `${(flow.inflow / maxVal) * 100}%` }}
+                      />
+                    </div>
+                    <div className="flex-1 bg-red-400/10 overflow-hidden">
+                      <div
+                        className="h-full bg-red-400/60"
+                        style={{ width: `${(flow.outflow / maxVal) * 100}%` }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+            <div className="flex items-center gap-4 font-mono text-[10px] text-matrix-dim pt-1 border-t border-matrix-ghost">
+              <span className="flex items-center gap-1">
+                <span className="w-2 h-2 bg-matrix-primary/60" /> inflow
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="w-2 h-2 bg-red-400/60" /> outflow
+              </span>
+            </div>
+          </div>
+        </AsciiBox>
+      </div>
+
+      {/* Activity log + Flow summary */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         <AsciiBox title="ACTIVITY LOG">
           <div className="space-y-1.5">
@@ -70,7 +288,7 @@ export default function DashboardPage() {
                 <span
                   className={cn(
                     "shrink-0 ml-2",
-                    item.direction === "positive" ? "text-matrix-primary" : "text-red-400"
+                    item.direction === "positive" ? "text-matrix-primary" : "text-red-400",
                   )}
                 >
                   {item.formattedAmount}
@@ -99,7 +317,7 @@ export default function DashboardPage() {
               <p
                 className={cn(
                   "font-mono text-lg",
-                  activitySummary.net >= 0 ? "text-matrix-primary" : "text-red-400"
+                  activitySummary.net >= 0 ? "text-matrix-primary" : "text-red-400",
                 )}
               >
                 ${Math.abs(activitySummary.net).toFixed(0)}

@@ -5,7 +5,7 @@ import AccountsPage from "@/pages/AccountsPage";
 import CardShowcasePage from "@/pages/CardShowcasePage";
 import RecordListPage from "@/pages/RecordListPage";
 import ProgressTrackingPage from "@/pages/ProgressTrackingPage";
-import TargetCardsPage from "@/pages/TargetCardsPage";
+
 import StatsOverviewPage from "@/pages/StatsOverviewPage";
 import FlowComparisonPage from "@/pages/FlowComparisonPage";
 import PortfolioPage from "@/pages/PortfolioPage";
@@ -39,7 +39,7 @@ const App = () => (
         <Route path="/card-showcase" element={<CardShowcasePage />} />
         <Route path="/records" element={<RecordListPage />} />
         <Route path="/progress-tracking" element={<ProgressTrackingPage />} />
-        <Route path="/targets" element={<TargetCardsPage />} />
+
         <Route path="/stats" element={<StatsOverviewPage />} />
         <Route path="/flow-comparison" element={<FlowComparisonPage />} />
         <Route path="/portfolio" element={<PortfolioPage />} />

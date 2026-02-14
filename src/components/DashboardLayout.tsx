@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router";
 import {
   LayoutDashboard, Wallet, CreditCard, ArrowLeftRight,
-  PiggyBank, Target, BarChart3, TrendingUp,
+  PiggyBank, BarChart3, TrendingUp,
   LineChart, HelpCircle, Settings, Search,
   ChevronRight, LogOut, Palette, LogIn,
   ExternalLink, FileText, Layers, HeartPulse,
@@ -39,7 +39,7 @@ const NAV_GROUPS: NavGroup[] = [
       { title: "Cards", icon: CreditCard, path: "/card-showcase" },
       { title: "Records", icon: ArrowLeftRight, path: "/records", badge: 6 },
       { title: "Progress", icon: PiggyBank, path: "/progress-tracking" },
-      { title: "Targets", icon: Target, path: "/targets" },
+
       { title: "Life.ai", icon: HeartPulse, path: "/life-ai" },
       { title: "Components", icon: Component, path: "/component-showcase" },
     ],
@@ -97,7 +97,7 @@ const PAGE_TITLES: Record<string, string> = {
   "/card-showcase": "Cards",
   "/records": "Records",
   "/progress-tracking": "Progress",
-  "/targets": "Targets",
+
   "/stats": "Stats",
   "/flow-comparison": "Flows",
   "/portfolio": "Portfolio",
