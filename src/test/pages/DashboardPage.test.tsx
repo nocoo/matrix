@@ -23,6 +23,23 @@ vi.mock("@/components/ui/DataVizComponents", () => ({
   ),
 }));
 
+// Mock MatrixClock (uses intervals)
+vi.mock("@/components/ui/RunnerComponents", () => ({
+  MatrixClock: ({ label }: { label?: string }) => (
+    <div data-testid="matrix-clock">{label ?? "CLOCK"}</div>
+  ),
+}));
+
+// Mock IdentityCard (uses ScrambleText animation)
+vi.mock("@/components/ui/VibeComponents", () => ({
+  IdentityCard: ({ name, title }: { name?: string; title?: string }) => (
+    <div data-testid="identity-card">
+      <span>{title ?? "IDENTITY"}</span>
+      <span>{name ?? "UNKNOWN"}</span>
+    </div>
+  ),
+}));
+
 const mockState = vi.hoisted(() => ({
   accountList: [
     { name: "Checking", balance: 5000, change: "+2.4%" },
@@ -55,6 +72,15 @@ const mockState = vi.hoisted(() => ({
     { name: "Crypto", value: 10000, allocation: 10, change: "-5.1%", up: false },
   ],
   totalPortfolioValue: 100000,
+  pixelHeatmap: [
+    { row: 0, col: 0, value: 2 },
+    { row: 0, col: 1, value: 10 },
+    { row: 0, col: 2, value: 0 },
+    { row: 1, col: 0, value: 10 },
+  ],
+  pixelHeatmapRows: 9,
+  pixelHeatmapCols: 26,
+  pixelHeatmapMax: 10,
 }));
 
 vi.mock("@/viewmodels/useDashboardViewModel", () => ({
@@ -76,6 +102,38 @@ describe("DashboardPage", () => {
     render(<DashboardPage />);
     const statuses = screen.getAllByTestId("connection-status");
     expect(statuses.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it("renders MatrixClock section", () => {
+    render(<DashboardPage />);
+    expect(screen.getByText("CHRONOMETER")).toBeInTheDocument();
+    expect(screen.getByTestId("matrix-clock")).toBeInTheDocument();
+    expect(screen.getByText("SYSTEM TIME")).toBeInTheDocument();
+  });
+
+  it("renders IdentityCard section", () => {
+    render(<DashboardPage />);
+    expect(screen.getByTestId("identity-card")).toBeInTheDocument();
+    expect(screen.getByText("OPERATOR")).toBeInTheDocument();
+  });
+
+  it("renders pixel heatmap with data-testid", () => {
+    render(<DashboardPage />);
+    expect(screen.getByTestId("pixel-heatmap")).toBeInTheDocument();
+    expect(screen.getByText("DATA VISUALIZATION")).toBeInTheDocument();
+  });
+
+  it("renders heatmap legend", () => {
+    render(<DashboardPage />);
+    expect(screen.getByText("less")).toBeInTheDocument();
+    expect(screen.getByText("more")).toBeInTheDocument();
+  });
+
+  it("renders heatmap cells based on pixelHeatmap data", () => {
+    render(<DashboardPage />);
+    const grid = screen.getByTestId("pixel-heatmap");
+    // Mock has 4 cells
+    expect(grid.children.length).toBe(4);
   });
 
   it("renders target goals section with goal names", () => {
@@ -119,7 +177,6 @@ describe("DashboardPage", () => {
   it("renders budget tracker", () => {
     render(<DashboardPage />);
     expect(screen.getByText("BUDGET TRACKER")).toBeInTheDocument();
-    // Category text is rendered lowercase with CSS uppercase — match original case
     expect(screen.getByText("Food & Dining")).toBeInTheDocument();
     expect(screen.getByText("Utilities")).toBeInTheDocument();
   });
@@ -170,7 +227,6 @@ describe("DashboardPage", () => {
 
   it("renders status summary with account and target counts", () => {
     render(<DashboardPage />);
-    // Text contains middot separator, use regex on the single span
     expect(screen.getByText(/2 accounts active/)).toBeInTheDocument();
   });
 });

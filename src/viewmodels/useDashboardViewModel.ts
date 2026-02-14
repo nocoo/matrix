@@ -18,6 +18,13 @@ import {
   computeActivitySummary,
 } from "@/models/accounts";
 import { enrichGoal } from "@/models/target-cards";
+import {
+  generatePixelHeatmap,
+  HEATMAP_ROWS,
+  HEATMAP_COLS,
+  HEATMAP_MAX,
+} from "@/models/pixel-heatmap";
+import type { HeatmapCell } from "@/models/pixel-heatmap";
 import type { GoalViewModel } from "@/models/target-cards";
 import type { AccountItem, ActivityRow } from "@/viewmodels/useAccountsViewModel";
 
@@ -130,6 +137,8 @@ export function useDashboardViewModel() {
     [],
   );
 
+  const pixelHeatmap: HeatmapCell[] = useMemo(() => generatePixelHeatmap(), []);
+
   return {
     accountList,
     activityList,
@@ -141,5 +150,9 @@ export function useDashboardViewModel() {
     flowData,
     portfolioRows,
     totalPortfolioValue,
+    pixelHeatmap,
+    pixelHeatmapRows: HEATMAP_ROWS,
+    pixelHeatmapCols: HEATMAP_COLS,
+    pixelHeatmapMax: HEATMAP_MAX,
   };
 }

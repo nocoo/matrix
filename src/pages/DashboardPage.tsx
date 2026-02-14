@@ -6,6 +6,8 @@ import {
   SignalBox,
 } from "@/components/ui/MatrixExtras";
 import { TrendMonitor } from "@/components/ui/DataVizComponents";
+import { MatrixClock } from "@/components/ui/RunnerComponents";
+import { IdentityCard } from "@/components/ui/VibeComponents";
 import { useDashboardViewModel } from "@/viewmodels/useDashboardViewModel";
 import { cn } from "@/lib/utils";
 
@@ -15,6 +17,15 @@ const ICON_MAP: Record<string, string> = {
   car: "[=]",
   home: "[^]",
 };
+
+/** Map a heatmap value (0-10) to a matrix green color. */
+function heatmapColor(value: number, max: number): string {
+  if (value >= max) return "rgba(0,255,65,1)";
+  if (value === 0) return "rgba(0,255,65,0.06)";
+  const t = value / max;
+  const opacity = 0.08 + t * 0.35; // 0.08 – 0.43 for background range
+  return `rgba(0,255,65,${opacity})`;
+}
 
 export default function DashboardPage() {
   const {
@@ -28,6 +39,10 @@ export default function DashboardPage() {
     flowData,
     portfolioRows,
     totalPortfolioValue,
+    pixelHeatmap,
+    pixelHeatmapRows,
+    pixelHeatmapCols,
+    pixelHeatmapMax,
   } = useDashboardViewModel();
 
   return (
@@ -45,6 +60,81 @@ export default function DashboardPage() {
             <span className="font-mono text-xs text-matrix-muted">
               {`${accountList.length} accounts active \u00B7 ${goals.length} targets tracked`}
             </span>
+          </div>
+        </div>
+      </AsciiBox>
+
+      {/* Clock + Identity side by side */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+        <AsciiBox title="CHRONOMETER">
+          <div className="flex items-center justify-center py-4">
+            <MatrixClock label="SYSTEM TIME" />
+          </div>
+        </AsciiBox>
+
+        <IdentityCard
+          name="OPERATOR"
+          isPublic
+          title="IDENTITY"
+          subtitle="// clearance level: root"
+          rankLabel="S+"
+          streakDays={128}
+          showStats
+          animateTitle
+          scanlines
+          avatarSize={72}
+        />
+      </div>
+
+      {/* Pixel-art "2026" heatmap */}
+      <AsciiBox title="DATA VISUALIZATION">
+        <div className="space-y-3">
+          <div className="flex items-center justify-between font-mono text-xs">
+            <span className="text-matrix-dim uppercase">contribution density</span>
+            <span className="text-matrix-muted">// pixel render: 2026</span>
+          </div>
+          <div
+            className="inline-grid mx-auto"
+            style={{
+              gridTemplateColumns: `repeat(${pixelHeatmapCols}, 10px)`,
+              gridTemplateRows: `repeat(${pixelHeatmapRows}, 10px)`,
+              gap: "2px",
+            }}
+            data-testid="pixel-heatmap"
+          >
+            {pixelHeatmap.map((cell) => (
+              <span
+                key={`${cell.row}-${cell.col}`}
+                className="border border-matrix-ghost/30"
+                style={{
+                  width: 10,
+                  height: 10,
+                  background: heatmapColor(cell.value, pixelHeatmapMax),
+                  boxShadow:
+                    cell.value >= pixelHeatmapMax
+                      ? "0 0 4px rgba(0,255,65,0.6)"
+                      : "none",
+                }}
+                title={`[${cell.row},${cell.col}] = ${cell.value}`}
+              />
+            ))}
+          </div>
+          <div className="flex items-center justify-center gap-2 font-mono text-[10px] text-matrix-muted pt-1">
+            <span>less</span>
+            <div className="flex gap-0.5">
+              {[0, 2, 4, 6, 8, 10].map((v) => (
+                <span
+                  key={v}
+                  className="border border-matrix-ghost/30"
+                  style={{
+                    width: 10,
+                    height: 10,
+                    background: heatmapColor(v, pixelHeatmapMax),
+                  }}
+                />
+              ))}
+            </div>
+            <span>more</span>
           </div>
         </div>
       </AsciiBox>
