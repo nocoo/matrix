@@ -46,28 +46,27 @@ export default function DashboardPage() {
   } = useDashboardViewModel();
 
   return (
-    <div className="space-y-4">
-      {/* Welcome banner */}
-      <AsciiBox title="SYSTEM STATUS">
-        <div className="flex flex-col gap-2">
-          <TypewriterText
-            text="> welcome back, operator"
-            className="font-mono text-sm text-matrix-primary"
-            speedMs={30}
-          />
-          <div className="flex items-center gap-3">
-            <ConnectionStatus status="STABLE" />
-            <span className="font-mono text-xs text-matrix-muted">
-              {`${accountList.length} accounts active \u00B7 ${goals.length} targets tracked`}
-            </span>
+    <div className="space-y-3">
+      {/* Row 1: Status + Clock + Identity — 3-col on lg */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        <AsciiBox title="SYSTEM STATUS">
+          <div className="flex flex-col gap-2">
+            <TypewriterText
+              text="> welcome back, operator"
+              className="font-mono text-sm text-matrix-primary"
+              speedMs={30}
+            />
+            <div className="flex items-center gap-3">
+              <ConnectionStatus status="STABLE" />
+              <span className="font-mono text-xs text-matrix-muted">
+                {`${accountList.length} accounts active \u00B7 ${goals.length} targets tracked`}
+              </span>
+            </div>
           </div>
-        </div>
-      </AsciiBox>
+        </AsciiBox>
 
-      {/* Clock + Identity side by side */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         <AsciiBox title="CHRONOMETER">
-          <div className="flex items-center justify-center py-4">
+          <div className="flex items-center justify-center py-2">
             <MatrixClock label="SYSTEM TIME" />
           </div>
         </AsciiBox>
@@ -82,64 +81,86 @@ export default function DashboardPage() {
           showStats
           animateTitle
           scanlines
-          avatarSize={72}
+          avatarSize={64}
         />
       </div>
 
-      {/* Pixel-art "2026" heatmap */}
-      <AsciiBox title="DATA VISUALIZATION">
-        <div className="space-y-3">
-          <div className="flex items-center justify-between font-mono text-xs">
-            <span className="text-matrix-dim uppercase">contribution density</span>
-            <span className="text-matrix-muted">// pixel render: 2026</span>
-          </div>
-          <div
-            className="inline-grid mx-auto"
-            style={{
-              gridTemplateColumns: `repeat(${pixelHeatmapCols}, 10px)`,
-              gridTemplateRows: `repeat(${pixelHeatmapRows}, 10px)`,
-              gap: "2px",
-            }}
-            data-testid="pixel-heatmap"
-          >
-            {pixelHeatmap.map((cell) => (
-              <span
-                key={`${cell.row}-${cell.col}`}
-                className="border border-matrix-ghost/30"
-                style={{
-                  width: 10,
-                  height: 10,
-                  background: heatmapColor(cell.value, pixelHeatmapMax),
-                  boxShadow:
-                    cell.value >= pixelHeatmapMax
-                      ? "0 0 4px rgba(0,255,65,0.6)"
-                      : "none",
-                }}
-                title={`[${cell.row},${cell.col}] = ${cell.value}`}
-              />
-            ))}
-          </div>
-          <div className="flex items-center justify-center gap-2 font-mono text-[10px] text-matrix-muted pt-1">
-            <span>less</span>
-            <div className="flex gap-0.5">
-              {[0, 2, 4, 6, 8, 10].map((v) => (
+      {/* Row 2: Heatmap + Quick stats side by side */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+        <AsciiBox title="DATA VISUALIZATION">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between font-mono text-[10px]">
+              <span className="text-matrix-dim uppercase">contribution density</span>
+              <span className="text-matrix-muted">// pixel render: 2026</span>
+            </div>
+            <div
+              className="inline-grid mx-auto"
+              style={{
+                gridTemplateColumns: `repeat(${pixelHeatmapCols}, 10px)`,
+                gridTemplateRows: `repeat(${pixelHeatmapRows}, 10px)`,
+                gap: "2px",
+              }}
+              data-testid="pixel-heatmap"
+            >
+              {pixelHeatmap.map((cell) => (
                 <span
-                  key={v}
+                  key={`${cell.row}-${cell.col}`}
                   className="border border-matrix-ghost/30"
                   style={{
                     width: 10,
                     height: 10,
-                    background: heatmapColor(v, pixelHeatmapMax),
+                    background: heatmapColor(cell.value, pixelHeatmapMax),
+                    boxShadow:
+                      cell.value >= pixelHeatmapMax
+                        ? "0 0 4px rgba(0,255,65,0.6)"
+                        : "none",
                   }}
+                  title={`[${cell.row},${cell.col}] = ${cell.value}`}
                 />
               ))}
             </div>
-            <span>more</span>
+            <div className="flex items-center justify-center gap-2 font-mono text-[10px] text-matrix-muted">
+              <span>less</span>
+              <div className="flex gap-0.5">
+                {[0, 2, 4, 6, 8, 10].map((v) => (
+                  <span
+                    key={v}
+                    className="border border-matrix-ghost/30"
+                    style={{
+                      width: 10,
+                      height: 10,
+                      background: heatmapColor(v, pixelHeatmapMax),
+                    }}
+                  />
+                ))}
+              </div>
+              <span>more</span>
+            </div>
           </div>
-        </div>
-      </AsciiBox>
+        </AsciiBox>
 
-      {/* Target goals (merged from Targets page) */}
+        <div className="grid grid-cols-2 gap-3">
+          {statCards.map((stat) => (
+            <SignalBox key={stat.label} title={stat.label.toUpperCase()}>
+              <div className="text-center py-1">
+                <p className="font-mono text-xl font-bold text-matrix-bright glow-text">
+                  {stat.value}
+                </p>
+                <p
+                  className={cn(
+                    "font-mono text-xs mt-1",
+                    stat.isPositive ? "text-matrix-primary" : "text-red-400",
+                  )}
+                >
+                  {stat.change}
+                </p>
+              </div>
+            </SignalBox>
+          ))}
+        </div>
+      </div>
+
+      {/* Row 3: Target goals */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
         {goals.map((goal) => (
           <AsciiBox key={goal.name} title={goal.name.toUpperCase()}>
@@ -187,7 +208,7 @@ export default function DashboardPage() {
         ))}
       </div>
 
-      {/* Account cards */}
+      {/* Row 4: Accounts */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {accountList.map((account) => (
           <AsciiBox key={account.name} title={account.name.toUpperCase()}>
@@ -216,30 +237,10 @@ export default function DashboardPage() {
         ))}
       </div>
 
-      {/* Quick stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        {statCards.map((stat) => (
-          <SignalBox key={stat.label} title={stat.label.toUpperCase()}>
-            <div className="text-center py-1">
-              <p className="font-mono text-xl font-bold text-matrix-bright glow-text">
-                {stat.value}
-              </p>
-              <p
-                className={cn(
-                  "font-mono text-xs mt-1",
-                  stat.isPositive ? "text-matrix-primary" : "text-red-400",
-                )}
-              >
-                {stat.change}
-              </p>
-            </div>
-          </SignalBox>
-        ))}
-      </div>
-
-      {/* Budget tracker */}
-      <AsciiBox title="BUDGET TRACKER">
-        <div className="space-y-3">
+      {/* Row 5: Budget + Trend side by side */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+        <AsciiBox title="BUDGET TRACKER">
+          <div className="space-y-3">
           {budgetRows.map((budget) => (
             <div key={budget.category} className="space-y-1">
               <div className="flex items-center justify-between font-mono text-xs">
@@ -264,16 +265,16 @@ export default function DashboardPage() {
             </div>
           ))}
         </div>
-      </AsciiBox>
+        </AsciiBox>
 
-      {/* 30-day trend */}
-      <TrendMonitor
-        data={trendData}
-        label="30-DAY TREND"
-        color="#00FF41"
-      />
+        <TrendMonitor
+          data={trendData}
+          label="30-DAY TREND"
+          color="#00FF41"
+        />
+      </div>
 
-      {/* Portfolio + Cash flow side by side */}
+      {/* Row 6: Portfolio + Cash flow side by side */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         {/* Portfolio allocation */}
         <AsciiBox title="PORTFOLIO">
