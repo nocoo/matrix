@@ -1,6 +1,12 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import SettingsPage from "@/pages/SettingsPage";
+
+vi.mock("@/components/ui/VibeComponents", () => ({
+  BackendStatus: ({ status }: { status: string }) => (
+    <span data-testid="backend-status">[{status}]</span>
+  ),
+}));
 
 describe("SettingsPage", () => {
   it("renders general settings section", () => {

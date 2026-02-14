@@ -1,4 +1,5 @@
 import { AsciiBox } from "@/components/ui/AsciiBox";
+import { ConnectionStatus } from "@/components/ui";
 import { useTargetCardsViewModel } from "@/viewmodels/useTargetCardsViewModel";
 import { cn } from "@/lib/utils";
 
@@ -25,12 +26,15 @@ export default function TargetCardsPage() {
                 </span>
                 <span
                   className={cn(
-                    "font-mono text-[10px] uppercase px-2 py-0.5",
+                    "font-mono text-[10px] uppercase px-2 py-0.5 flex items-center gap-1",
                     goal.onTrack
                       ? "bg-matrix-primary/10 text-matrix-primary"
                       : "bg-yellow-500/10 text-yellow-500"
                   )}
                 >
+                  <ConnectionStatus
+                    status={goal.onTrack ? "STABLE" : "UNSTABLE"}
+                  />
                   {goal.onTrack ? "on track" : "behind"}
                 </span>
               </div>

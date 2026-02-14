@@ -1,5 +1,6 @@
 import { AsciiBox } from "@/components/ui/AsciiBox";
 import { MatrixButton } from "@/components/ui/MatrixButton";
+import { BackendStatus } from "@/components/ui/VibeComponents";
 
 export default function SettingsPage() {
   return (
@@ -39,7 +40,10 @@ export default function SettingsPage() {
           {["Email notifications", "Push notifications", "Weekly digest"].map((label) => (
             <div key={label} className="flex items-center justify-between">
               <span className="font-mono text-sm text-matrix-muted">{label}</span>
-              <span className="font-mono text-xs text-matrix-primary">[ON]</span>
+              <div className="flex items-center gap-1.5">
+                <BackendStatus status="active" />
+                <span className="font-mono text-xs text-matrix-primary">[ON]</span>
+              </div>
             </div>
           ))}
         </div>
@@ -51,7 +55,7 @@ export default function SettingsPage() {
             <p className="font-mono text-sm text-red-400">Delete Account</p>
             <p className="font-mono text-xs text-matrix-dim">Permanently remove all data</p>
           </div>
-          <MatrixButton size="sm" variant="ghost">
+          <MatrixButton size="small" variant="ghost">
             [DELETE]
           </MatrixButton>
         </div>

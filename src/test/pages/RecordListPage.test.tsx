@@ -2,6 +2,12 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import RecordListPage from "@/pages/RecordListPage";
 
+vi.mock("@/components/ui", () => ({
+  ConnectionStatus: ({ status }: { status: string }) => (
+    <span data-testid="connection-status">[{status}]</span>
+  ),
+}));
+
 vi.mock("@/viewmodels/useRecordListViewModel", () => ({
   useRecordListViewModel: () => ({
     records: [

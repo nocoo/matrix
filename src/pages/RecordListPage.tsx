@@ -1,4 +1,5 @@
 import { AsciiBox } from "@/components/ui/AsciiBox";
+import { ConnectionStatus } from "@/components/ui";
 import { useRecordListViewModel } from "@/viewmodels/useRecordListViewModel";
 import { cn } from "@/lib/utils";
 
@@ -45,7 +46,10 @@ export default function RecordListPage() {
               >
                 {record.formattedAmount}
               </span>
-              <span className="col-span-2 text-right">
+              <span className="col-span-2 flex items-center justify-end gap-1">
+                <ConnectionStatus
+                  status={record.statusVariant === "success" ? "STABLE" : "UNSTABLE"}
+                />
                 <span
                   className={cn(
                     "inline-block px-1.5 py-0.5 text-[10px]",
