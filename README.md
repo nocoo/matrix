@@ -187,7 +187,6 @@ Matrix follows a strict **MVVM (Model-View-ViewModel)** pattern:
 | `/interactions` | Interactions | Toast and dialog demos |
 | `/settings` | Settings | User preferences |
 | `/login` | Login | Standalone login page |
-| `/badge-login` | Badge Login | Alternative login flow |
 | `/static-page` | Static Page | Static content template |
 | `/loading` | Loading | Loading state template |
 | `*` | 404 | Not found |

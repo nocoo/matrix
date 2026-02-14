@@ -155,13 +155,7 @@ export default function LoginPage() {
             {/* Actions */}
             <div className="space-y-2">
               <MatrixButton className="w-full">[ AUTHENTICATE ]</MatrixButton>
-              <div className="flex items-center justify-between">
-                <a
-                  href="/badge-login"
-                  className="font-mono text-[10px] text-matrix-dim hover:text-matrix-primary transition-colors"
-                >
-                  &gt; badge authentication
-                </a>
+              <div className="flex items-center justify-end">
                 <span className="font-mono text-[10px] text-matrix-dim">
                   &gt; forgot access? contact sysadmin
                 </span>

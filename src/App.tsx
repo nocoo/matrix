@@ -25,7 +25,6 @@ import FormsPage from "@/pages/controls/FormsPage";
 import TablesPage from "@/pages/controls/TablesPage";
 import PillsPage from "@/pages/controls/PillsPage";
 import LoginPage from "@/pages/LoginPage";
-import BadgeLoginPage from "@/pages/BadgeLoginPage";
 import StaticPage from "@/pages/StaticPage";
 import LoadingPage from "@/pages/LoadingPage";
 import NotFound from "@/pages/NotFound";
@@ -62,7 +61,6 @@ const App = () => (
       </Route>
       {/* Standalone pages (no sidebar) */}
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/badge-login" element={<BadgeLoginPage />} />
       <Route path="/static-page" element={<StaticPage />} />
       <Route path="/loading" element={<LoadingPage />} />
       <Route path="*" element={<NotFound />} />

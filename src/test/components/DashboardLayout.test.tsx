@@ -265,8 +265,8 @@ describe("DashboardLayout", () => {
       const dialog = screen.getByPlaceholderText("search pages...").closest(".matrix-panel") as HTMLElement;
       // Should have buttons for all nav items
       const buttons = within(dialog).getAllByRole("button");
-      // All nav items from all groups: 8 + 3 + 5 + 4 + 9 = 29
-      expect(buttons.length).toBe(29);
+      // All nav items from all groups: 8 + 4 + 3 + 9 + 4 = 28
+      expect(buttons.length).toBe(28);
     });
 
     it("filters results based on search query", () => {

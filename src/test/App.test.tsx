@@ -23,7 +23,6 @@ vi.mock("@/pages/InteractionShowcasePage", () => ({ default: () => <div data-tes
 vi.mock("@/pages/LifeAiPage", () => ({ default: () => <div data-testid="page-life-ai" /> }));
 vi.mock("@/pages/ComponentShowcasePage", () => ({ default: () => <div data-testid="page-component-showcase" /> }));
 vi.mock("@/pages/LoginPage", () => ({ default: () => <div data-testid="page-login" /> }));
-vi.mock("@/pages/BadgeLoginPage", () => ({ default: () => <div data-testid="page-badge-login" /> }));
 vi.mock("@/pages/StaticPage", () => ({ default: () => <div data-testid="page-static" /> }));
 vi.mock("@/pages/LoadingPage", () => ({ default: () => <div data-testid="page-loading" /> }));
 vi.mock("@/pages/NotFound", () => ({ default: () => <div data-testid="page-not-found" /> }));
@@ -55,7 +54,6 @@ function renderAppRoute(path: string) {
           <Route path="/component-showcase" element={<div data-testid="page-component-showcase" />} />
         </Route>
         <Route path="/login" element={<div data-testid="page-login" />} />
-        <Route path="/badge-login" element={<div data-testid="page-badge-login" />} />
         <Route path="/static-page" element={<div data-testid="page-static" />} />
         <Route path="/loading" element={<div data-testid="page-loading" />} />
         <Route path="*" element={<div data-testid="page-not-found" />} />
@@ -107,7 +105,6 @@ describe("App", () => {
   describe("standalone routes (without DashboardLayout)", () => {
     const standaloneRoutes = [
       { path: "/login", testId: "page-login", title: "Login" },
-      { path: "/badge-login", testId: "page-badge-login", title: "Badge" },
       { path: "/static-page", testId: "page-static", title: "Static" },
       { path: "/loading", testId: "page-loading", title: "Loading" },
     ];

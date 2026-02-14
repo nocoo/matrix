@@ -79,7 +79,7 @@ export default function ControlsPage() {
               <button
                 onClick={() => vm.setSwitchA(!vm.switchA)}
                 className={cn(
-                  "relative w-11 h-6 border overflow-hidden shrink-0 transition-colors",
+                  "relative w-9 h-5 border overflow-hidden shrink-0 transition-colors",
                   vm.switchA
                     ? "bg-matrix-primary/30 border-matrix-primary"
                     : "bg-matrix-panel-strong border-matrix-ghost"
@@ -87,9 +87,9 @@ export default function ControlsPage() {
               >
                 <span
                   className={cn(
-                    "absolute top-1 w-4 h-4 transition-all",
+                    "absolute top-1/2 -translate-y-1/2 w-3 h-3 transition-all",
                     vm.switchA
-                      ? "left-[22px] bg-matrix-primary shadow-[0_0_8px_rgba(0,255,65,0.6)]"
+                      ? "left-[20px] bg-matrix-primary shadow-[0_0_8px_rgba(0,255,65,0.6)]"
                       : "left-1 bg-matrix-dim"
                   )}
                 />
@@ -101,7 +101,7 @@ export default function ControlsPage() {
               <button
                 onClick={() => vm.setSwitchB(!vm.switchB)}
                 className={cn(
-                  "relative w-11 h-6 border overflow-hidden shrink-0 transition-colors",
+                  "relative w-9 h-5 border overflow-hidden shrink-0 transition-colors",
                   vm.switchB
                     ? "bg-matrix-primary/30 border-matrix-primary"
                     : "bg-matrix-panel-strong border-matrix-ghost"
@@ -109,9 +109,9 @@ export default function ControlsPage() {
               >
                 <span
                   className={cn(
-                    "absolute top-1 w-4 h-4 transition-all",
+                    "absolute top-1/2 -translate-y-1/2 w-3 h-3 transition-all",
                     vm.switchB
-                      ? "left-[22px] bg-matrix-primary shadow-[0_0_8px_rgba(0,255,65,0.6)]"
+                      ? "left-[20px] bg-matrix-primary shadow-[0_0_8px_rgba(0,255,65,0.6)]"
                       : "left-1 bg-matrix-dim"
                   )}
                 />

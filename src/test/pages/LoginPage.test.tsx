@@ -68,9 +68,8 @@ describe("LoginPage", () => {
     expect(screen.getByText("[ AUTHENTICATE ]")).toBeInTheDocument();
   });
 
-  it("renders badge login and forgot access links", () => {
+  it("renders forgot access link", () => {
     render(<LoginPage />);
-    expect(screen.getByText("> badge authentication")).toBeInTheDocument();
     expect(screen.getByText("> forgot access? contact sysadmin")).toBeInTheDocument();
   });
 

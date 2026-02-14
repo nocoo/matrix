@@ -4,7 +4,7 @@ import {
   LayoutDashboard, Wallet, CreditCard, ArrowLeftRight,
   PiggyBank, Target, BarChart3, TrendingUp,
   LineChart, HelpCircle, Settings, Search,
-  ChevronRight, LogOut, Palette, LogIn, IdCard,
+  ChevronRight, LogOut, Palette, LogIn,
   ExternalLink, FileText, Layers, HeartPulse,
   Loader, Menu, X, FileQuestion, Component,
   RectangleEllipsis, MousePointerClick, Bell, Layers2,
@@ -72,7 +72,6 @@ const NAV_GROUPS: NavGroup[] = [
     defaultOpen: true,
     items: [
       { title: "Login", icon: LogIn, path: "/login", external: true },
-      { title: "Badge", icon: IdCard, path: "/badge-login", external: true },
       { title: "Static", icon: FileText, path: "/static-page", external: true },
       { title: "Loading", icon: Loader, path: "/loading", external: true },
       { title: "404", icon: FileQuestion, path: "/404", external: true },
