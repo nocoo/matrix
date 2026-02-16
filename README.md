@@ -284,6 +284,10 @@ Matrix uses a custom Tailwind v4 theme with CSS custom properties:
 
 Use them in Tailwind classes: `text-matrix-primary`, `bg-matrix-panel`, `border-matrix-dim`, etc.
 
+## Acknowledgments
+
+This project is inspired by and built upon the **Matrix-A Design System** from [VibeUsage](https://github.com/victorGPT/vibeusage) by [@victorGPT](https://github.com/victorGPT). The cyberpunk dashboard aesthetic, component patterns, and design language owe a great deal to their pioneering work. Thank you to the open-source community for making projects like this possible.
+
 ## License
 
 [MIT](./LICENSE) © 2026 Zheng Li
