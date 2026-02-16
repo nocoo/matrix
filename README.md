@@ -8,6 +8,8 @@ A cyberpunk dashboard UI kit with 40+ components, 27 pages, and a strict MVVM ar
 
 ![Matrix Dashboard](https://s.zhe.to/dcd0e6e42358/20260214/e292e1e7-55c4-42f7-8c07-83356c7ed20b.jpg)
 
+**[Live Preview →](https://matrix.hexly.ai)**
+
 ---
 
 ## Features
