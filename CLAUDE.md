@@ -40,5 +40,38 @@ This is a **template site**, not a production application. Testing strategy refl
 - No `tailwind.config.ts` — uses `@tailwindcss/vite` plugin with `@theme {}` directive in `index.css`.
 - Colors: `matrix-primary`, `matrix-bright`, `matrix-muted`, `matrix-dim`, `matrix-ghost`, `matrix-panel`, `matrix-panel-strong`, `matrix-dark`, `matrix-bg`.
 
+## Version Management
+
+### Single Source of Truth
+
+The **canonical version** lives in `package.json` → `"version"`. All other
+consumers derive from it at build time:
+
+| Consumer | Mechanism |
+|---|---|
+| Sidebar badge (`v1.0.0`) | `__APP_VERSION__` global, injected via `vite.config.ts` → `define` |
+| MatrixShell footer | `__APP_VERSION__` global |
+| `/api/live` endpoint | Vite dev-server plugin reads `package.json` at request time |
+| `vitest.config.ts` | Same `define` pattern for test environment |
+| TypeScript | Declared in `src/vite-env.d.ts` as `declare const __APP_VERSION__: string` |
+
+**Never hardcode a version string anywhere.** Always read from `package.json`.
+
+### Versioning Rules (SemVer)
+
+- **MAJOR** — breaking changes to public API, routes, or data models
+- **MINOR** — new features, pages, or components (backward-compatible)
+- **PATCH** — bug fixes, styling tweaks, dependency bumps
+
+### Release Checklist
+
+1. **Bump version** in `package.json`
+2. **Update `CHANGELOG.md`** — add a new `## [x.y.z] - YYYY-MM-DD` section
+3. **Run full verification**: `bunx eslint . && bun run build && bunx vitest run`
+4. **Commit**: `chore: release vX.Y.Z`
+5. **Tag**: `git tag -a vX.Y.Z -m "vX.Y.Z"`
+6. **Push**: `git push && git push --tags`
+7. **GitHub Release**: `gh release create vX.Y.Z --title "vX.Y.Z" --notes-from-tag`
+
 ## Retrospective
 (Record mistakes and lessons learned here)
