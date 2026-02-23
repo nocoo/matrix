@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router";
+import { useTranslation } from "react-i18next";
 import {
   LayoutDashboard, Wallet, CreditCard, ArrowLeftRight,
   PiggyBank, BarChart3, TrendingUp,
@@ -11,12 +12,13 @@ import {
   Eye, Navigation, FormInput, Table, Tag, Github,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { LanguageToggle } from "@/components/LanguageToggle";
 import sidebarBg from "@/assets/bg.jpg";
 
 // -- Navigation data model --
 
 interface NavItem {
-  title: string;
+  titleKey: string;
   icon: React.ElementType;
   path: string;
   badge?: number;
@@ -24,98 +26,98 @@ interface NavItem {
 }
 
 interface NavGroup {
-  label: string;
+  labelKey: string;
   items: NavItem[];
   defaultOpen?: boolean;
 }
 
 const NAV_GROUPS: NavGroup[] = [
   {
-    label: "BLOCKS",
+    labelKey: "nav.blocks",
     defaultOpen: true,
     items: [
-      { title: "Dashboard", icon: LayoutDashboard, path: "/" },
-      { title: "Accounts", icon: Wallet, path: "/accounts" },
-      { title: "Cards", icon: CreditCard, path: "/card-showcase" },
-      { title: "Records", icon: ArrowLeftRight, path: "/records", badge: 6 },
-      { title: "Progress", icon: PiggyBank, path: "/progress-tracking" },
+      { titleKey: "nav.dashboard", icon: LayoutDashboard, path: "/" },
+      { titleKey: "nav.accounts", icon: Wallet, path: "/accounts" },
+      { titleKey: "nav.cards", icon: CreditCard, path: "/card-showcase" },
+      { titleKey: "nav.records", icon: ArrowLeftRight, path: "/records", badge: 6 },
+      { titleKey: "nav.progress", icon: PiggyBank, path: "/progress-tracking" },
 
-      { title: "Life.ai", icon: HeartPulse, path: "/life-ai" },
-      { title: "Components", icon: Component, path: "/component-showcase" },
+      { titleKey: "nav.lifeAi", icon: HeartPulse, path: "/life-ai" },
+      { titleKey: "nav.components", icon: Component, path: "/component-showcase" },
     ],
   },
   {
-    label: "CONTROLS",
+    labelKey: "nav.controls",
     defaultOpen: true,
     items: [
-      { title: "Controls", icon: RectangleEllipsis, path: "/controls" },
-      { title: "Buttons", icon: MousePointerClick, path: "/buttons" },
-      { title: "Feedback", icon: Bell, path: "/feedback" },
-      { title: "Overlays", icon: Layers2, path: "/overlays" },
-      { title: "Data", icon: Eye, path: "/data-display" },
-      { title: "Navigation", icon: Navigation, path: "/navigation" },
-      { title: "Forms", icon: FormInput, path: "/forms" },
-      { title: "Tables", icon: Table, path: "/tables" },
-      { title: "Pills", icon: Tag, path: "/pills" },
+      { titleKey: "nav.controlsItem", icon: RectangleEllipsis, path: "/controls" },
+      { titleKey: "nav.buttons", icon: MousePointerClick, path: "/buttons" },
+      { titleKey: "nav.feedback", icon: Bell, path: "/feedback" },
+      { titleKey: "nav.overlays", icon: Layers2, path: "/overlays" },
+      { titleKey: "nav.data", icon: Eye, path: "/data-display" },
+      { titleKey: "nav.navigation", icon: Navigation, path: "/navigation" },
+      { titleKey: "nav.forms", icon: FormInput, path: "/forms" },
+      { titleKey: "nav.tables", icon: Table, path: "/tables" },
+      { titleKey: "nav.pills", icon: Tag, path: "/pills" },
     ],
   },
   {
-    label: "CHARTS",
+    labelKey: "nav.charts",
     defaultOpen: true,
     items: [
-      { title: "Stats", icon: BarChart3, path: "/stats" },
-      { title: "Flows", icon: TrendingUp, path: "/flow-comparison", badge: 2 },
-      { title: "Portfolio", icon: LineChart, path: "/portfolio" },
+      { titleKey: "nav.stats", icon: BarChart3, path: "/stats" },
+      { titleKey: "nav.flows", icon: TrendingUp, path: "/flow-comparison", badge: 2 },
+      { titleKey: "nav.portfolio", icon: LineChart, path: "/portfolio" },
     ],
   },
   {
-    label: "PAGES",
+    labelKey: "nav.pages",
     defaultOpen: true,
     items: [
-      { title: "Login", icon: LogIn, path: "/login", external: true },
-      { title: "Static", icon: FileText, path: "/static-page", external: true },
-      { title: "Loading", icon: Loader, path: "/loading", external: true },
-      { title: "404", icon: FileQuestion, path: "/404", external: true },
+      { titleKey: "nav.login", icon: LogIn, path: "/login", external: true },
+      { titleKey: "nav.static", icon: FileText, path: "/static-page", external: true },
+      { titleKey: "nav.loading", icon: Loader, path: "/loading", external: true },
+      { titleKey: "nav.notFound", icon: FileQuestion, path: "/404", external: true },
     ],
   },
   {
-    label: "SYSTEM",
+    labelKey: "nav.system",
     defaultOpen: true,
     items: [
-      { title: "Help", icon: HelpCircle, path: "/help" },
-      { title: "Palette", icon: Palette, path: "/palette" },
-      { title: "Interactions", icon: Layers, path: "/interactions" },
-      { title: "Settings", icon: Settings, path: "/settings" },
+      { titleKey: "nav.help", icon: HelpCircle, path: "/help" },
+      { titleKey: "nav.palette", icon: Palette, path: "/palette" },
+      { titleKey: "nav.interactions", icon: Layers, path: "/interactions" },
+      { titleKey: "nav.settings", icon: Settings, path: "/settings" },
     ],
   },
 ];
 
-// Map route paths to page titles
-const PAGE_TITLES: Record<string, string> = {
-  "/": "Dashboard",
-  "/accounts": "Accounts",
-  "/card-showcase": "Cards",
-  "/records": "Records",
-  "/progress-tracking": "Progress",
+// Map route paths to page title i18n keys
+const PAGE_TITLE_KEYS: Record<string, string> = {
+  "/": "nav.dashboard",
+  "/accounts": "nav.accounts",
+  "/card-showcase": "nav.cards",
+  "/records": "nav.records",
+  "/progress-tracking": "nav.progress",
 
-  "/stats": "Stats",
-  "/flow-comparison": "Flows",
-  "/portfolio": "Portfolio",
-  "/help": "Help",
-  "/settings": "Settings",
-  "/palette": "Palette",
-  "/interactions": "Interactions",
-  "/life-ai": "Life.ai",
-  "/component-showcase": "Components",
-  "/controls": "Controls",
-  "/buttons": "Buttons",
-  "/feedback": "Feedback",
-  "/overlays": "Overlays",
-  "/data-display": "Data",
-  "/navigation": "Navigation",
-  "/forms": "Forms",
-  "/tables": "Tables",
-  "/pills": "Pills",
+  "/stats": "nav.stats",
+  "/flow-comparison": "nav.flows",
+  "/portfolio": "nav.portfolio",
+  "/help": "nav.help",
+  "/settings": "nav.settings",
+  "/palette": "nav.palette",
+  "/interactions": "nav.interactions",
+  "/life-ai": "nav.lifeAi",
+  "/component-showcase": "nav.components",
+  "/controls": "nav.controlsItem",
+  "/buttons": "nav.buttons",
+  "/feedback": "nav.feedback",
+  "/overlays": "nav.overlays",
+  "/data-display": "nav.data",
+  "/navigation": "nav.navigation",
+  "/forms": "nav.forms",
+  "/tables": "nav.tables",
+  "/pills": "nav.pills",
 };
 
 // -- Nav group section --
@@ -130,6 +132,7 @@ function NavGroupSection({
   onNavigate: (path: string, external?: boolean) => void;
 }) {
   const [open, setOpen] = useState(group.defaultOpen ?? true);
+  const { t } = useTranslation();
 
   return (
     <div className="mb-1">
@@ -144,7 +147,7 @@ function NavGroupSection({
           )}
           strokeWidth={1.5}
         />
-        <span>{group.label}</span>
+        <span>{t(group.labelKey)}</span>
       </button>
       {open && (
         <div className="flex flex-col gap-px px-2">
@@ -162,7 +165,7 @@ function NavGroupSection({
                 )}
               >
                 <item.icon className="h-3.5 w-3.5 shrink-0" strokeWidth={1.5} />
-                <span className="flex-1 text-left truncate uppercase">{item.title}</span>
+                <span className="flex-1 text-left truncate uppercase">{t(item.titleKey)}</span>
                 {item.external && (
                   <ExternalLink className="h-3 w-3 shrink-0 text-matrix-dim" strokeWidth={1.5} />
                 )}
@@ -192,6 +195,7 @@ function SearchDialog({
   onSelect: (path: string) => void;
 }) {
   const [query, setQuery] = useState("");
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (open) setQuery("");
@@ -211,7 +215,7 @@ function SearchDialog({
   const allItems = NAV_GROUPS.flatMap((g) => g.items);
   const filtered = query.trim()
     ? allItems.filter((item) =>
-        item.title.toLowerCase().includes(query.toLowerCase())
+        t(item.titleKey).toLowerCase().includes(query.toLowerCase())
       )
     : allItems;
 
@@ -230,7 +234,7 @@ function SearchDialog({
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="search pages..."
+              placeholder={t("common.searchPages")}
               className="flex-1 bg-transparent font-mono text-sm text-matrix-primary placeholder:text-matrix-dim outline-none"
             />
             <kbd className="border border-matrix-primary/20 px-1.5 py-0.5 font-mono text-[10px] text-matrix-dim">
@@ -240,7 +244,7 @@ function SearchDialog({
           <div className="max-h-64 overflow-y-auto py-1 matrix-scrollbar">
             {filtered.length === 0 ? (
               <p className="px-3 py-4 text-center font-mono text-sm text-matrix-dim">
-                no results found
+                {t("common.noResults")}
               </p>
             ) : (
               filtered.map((item) => (
@@ -250,7 +254,7 @@ function SearchDialog({
                   className="flex w-full items-center gap-2.5 px-3 py-2 font-mono text-sm text-matrix-muted hover:bg-matrix-primary/10 hover:text-matrix-primary transition-colors"
                 >
                   <item.icon className="h-3.5 w-3.5 shrink-0" strokeWidth={1.5} />
-                  <span>{item.title}</span>
+                  <span>{t(item.titleKey)}</span>
                 </button>
               ))
             )}
@@ -268,8 +272,9 @@ export function DashboardLayout() {
   const [searchOpen, setSearchOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
-  const title = PAGE_TITLES[location.pathname] ?? "Dashboard";
+  const titleKey = PAGE_TITLE_KEYS[location.pathname] ?? "nav.dashboard";
 
   // Close mobile sidebar on route change
   useEffect(() => {
@@ -332,9 +337,12 @@ export function DashboardLayout() {
       />
       {/* Header */}
       <div className="relative z-10 flex h-12 items-center justify-between px-4">
-        <span className="font-mono text-sm font-bold uppercase tracking-widest text-matrix-primary glow-text">
-          [MATRIX]
-        </span>
+        <div className="flex items-center">
+          <span className="font-mono text-sm font-bold uppercase tracking-widest text-matrix-primary glow-text">
+            [MATRIX]
+          </span>
+          <span className="font-mono text-[9px] text-matrix-dim ml-1">v{__APP_VERSION__}</span>
+        </div>
         <button
           onClick={() => setMobileOpen(false)}
           className="flex h-6 w-6 items-center justify-center text-matrix-dim hover:text-matrix-primary transition-colors md:hidden"
@@ -350,9 +358,9 @@ export function DashboardLayout() {
           className="flex w-full items-center gap-2 border border-matrix-primary/20 bg-matrix-primary/5 px-2.5 py-1.5 transition-colors hover:border-matrix-primary/40"
         >
           <Search className="h-3.5 w-3.5 text-matrix-dim" strokeWidth={1.5} />
-          <span className="flex-1 text-left font-mono text-xs text-matrix-dim">search...</span>
+          <span className="flex-1 text-left font-mono text-xs text-matrix-dim">{t("common.search")}</span>
           <kbd className="border border-matrix-primary/15 px-1 py-0.5 font-mono text-[9px] text-matrix-dim">
-            CMD+K
+            {t("common.cmdK")}
           </kbd>
         </button>
       </div>
@@ -361,7 +369,7 @@ export function DashboardLayout() {
       <nav className="relative z-10 flex-1 overflow-y-auto matrix-scrollbar pt-1">
         {NAV_GROUPS.map((group) => (
           <NavGroupSection
-            key={group.label}
+            key={group.labelKey}
             group={group}
             currentPath={location.pathname}
             onNavigate={handleNavigate}
@@ -382,7 +390,7 @@ export function DashboardLayout() {
             </p>
           </div>
           <button
-            aria-label="Log out"
+            aria-label={t("common.logOut")}
             className="flex h-6 w-6 items-center justify-center text-matrix-dim hover:text-matrix-primary transition-colors"
           >
             <LogOut className="h-3.5 w-3.5" strokeWidth={1.5} />
@@ -398,7 +406,7 @@ export function DashboardLayout() {
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:top-2 focus:left-2 focus:bg-matrix-primary focus:px-4 focus:py-2 focus:text-sm focus:font-mono focus:text-black"
       >
-        Skip to main content
+        {t("common.skipToMain")}
       </a>
 
       {/* Desktop sidebar */}
@@ -425,7 +433,7 @@ export function DashboardLayout() {
           <div className="flex items-center gap-2.5">
             <button
               onClick={() => setMobileOpen(true)}
-              aria-label="Open navigation"
+              aria-label={t("common.openNav")}
               className="flex h-7 w-7 items-center justify-center text-matrix-dim hover:text-matrix-primary transition-colors md:hidden"
             >
               <Menu className="h-4 w-4" strokeWidth={1.5} />
@@ -433,7 +441,7 @@ export function DashboardLayout() {
             <div className="flex items-center gap-2">
               <span className="font-mono text-xs text-matrix-dim">$</span>
               <h1 className="font-mono text-sm uppercase tracking-wider text-matrix-primary">
-                {title}
+                {t(titleKey)}
               </h1>
             </div>
           </div>
@@ -442,11 +450,12 @@ export function DashboardLayout() {
               {new Date().toLocaleTimeString("en-US", { hour12: false })}
             </span>
             <span className="h-1.5 w-1.5 rounded-full bg-matrix-primary animate-pulse" />
+            <LanguageToggle />
             <a
               href="https://github.com/nocoo/matrix"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="GitHub repository"
+              aria-label={t("common.githubRepo")}
               className="flex h-7 w-7 items-center justify-center text-matrix-dim hover:text-matrix-primary transition-colors"
             >
               <Github className="h-4 w-4" strokeWidth={1.5} />
