@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useRef, useCallback, type ReactNode } from "react";
 import { createPortal } from "react-dom";
+import { useTranslation } from "react-i18next";
 
 // ============================================
 // MatrixAvatar - Procedural avatar generator
@@ -789,6 +790,7 @@ interface BootScreenProps {
 }
 
 export function BootScreen({ onSkip }: BootScreenProps) {
+  const { t } = useTranslation();
   const canSkip = Boolean(onSkip);
   const asciiArt = `
 ███╗   ███╗ █████╗ ████████╗██████╗ ██╗██╗  ██╗
@@ -810,12 +812,12 @@ export function BootScreen({ onSkip }: BootScreenProps) {
     >
       <pre className="text-caption leading-[1.2] mb-6 text-matrix-muted select-none">{asciiArt}</pre>
       <div className="animate-pulse tracking-[0.3em] text-caption font-bold mb-4 uppercase">
-        INITIALIZING NEURAL INTERFACE...
+        {t("pages.loading.initializing")}
       </div>
       <div className="w-64 h-1 bg-matrix-panel-strong relative overflow-hidden">
         <div className="absolute inset-0 bg-matrix-primary animate-[loader_2s_linear_infinite]" />
       </div>
-      {canSkip && <p className="mt-6 text-caption text-matrix-muted uppercase">Click to skip</p>}
+      {canSkip && <p className="mt-6 text-caption text-matrix-muted uppercase">{t("pages.loading.clickToSkip")}</p>}
       <style>{`@keyframes loader { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }`}</style>
     </div>
   );

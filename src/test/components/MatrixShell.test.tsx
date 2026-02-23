@@ -69,7 +69,7 @@ describe("MatrixShell", () => {
 
   it("renders default footer text", () => {
     render(<MatrixShell>content</MatrixShell>);
-    expect(screen.getByText("Matrix Dashboard v1.0")).toBeInTheDocument();
+    expect(screen.getByText(`Matrix Dashboard v${__APP_VERSION__}`)).toBeInTheDocument();
     expect(screen.getByText("matrix + opencode")).toBeInTheDocument();
   });
 
@@ -81,6 +81,6 @@ describe("MatrixShell", () => {
     );
     expect(screen.getByText("Left")).toBeInTheDocument();
     expect(screen.getByText("Right")).toBeInTheDocument();
-    expect(screen.queryByText("Matrix Dashboard v1.0")).not.toBeInTheDocument();
+    expect(screen.queryByText(`Matrix Dashboard v${__APP_VERSION__}`)).not.toBeInTheDocument();
   });
 });

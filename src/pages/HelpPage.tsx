@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { AsciiBox } from "@/components/ui/AsciiBox";
 import { MatrixInput } from "@/components/ui/MatrixExtras";
 import { useHelpViewModel } from "@/viewmodels/useHelpViewModel";
@@ -6,24 +7,25 @@ import { useHelpViewModel } from "@/viewmodels/useHelpViewModel";
 export default function HelpPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const { resources, filteredFAQs, totalFAQs } = useHelpViewModel(searchQuery);
+  const { t } = useTranslation();
 
   return (
     <div className="space-y-4">
       {/* Search */}
-      <AsciiBox title="SEARCH">
+      <AsciiBox title={t("pages.help.search")}>
         <MatrixInput
-          label="search"
+          label={t("common.search").replace("...", "")}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="search help topics..."
+          placeholder={t("pages.help.searchPlaceholder")}
         />
         <p className="font-mono text-[10px] text-matrix-dim mt-1">
-          showing {filteredFAQs.length} of {totalFAQs} entries
+          {t("pages.help.showing", { count: filteredFAQs.length, total: totalFAQs })}
         </p>
       </AsciiBox>
 
       {/* Resources */}
-      <AsciiBox title="RESOURCES">
+      <AsciiBox title={t("pages.help.resources")}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {resources.map((res) => (
             <div
@@ -39,7 +41,7 @@ export default function HelpPage() {
       </AsciiBox>
 
       {/* FAQs */}
-      <AsciiBox title="FREQUENTLY ASKED QUESTIONS">
+      <AsciiBox title={t("pages.help.faq")}>
         <div className="space-y-3">
           {filteredFAQs.map((faq, i) => (
             <div key={i} className="border-b border-matrix-primary/10 pb-2 last:border-0 last:pb-0">
@@ -53,7 +55,7 @@ export default function HelpPage() {
           ))}
           {filteredFAQs.length === 0 && (
             <p className="font-mono text-xs text-matrix-dim text-center py-4">
-              no matching results
+              {t("pages.help.noResults")}
             </p>
           )}
         </div>

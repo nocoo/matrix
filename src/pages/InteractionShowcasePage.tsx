@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { AsciiBox } from "@/components/ui/AsciiBox";
 import { MatrixButton } from "@/components/ui/MatrixButton";
 import { MatrixInput } from "@/components/ui/MatrixExtras";
@@ -15,6 +16,7 @@ export default function InteractionShowcasePage() {
     closeDialog,
     getDialogById,
   } = useInteractionShowcaseViewModel();
+  const { t } = useTranslation();
 
   const [activeToast, setActiveToast] = useState<string | null>(null);
 
@@ -23,7 +25,7 @@ export default function InteractionShowcasePage() {
   return (
     <div className="space-y-4">
       {/* Toast variants */}
-      <AsciiBox title="TOAST VARIANTS">
+      <AsciiBox title={t("pages.interactions.toastVariants")}>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {toasts.map((toast) => (
             <button
@@ -58,7 +60,7 @@ export default function InteractionShowcasePage() {
       </AsciiBox>
 
       {/* Variant labels */}
-      <AsciiBox title="ALL VARIANTS">
+      <AsciiBox title={t("pages.interactions.allVariants")}>
         <div className="flex flex-wrap gap-2">
           {variantLabels.map(({ variant, label }) => (
             <span
@@ -72,7 +74,7 @@ export default function InteractionShowcasePage() {
       </AsciiBox>
 
       {/* Dialog triggers */}
-      <AsciiBox title="DIALOG SHOWCASE">
+      <AsciiBox title={t("pages.interactions.dialogShowcase")}>
         <div className="flex flex-wrap gap-3">
           {dialogs.map((d) => (
             <MatrixButton key={d.id} onClick={() => openDialog(d.id)}>
@@ -105,11 +107,11 @@ export default function InteractionShowcasePage() {
                   </div>
                 )}
                 <div className="flex justify-end gap-2">
-                  <MatrixButton variant="ghost" onClick={closeDialog}>
-                    [CANCEL]
+                  <MatrixButton onClick={closeDialog}>
+                    [{t("common.cancel")}]
                   </MatrixButton>
                   <MatrixButton onClick={closeDialog}>
-                    {currentDialog.style === "confirm" ? "[CONFIRM]" : "[OK]"}
+                    {currentDialog.style === "confirm" ? `[${t("common.confirm")}]` : `[${t("common.ok")}]`}
                   </MatrixButton>
                 </div>
               </div>

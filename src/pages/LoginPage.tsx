@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { AsciiBox } from "@/components/ui/AsciiBox";
 import { MatrixButton } from "@/components/ui/MatrixButton";
 import {
@@ -67,6 +68,7 @@ export default function LoginPage() {
   const [sessionId] = useState(
     () => `0x${Math.random().toString(16).slice(2, 10).toUpperCase()}`,
   );
+  const { t } = useTranslation();
 
   return (
     <div className="relative min-h-screen bg-[var(--matrix-bg)] flex items-center justify-center p-4 overflow-hidden">
@@ -130,21 +132,21 @@ export default function LoginPage() {
               <div className="flex items-center gap-2 mb-1">
                 <div className="w-1.5 h-1.5 bg-matrix-primary animate-pulse" />
                 <TypewriterText
-                  text="ENTER CREDENTIALS TO PROCEED"
+                  text={t("pages.login.enterCredentials")}
                   className="font-mono text-[10px] text-matrix-primary font-bold tracking-widest"
                   speedMs={40}
                   startDelayMs={3200}
                 />
               </div>
               <MatrixInput
-                label="operator id"
+                label={t("pages.login.operatorId")}
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="operator@matrix.sys"
               />
               <MatrixInput
-                label="passphrase"
+                label={t("pages.login.passphrase")}
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -154,10 +156,10 @@ export default function LoginPage() {
 
             {/* Actions */}
             <div className="space-y-2">
-              <MatrixButton className="w-full">[ AUTHENTICATE ]</MatrixButton>
+              <MatrixButton className="w-full">[ {t("pages.login.authenticate")} ]</MatrixButton>
               <div className="flex items-center justify-end">
                 <span className="font-mono text-[10px] text-matrix-dim">
-                  &gt; forgot access? contact sysadmin
+                  {t("pages.login.forgotAccess")}
                 </span>
               </div>
             </div>

@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import { MatrixRain, MatrixAvatar } from "./MatrixExtras";
 
 interface MatrixShellProps {
@@ -30,6 +31,8 @@ export function MatrixShell({
   showAvatar = false,
   avatarName = "matrix",
 }: MatrixShellProps) {
+  const { t } = useTranslation();
+
   return (
     <div
       className={`min-h-screen bg-matrix-dark text-matrix-primary font-matrix p-4 md:p-8 flex flex-col leading-tight text-body selection:bg-matrix-primary selection:text-black overflow-hidden ${rootClassName}`}
@@ -60,14 +63,14 @@ export function MatrixShell({
                   className="text-[#00ff00] font-extralight text-sm md:text-base"
                   style={{ letterSpacing: "2px" }}
                 >
-                  Dashboard
+                  {t("shell.dashboard")}
                 </span>
               </div>
               <div className="flex items-center space-x-4 text-caption text-matrix-muted uppercase font-bold">
                 {headerStatus || (
                   <span className="flex items-center">
                     <span className="w-1.5 h-1.5 bg-matrix-primary rounded-full mr-2 animate-pulse" />
-                    System Online
+                    {t("shell.systemOnline")}
                   </span>
                 )}
               </div>
@@ -81,10 +84,10 @@ export function MatrixShell({
 
         <footer className="mt-6 pt-3 border-t border-matrix-ghost flex justify-between text-caption uppercase font-bold tracking-[0.3em] text-matrix-dim shrink-0">
           <div className="flex space-x-10 items-center">
-            {footerLeft || <span>Matrix Dashboard v1.0</span>}
+            {footerLeft || <span>Matrix Dashboard v{__APP_VERSION__}</span>}
           </div>
           <div className="flex items-center space-x-3">
-            {footerRight || <span className="font-bold">matrix + opencode</span>}
+            {footerRight || <span className="font-bold">{t("shell.footer")}</span>}
           </div>
         </footer>
       </div>
