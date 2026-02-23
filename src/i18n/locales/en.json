@@ -1,0 +1,118 @@
+{
+  "nav": {
+    "blocks": "BLOCKS",
+    "controls": "CONTROLS",
+    "charts": "CHARTS",
+    "pages": "PAGES",
+    "system": "SYSTEM",
+    "dashboard": "Dashboard",
+    "accounts": "Accounts",
+    "cards": "Cards",
+    "records": "Records",
+    "progress": "Progress",
+    "lifeAi": "Life.ai",
+    "components": "Components",
+    "controlsItem": "Controls",
+    "buttons": "Buttons",
+    "feedback": "Feedback",
+    "overlays": "Overlays",
+    "data": "Data",
+    "navigation": "Navigation",
+    "forms": "Forms",
+    "tables": "Tables",
+    "pills": "Pills",
+    "stats": "Stats",
+    "flows": "Flows",
+    "portfolio": "Portfolio",
+    "login": "Login",
+    "static": "Static",
+    "loading": "Loading",
+    "notFound": "404",
+    "help": "Help",
+    "palette": "Palette",
+    "interactions": "Interactions",
+    "settings": "Settings"
+  },
+  "common": {
+    "search": "search...",
+    "searchPages": "search pages...",
+    "noResults": "no results found",
+    "skipToMain": "Skip to main content",
+    "logOut": "Log out",
+    "openNav": "Open navigation",
+    "githubRepo": "GitHub repository",
+    "cmdK": "CMD+K",
+    "on": "ON",
+    "off": "OFF",
+    "cancel": "CANCEL",
+    "confirm": "CONFIRM",
+    "ok": "OK",
+    "delete": "DELETE"
+  },
+  "lang": {
+    "en": "EN",
+    "zh": "中文",
+    "switchTo": "Switch language to {{lang}}"
+  },
+  "pages": {
+    "settings": {
+      "general": "GENERAL",
+      "theme": "Theme",
+      "themeDesc": "Matrix terminal (always dark)",
+      "dark": "DARK",
+      "language": "Language",
+      "languageDesc": "Interface language",
+      "languageValue": "English",
+      "currency": "Currency",
+      "currencyDesc": "Display currency",
+      "currencyValue": "USD",
+      "notifications": "NOTIFICATIONS",
+      "emailNotifications": "Email notifications",
+      "pushNotifications": "Push notifications",
+      "weeklyDigest": "Weekly digest",
+      "dangerZone": "DANGER ZONE",
+      "deleteAccount": "Delete Account",
+      "deleteAccountDesc": "Permanently remove all data"
+    },
+    "help": {
+      "search": "SEARCH",
+      "searchPlaceholder": "search help topics...",
+      "showing": "showing {{count}} of {{total}} entries",
+      "resources": "RESOURCES",
+      "faq": "FREQUENTLY ASKED QUESTIONS",
+      "noResults": "no matching results"
+    },
+    "notFound": {
+      "title": "404",
+      "error": "> ERROR: node not found in the matrix",
+      "description": "the requested path does not exist in this reality",
+      "returnToBase": "RETURN TO BASE"
+    },
+    "login": {
+      "enterCredentials": "ENTER CREDENTIALS TO PROCEED",
+      "operatorId": "operator id",
+      "passphrase": "passphrase",
+      "authenticate": "AUTHENTICATE",
+      "forgotAccess": "> forgot access? contact sysadmin"
+    },
+    "static": {
+      "termsOfService": "TERMS OF SERVICE",
+      "endOfDocument": "[END OF DOCUMENT]",
+      "returnToDashboard": "> return to dashboard"
+    },
+    "loading": {
+      "initializing": "INITIALIZING NEURAL INTERFACE...",
+      "clickToSkip": "Click to skip"
+    },
+    "interactions": {
+      "toastVariants": "TOAST VARIANTS",
+      "allVariants": "ALL VARIANTS",
+      "dialogShowcase": "DIALOG SHOWCASE"
+    }
+  },
+  "shell": {
+    "dashboard": "Dashboard",
+    "systemOnline": "System Online",
+    "footer": "matrix + opencode"
+  }
+}

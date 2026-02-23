@@ -1,0 +1,118 @@
+{
+  "nav": {
+    "blocks": "模块",
+    "controls": "控件",
+    "charts": "图表",
+    "pages": "页面",
+    "system": "系统",
+    "dashboard": "仪表盘",
+    "accounts": "账户",
+    "cards": "卡片",
+    "records": "记录",
+    "progress": "进度",
+    "lifeAi": "Life.ai",
+    "components": "组件",
+    "controlsItem": "控件",
+    "buttons": "按钮",
+    "feedback": "反馈",
+    "overlays": "叠层",
+    "data": "数据",
+    "navigation": "导航",
+    "forms": "表单",
+    "tables": "表格",
+    "pills": "标签",
+    "stats": "统计",
+    "flows": "流量",
+    "portfolio": "组合",
+    "login": "登录",
+    "static": "静态",
+    "loading": "加载",
+    "notFound": "404",
+    "help": "帮助",
+    "palette": "调色板",
+    "interactions": "交互",
+    "settings": "设置"
+  },
+  "common": {
+    "search": "搜索...",
+    "searchPages": "搜索页面...",
+    "noResults": "未找到结果",
+    "skipToMain": "跳转到主内容",
+    "logOut": "退出",
+    "openNav": "打开导航",
+    "githubRepo": "GitHub 仓库",
+    "cmdK": "CMD+K",
+    "on": "开启",
+    "off": "关闭",
+    "cancel": "取消",
+    "confirm": "确认",
+    "ok": "确定",
+    "delete": "删除"
+  },
+  "lang": {
+    "en": "EN",
+    "zh": "中文",
+    "switchTo": "切换语言至{{lang}}"
+  },
+  "pages": {
+    "settings": {
+      "general": "通用",
+      "theme": "主题",
+      "themeDesc": "矩阵终端（始终暗色）",
+      "dark": "暗色",
+      "language": "语言",
+      "languageDesc": "界面语言",
+      "languageValue": "中文",
+      "currency": "货币",
+      "currencyDesc": "显示货币",
+      "currencyValue": "USD",
+      "notifications": "通知",
+      "emailNotifications": "邮件通知",
+      "pushNotifications": "推送通知",
+      "weeklyDigest": "每周摘要",
+      "dangerZone": "危险区域",
+      "deleteAccount": "删除账户",
+      "deleteAccountDesc": "永久删除所有数据"
+    },
+    "help": {
+      "search": "搜索",
+      "searchPlaceholder": "搜索帮助主题...",
+      "showing": "显示 {{count}}/{{total}} 条",
+      "resources": "资源",
+      "faq": "常见问题",
+      "noResults": "没有匹配的结果"
+    },
+    "notFound": {
+      "title": "404",
+      "error": "> 错误：在矩阵中未找到节点",
+      "description": "请求的路径在此现实中不存在",
+      "returnToBase": "返回基地"
+    },
+    "login": {
+      "enterCredentials": "输入凭据以继续",
+      "operatorId": "操作员 ID",
+      "passphrase": "密码",
+      "authenticate": "认证",
+      "forgotAccess": "> 忘记访问权限？联系系统管理员"
+    },
+    "static": {
+      "termsOfService": "服务条款",
+      "endOfDocument": "[文档结束]",
+      "returnToDashboard": "> 返回仪表盘"
+    },
+    "loading": {
+      "initializing": "正在初始化神经接口...",
+      "clickToSkip": "点击跳过"
+    },
+    "interactions": {
+      "toastVariants": "通知变体",
+      "allVariants": "所有变体",
+      "dialogShowcase": "对话框展示"
+    }
+  },
+  "shell": {
+    "dashboard": "仪表盘",
+    "systemOnline": "系统在线",
+    "footer": "矩阵 + opencode"
+  }
+}
