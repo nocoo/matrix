@@ -47,7 +47,7 @@ cd matrix
 # Install dependencies
 bun install
 
-# Start dev server (port 7019)
+# Start dev server (port 7013)
 bun dev
 
 # Run tests
@@ -60,7 +60,7 @@ bun run build
 bun run lint
 ```
 
-Open [http://localhost:7019](http://localhost:7019) to see the dashboard.
+Open [http://localhost:7013](http://localhost:7013) to see the dashboard.
 
 ## Project Structure
 

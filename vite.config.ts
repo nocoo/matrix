@@ -27,7 +27,7 @@ export default defineConfig(() => ({
   },
   server: {
     host: "::",
-    port: 7019,
+    port: 7013,
     allowedHosts: ["matrix.dev.hexly.ai"],
     hmr: {
       overlay: false,
