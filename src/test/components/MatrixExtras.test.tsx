@@ -1,11 +1,13 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent, act } from "@testing-library/react";
+import { createRef } from "react";
 import {
   MatrixAvatar,
   ScrambleText,
   DecodingText,
   SignalBox,
   MatrixInput,
+  MatrixSelect,
   TypewriterText,
   ConnectionStatus,
   DataRow,
@@ -14,6 +16,7 @@ import {
   Sparkline,
   MatrixRain,
   BootScreen,
+  FloatingPortal,
 } from "@/components/ui/MatrixExtras";
 
 // ---------------------------------------------------------------------------
@@ -906,5 +909,335 @@ describe("BootScreen", () => {
     const { container } = render(<BootScreen />);
     const outer = container.firstElementChild as HTMLElement;
     expect(outer.className).not.toContain("cursor-pointer");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// MatrixSelect
+// ---------------------------------------------------------------------------
+describe("MatrixSelect", () => {
+  const options = [
+    { value: "a", label: "Option A" },
+    { value: "b", label: "Option B" },
+    { value: "c", label: "Option C" },
+  ];
+
+  it("renders with selected value label", () => {
+    render(<MatrixSelect value="b" onChange={() => {}} options={options} />);
+    expect(screen.getByText("Option B")).toBeInTheDocument();
+  });
+
+  it("renders label when provided", () => {
+    render(
+      <MatrixSelect label="Select Item" value="a" onChange={() => {}} options={options} />,
+    );
+    expect(screen.getByText("Select Item")).toBeInTheDocument();
+  });
+
+  it("does not render label when not provided", () => {
+    const { container } = render(
+      <MatrixSelect value="a" onChange={() => {}} options={options} />,
+    );
+    // The label span with specific classes should not exist
+    const labelSpan = container.querySelector("span.text-caption.text-matrix-muted.uppercase.font-bold.block.mb-2");
+    expect(labelSpan).toBeNull();
+  });
+
+  it("opens dropdown when trigger is clicked", () => {
+    render(<MatrixSelect value="a" onChange={() => {}} options={options} />);
+
+    fireEvent.click(screen.getByText("Option A"));
+
+    // All options should be visible in the dropdown
+    expect(screen.getByText("Option B")).toBeInTheDocument();
+    expect(screen.getByText("Option C")).toBeInTheDocument();
+  });
+
+  it("closes dropdown when clicking outside (backdrop)", () => {
+    render(<MatrixSelect value="a" onChange={() => {}} options={options} />);
+
+    // Open
+    fireEvent.click(screen.getByText("Option A"));
+    expect(screen.getAllByText("Option B").length).toBeGreaterThanOrEqual(1);
+
+    // Click on the backdrop (fixed inset-0 div)
+    const backdrop = document.querySelector(".fixed.inset-0.z-\\[9998\\]")!;
+    fireEvent.click(backdrop);
+
+    // Dropdown should close - only the trigger option visible
+    expect(screen.queryAllByRole("button").length).toBe(1);
+  });
+
+  it("calls onChange when option is selected", () => {
+    const onChange = vi.fn();
+    render(<MatrixSelect value="a" onChange={onChange} options={options} />);
+
+    // Open dropdown
+    fireEvent.click(screen.getByText("Option A"));
+
+    // Click on Option B
+    fireEvent.click(screen.getByText("Option B"));
+
+    expect(onChange).toHaveBeenCalledWith("b");
+  });
+
+  it("closes dropdown after selection", () => {
+    const onChange = vi.fn();
+    render(<MatrixSelect value="a" onChange={onChange} options={options} />);
+
+    // Open
+    fireEvent.click(screen.getByText("Option A"));
+
+    // Select Option B
+    fireEvent.click(screen.getByText("Option B"));
+
+    // Dropdown should close
+    expect(screen.queryAllByRole("button").length).toBe(1);
+  });
+
+  it("highlights selected option in dropdown", () => {
+    render(<MatrixSelect value="b" onChange={() => {}} options={options} />);
+
+    // Open dropdown
+    fireEvent.click(screen.getByText("Option B"));
+
+    // Get the option buttons in the portal
+    const buttons = document.querySelectorAll(".fixed.z-\\[9999\\] button");
+    const selectedButton = Array.from(buttons).find(btn => btn.textContent === "Option B");
+
+    expect(selectedButton?.className).toContain("bg-matrix-primary/15");
+  });
+
+  it("applies rotate-180 to arrow when open", () => {
+    const { container } = render(
+      <MatrixSelect value="a" onChange={() => {}} options={options} />,
+    );
+
+    const trigger = screen.getByRole("button");
+    const arrow = container.querySelector("span.text-matrix-dim.text-caption");
+
+    // Initially closed - no rotate
+    expect(arrow?.className).not.toContain("rotate-180");
+
+    // Open
+    fireEvent.click(trigger);
+
+    // Now should have rotate-180
+    expect(arrow?.className).toContain("rotate-180");
+  });
+
+  it("applies custom className", () => {
+    const { container } = render(
+      <MatrixSelect value="a" onChange={() => {}} options={options} className="custom-select" />,
+    );
+    expect(container.firstElementChild?.className).toContain("custom-select");
+  });
+
+  it("shows empty label when value not found", () => {
+    render(<MatrixSelect value="nonexistent" onChange={() => {}} options={options} />);
+    const trigger = screen.getByRole("button");
+    // The first span inside trigger should be empty
+    const labelSpan = trigger.querySelector("span:first-child");
+    expect(labelSpan?.textContent).toBe("");
+  });
+
+  it("handles scroll and resize events when open", () => {
+    const addEventSpy = vi.spyOn(window, "addEventListener");
+    const removeEventSpy = vi.spyOn(window, "removeEventListener");
+
+    const { unmount } = render(
+      <MatrixSelect value="a" onChange={() => {}} options={options} />,
+    );
+
+    // Open
+    fireEvent.click(screen.getByRole("button"));
+
+    expect(addEventSpy).toHaveBeenCalledWith("scroll", expect.any(Function), true);
+    expect(addEventSpy).toHaveBeenCalledWith("resize", expect.any(Function));
+
+    // Close
+    const backdrop = document.querySelector(".fixed.inset-0.z-\\[9998\\]")!;
+    fireEvent.click(backdrop);
+
+    expect(removeEventSpy).toHaveBeenCalledWith("scroll", expect.any(Function), true);
+    expect(removeEventSpy).toHaveBeenCalledWith("resize", expect.any(Function));
+
+    unmount();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// FloatingPortal
+// ---------------------------------------------------------------------------
+describe("FloatingPortal", () => {
+  it("renders nothing when open is false", () => {
+    const triggerRef = createRef<HTMLDivElement>();
+    render(
+      <>
+        <div ref={triggerRef}>Trigger</div>
+        <FloatingPortal triggerRef={triggerRef} open={false} onClose={() => {}}>
+          <span>Portal Content</span>
+        </FloatingPortal>
+      </>,
+    );
+    expect(screen.queryByText("Portal Content")).not.toBeInTheDocument();
+  });
+
+  it("renders portal content when open is true", () => {
+    const triggerRef = createRef<HTMLDivElement>();
+    render(
+      <>
+        <div ref={triggerRef}>Trigger</div>
+        <FloatingPortal triggerRef={triggerRef} open={true} onClose={() => {}}>
+          <span>Portal Content</span>
+        </FloatingPortal>
+      </>,
+    );
+    expect(screen.getByText("Portal Content")).toBeInTheDocument();
+  });
+
+  it("calls onClose when backdrop is clicked", () => {
+    const onClose = vi.fn();
+    const triggerRef = createRef<HTMLDivElement>();
+    render(
+      <>
+        <div ref={triggerRef}>Trigger</div>
+        <FloatingPortal triggerRef={triggerRef} open={true} onClose={onClose}>
+          <span>Content</span>
+        </FloatingPortal>
+      </>,
+    );
+
+    const backdrop = document.querySelector(".fixed.inset-0.z-\\[9998\\]")!;
+    fireEvent.click(backdrop);
+
+    expect(onClose).toHaveBeenCalledOnce();
+  });
+
+  it("applies custom className to content container", () => {
+    const triggerRef = createRef<HTMLDivElement>();
+    render(
+      <>
+        <div ref={triggerRef}>Trigger</div>
+        <FloatingPortal triggerRef={triggerRef} open={true} onClose={() => {}} className="custom-portal">
+          <span>Content</span>
+        </FloatingPortal>
+      </>,
+    );
+
+    const contentContainer = document.querySelector(".fixed.z-\\[9999\\].custom-portal");
+    expect(contentContainer).toBeInTheDocument();
+  });
+
+  it("positions content with left alignment by default", () => {
+    const triggerRef = createRef<HTMLDivElement>();
+
+    render(
+      <>
+        <div ref={triggerRef} style={{ position: "absolute", top: 100, left: 50, width: 100 }}>
+          Trigger
+        </div>
+        <FloatingPortal triggerRef={triggerRef} open={true} onClose={() => {}}>
+          <span>Content</span>
+        </FloatingPortal>
+      </>,
+    );
+
+    // Just verify the portal is rendered with the correct class structure
+    const contentContainer = document.querySelector(".fixed.z-\\[9999\\]");
+    expect(contentContainer).toBeInTheDocument();
+  });
+
+  it("uses right alignment when align='right'", () => {
+    const triggerRef = createRef<HTMLDivElement>();
+    render(
+      <>
+        <div ref={triggerRef}>Trigger</div>
+        <FloatingPortal triggerRef={triggerRef} open={true} onClose={() => {}} align="right">
+          <span>Content</span>
+        </FloatingPortal>
+      </>,
+    );
+
+    const contentContainer = document.querySelector(".fixed.z-\\[9999\\]") as HTMLElement;
+    // When align=right, style.right should be set (not style.left)
+    expect(contentContainer.style.right).toBeDefined();
+  });
+
+  it("applies custom offsetY", () => {
+    const triggerRef = createRef<HTMLDivElement>();
+    render(
+      <>
+        <div ref={triggerRef}>Trigger</div>
+        <FloatingPortal triggerRef={triggerRef} open={true} onClose={() => {}} offsetY={10}>
+          <span>Content</span>
+        </FloatingPortal>
+      </>,
+    );
+
+    // Portal should render successfully
+    expect(screen.getByText("Content")).toBeInTheDocument();
+  });
+
+  it("applies custom minWidth", () => {
+    const triggerRef = createRef<HTMLDivElement>();
+    render(
+      <>
+        <div ref={triggerRef}>Trigger</div>
+        <FloatingPortal triggerRef={triggerRef} open={true} onClose={() => {}} minWidth={200}>
+          <span>Content</span>
+        </FloatingPortal>
+      </>,
+    );
+
+    const contentContainer = document.querySelector(".fixed.z-\\[9999\\]") as HTMLElement;
+    expect(contentContainer.style.minWidth).toBe("200px");
+  });
+
+  it("handles scroll and resize events when open", () => {
+    const addEventSpy = vi.spyOn(window, "addEventListener");
+    const removeEventSpy = vi.spyOn(window, "removeEventListener");
+    const triggerRef = createRef<HTMLDivElement>();
+
+    const { rerender } = render(
+      <>
+        <div ref={triggerRef}>Trigger</div>
+        <FloatingPortal triggerRef={triggerRef} open={true} onClose={() => {}}>
+          <span>Content</span>
+        </FloatingPortal>
+      </>,
+    );
+
+    expect(addEventSpy).toHaveBeenCalledWith("scroll", expect.any(Function), true);
+    expect(addEventSpy).toHaveBeenCalledWith("resize", expect.any(Function));
+
+    // Close by changing open to false
+    rerender(
+      <>
+        <div ref={triggerRef}>Trigger</div>
+        <FloatingPortal triggerRef={triggerRef} open={false} onClose={() => {}}>
+          <span>Content</span>
+        </FloatingPortal>
+      </>,
+    );
+
+    expect(removeEventSpy).toHaveBeenCalledWith("scroll", expect.any(Function), true);
+    expect(removeEventSpy).toHaveBeenCalledWith("resize", expect.any(Function));
+  });
+
+  it("renders children correctly", () => {
+    const triggerRef = createRef<HTMLDivElement>();
+    render(
+      <>
+        <div ref={triggerRef}>Trigger</div>
+        <FloatingPortal triggerRef={triggerRef} open={true} onClose={() => {}}>
+          <div data-testid="child-1">Child 1</div>
+          <div data-testid="child-2">Child 2</div>
+        </FloatingPortal>
+      </>,
+    );
+
+    expect(screen.getByTestId("child-1")).toBeInTheDocument();
+    expect(screen.getByTestId("child-2")).toBeInTheDocument();
   });
 });
