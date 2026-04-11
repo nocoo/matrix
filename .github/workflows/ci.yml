@@ -13,3 +13,4 @@ jobs:
         pre-command: "bun run build"
         test-command: "bun run test:coverage"
         typecheck-command: "true"
+        enable-l2: "false"
