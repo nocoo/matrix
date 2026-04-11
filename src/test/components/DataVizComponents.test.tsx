@@ -715,3 +715,83 @@ describe("TrendChart", () => {
     expect(screen.getByText("PEAK: 10 tokens")).toBeInTheDocument();
   });
 });
+
+// ===========================================================================
+// Additional branch coverage tests
+// ===========================================================================
+
+describe("DataViz edge cases for branch coverage", () => {
+  it("formatTokenValue handles non-number non-string value (coverage line 500)", () => {
+    // formatTokenValue with an object as value (neither number nor string)
+    const heatmap = {
+      weeks: [[{ day: "2026-01-05", value: { custom: true } as unknown as number, level: 1 }]],
+      to: "2026-01-11",
+      week_starts_on: "sun" as const,
+    };
+    const { container } = render(<ActivityHeatmap heatmap={heatmap} />);
+    const cell = container.querySelector("[title]");
+    // formatTokenValue with non-number, non-string returns "0"
+    expect(cell?.getAttribute("title")).toContain("0 tokens");
+  });
+
+  it("formatTokenValue handles null value", () => {
+    const heatmap = {
+      weeks: [[{ day: "2026-01-05", value: null as unknown as number, level: 1 }]],
+      to: "2026-01-11",
+      week_starts_on: "sun" as const,
+    };
+    const { container } = render(<ActivityHeatmap heatmap={heatmap} />);
+    const cell = container.querySelector("[title]");
+    // null coalesces to 0 for cellValue, but formatTokenValue(null) would be caught by the ?? 0
+    // In the component: cellValue = cell.value ?? cell.total_tokens ?? cell.billable_total_tokens ?? 0
+    // So null becomes 0 via the chain
+    expect(cell?.getAttribute("title")).toContain("0 tokens");
+  });
+
+  it("formatTokenValue handles undefined value", () => {
+    const heatmap = {
+      weeks: [[{ day: "2026-01-05", value: undefined as unknown as number, level: 1 }]],
+      to: "2026-01-11",
+      week_starts_on: "sun" as const,
+    };
+    const { container } = render(<ActivityHeatmap heatmap={heatmap} />);
+    const cell = container.querySelector("[title]");
+    expect(cell?.getAttribute("title")).toContain("0 tokens");
+  });
+
+  it("formatTokenValue handles boolean value", () => {
+    const heatmap = {
+      weeks: [[{ day: "2026-01-05", value: true as unknown as number, level: 1 }]],
+      to: "2026-01-11",
+      week_starts_on: "sun" as const,
+    };
+    const { container } = render(<ActivityHeatmap heatmap={heatmap} />);
+    const cell = container.querySelector("[title]");
+    // boolean is neither number nor string -> return "0"
+    expect(cell?.getAttribute("title")).toContain("0 tokens");
+  });
+
+  it("renders TrendMonitor with single isolated point between missing data", () => {
+    // This tests the solveSmoothPath with 1 point (line 144)
+    const rows = [
+      { hour: "00:00", missing: true },
+      { hour: "01:00", billable_total_tokens: 500 },
+      { hour: "02:00", missing: true },
+      { hour: "03:00", missing: true },
+    ];
+    const { container } = render(<TrendMonitor rows={rows} />);
+    // The single point should render as a dot
+    const dots = container.querySelectorAll("[class*='rounded-full']");
+    expect(dots.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it("renders TrendMonitor with exactly 1 non-missing value", () => {
+    // Ensures singlePoints logic is exercised for the 1-point path case
+    const rows = [
+      { hour: "00:00", billable_total_tokens: 1000 },
+    ];
+    const { container } = render(<TrendMonitor rows={rows} />);
+    const svg = container.querySelector("svg");
+    expect(svg).toBeInTheDocument();
+  });
+});
