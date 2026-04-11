@@ -1435,3 +1435,142 @@ describe("RunDetailModal", () => {
     expect(onClose).toHaveBeenCalledOnce();
   });
 });
+
+// ============================================
+// Additional branch coverage tests
+// ============================================
+
+describe("RunnerComponents edge cases for branch coverage", () => {
+  it("shows 'Tomorrow' label for tasks scheduled tomorrow", () => {
+    const now = new Date();
+    // Create a date for tomorrow
+    const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 10, 0, 0);
+    const countdown = tomorrow.getTime() - now.getTime();
+
+    const items: UpcomingTask[] = [
+      {
+        task: { id: "t1", executor: "shell", description: "d", timeout: 60 },
+        schedule: { task: "t1", hour: 10, minute: 0, weekday: "*" },
+        nextRun: tomorrow,
+        countdown,
+      },
+    ];
+    render(<UpcomingTasks items={items} />);
+    expect(screen.getByText("Tomorrow")).toBeInTheDocument();
+  });
+
+  it("shows weekday name for tasks scheduled more than 1 day away", () => {
+    const now = new Date();
+    // Create a date 3 days from now
+    const futureDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 3, 10, 0, 0);
+    const countdown = futureDate.getTime() - now.getTime();
+
+    const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const expectedWeekday = weekdays[futureDate.getDay()];
+
+    const items: UpcomingTask[] = [
+      {
+        task: { id: "t1", executor: "shell", description: "d", timeout: 60 },
+        schedule: { task: "t1", hour: 10, minute: 0, weekday: "*" },
+        nextRun: futureDate,
+        countdown,
+      },
+    ];
+    render(<UpcomingTasks items={items} />);
+    expect(screen.getByText(expectedWeekday)).toBeInTheDocument();
+  });
+
+  it("RunnerTrendChart renders chart with invalid date format in data", () => {
+    // This tests the formatTrendTime fallback (line 735)
+    const data: TrendPoint[] = [
+      { date: "invalid-date-format", total: 10, success: 8, successRate: 0.8 },
+    ];
+    const { container } = render(<RunnerTrendChart data={data} />);
+    // Should still render without crashing
+    expect(container.querySelector("svg")).toBeInTheDocument();
+  });
+
+  it("RunnerTrendChart shows tooltip with formatted time from valid date", () => {
+    const data: TrendPoint[] = [
+      { date: "2026-01-15T08:30:00Z", total: 10, success: 8, successRate: 0.8 },
+    ];
+    const { container } = render(<RunnerTrendChart data={data} />);
+
+    const hoverOverlay = container.querySelector(".absolute.inset-0.z-20") as HTMLElement;
+
+    vi.spyOn(hoverOverlay, "getBoundingClientRect").mockReturnValue({
+      left: 0,
+      top: 0,
+      right: 500,
+      bottom: 200,
+      width: 500,
+      height: 200,
+      x: 0,
+      y: 0,
+      toJSON: () => {},
+    });
+
+    fireEvent.mouseMove(hoverOverlay, { clientX: 250, clientY: 100 });
+
+    // Tooltip should show formatted time "08:30"
+    expect(screen.getByText("08:30")).toBeInTheDocument();
+  });
+
+  it("RunHistory sorting handles runs with missing timestamps gracefully", () => {
+    const runs: RunSummary[] = [
+      makeRun({ id: "r1", task: "a", started_at: "2026-01-15T10:00:00Z", finished_at: null }),
+      makeRun({ id: "r2", task: "b", started_at: "2026-01-15T08:00:00Z", finished_at: "2026-01-15T08:05:00Z" }),
+    ];
+    render(
+      <RunHistory
+        runs={runs}
+        loading={false}
+        page={1}
+        totalPages={1}
+        onPageChange={() => {}}
+        onSelectRun={() => {}}
+      />,
+    );
+    // Both runs should render
+    expect(screen.getByText("a")).toBeInTheDocument();
+    expect(screen.getByText("b")).toBeInTheDocument();
+
+    // Click time column to sort
+    fireEvent.click(screen.getByTitle("Sort by time"));
+    // Both should still be present
+    expect(screen.getByText("a")).toBeInTheDocument();
+    expect(screen.getByText("b")).toBeInTheDocument();
+  });
+
+  it("UpcomingTasks countdown animation color for <= 5 minutes", () => {
+    const now = new Date();
+    const items: UpcomingTask[] = [
+      {
+        task: { id: "t1", executor: "shell", description: "d", timeout: 60 },
+        schedule: { task: "t1", hour: 10, minute: 0, weekday: "*" },
+        nextRun: new Date(now.getTime() + 3 * 60 * 1000), // 3 minutes
+        countdown: 3 * 60 * 1000,
+      },
+    ];
+    const { container } = render(<UpcomingTasks items={items} />);
+    // Should have warning/pulse class for <= 5 minutes
+    const countdownEl = container.querySelector(".animate-pulse");
+    expect(countdownEl).toBeInTheDocument();
+  });
+
+  it("UpcomingTasks countdown color for <= 15 minutes", () => {
+    const now = new Date();
+    const items: UpcomingTask[] = [
+      {
+        task: { id: "t1", executor: "shell", description: "d", timeout: 60 },
+        schedule: { task: "t1", hour: 10, minute: 0, weekday: "*" },
+        nextRun: new Date(now.getTime() + 10 * 60 * 1000), // 10 minutes
+        countdown: 10 * 60 * 1000,
+      },
+    ];
+    const { container } = render(<UpcomingTasks items={items} />);
+    // Should render with bright color class
+    const brightEl = container.querySelector(".text-matrix-bright");
+    expect(brightEl).toBeInTheDocument();
+  });
+});
