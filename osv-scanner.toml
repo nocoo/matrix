@@ -25,3 +25,39 @@ reason = "Indirect: minimatch via eslint, @typescript-eslint"
 [[IgnoredVulns]]
 id = "GHSA-7r86-cg39-jmmj"
 reason = "Indirect: minimatch via eslint, @typescript-eslint"
+
+[[IgnoredVulns]]
+id = "GHSA-3v7f-55p6-f55p"
+reason = "Indirect: picomatch via vitest/tinyglobby (devDependency)"
+
+[[IgnoredVulns]]
+id = "GHSA-c2c7-rcm5-vvqj"
+reason = "Indirect: picomatch via vitest/tinyglobby (devDependency)"
+
+[[IgnoredVulns]]
+id = "GHSA-mw96-cpmx-2vgc"
+reason = "Indirect: rollup via vite (devDependency)"
+
+[[IgnoredVulns]]
+id = "GHSA-2mjp-6q6p-2qxm"
+reason = "Indirect: undici via jsdom (devDependency)"
+
+[[IgnoredVulns]]
+id = "GHSA-4992-7rv2-5pvq"
+reason = "Indirect: undici via jsdom (devDependency)"
+
+[[IgnoredVulns]]
+id = "GHSA-f269-vfmq-vjvj"
+reason = "Indirect: undici via jsdom (devDependency)"
+
+[[IgnoredVulns]]
+id = "GHSA-phc3-fgpg-7m6h"
+reason = "Indirect: undici via jsdom (devDependency)"
+
+[[IgnoredVulns]]
+id = "GHSA-v9p9-hfj2-hcw8"
+reason = "Indirect: undici via jsdom (devDependency)"
+
+[[IgnoredVulns]]
+id = "GHSA-vrm6-8vpv-qv8q"
+reason = "Indirect: undici via jsdom (devDependency)"
