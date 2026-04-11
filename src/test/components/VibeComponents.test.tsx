@@ -1087,4 +1087,165 @@ describe("CostAnalysisModal", () => {
     // undefined share → 0 → "0%"
     expect(screen.getByText(/Test \(0%\)/)).toBeInTheDocument();
   });
+
+  it("handles model with undefined id and name", () => {
+    render(
+      <CostAnalysisModal
+        isOpen
+        onClose={() => {}}
+        fleetData={[
+          {
+            label: "FLEET",
+            usd: 10,
+            models: [
+              { id: undefined as unknown as string, name: undefined as unknown as string, share: 50 },
+            ],
+          },
+        ]}
+      />,
+    );
+    expect(screen.getByText("FLEET")).toBeInTheDocument();
+    // model.name is undefined -> ""
+    // model.id is undefined -> "" (fallback key uses name-index)
+    expect(screen.getByText(/\(50%\)/)).toBeInTheDocument();
+  });
+
+  it("handles model with null id uses name for key", () => {
+    render(
+      <CostAnalysisModal
+        isOpen
+        onClose={() => {}}
+        fleetData={[
+          {
+            label: "FLEET",
+            usd: 10,
+            models: [
+              { id: null as unknown as string, name: "ModelName", share: 30 },
+            ],
+          },
+        ]}
+      />,
+    );
+    expect(screen.getByText(/ModelName \(30%\)/)).toBeInTheDocument();
+  });
+
+  it("handles model with empty calc string (defaults to DYNAMIC)", () => {
+    render(
+      <CostAnalysisModal
+        isOpen
+        onClose={() => {}}
+        fleetData={[
+          {
+            label: "FLEET",
+            usd: 5,
+            models: [
+              { id: "m1", name: "Model1", share: 25, calc: "" },
+            ],
+          },
+        ]}
+      />,
+    );
+    // Empty calc -> "DYNAMIC"
+    expect(screen.getByText("via DYNAMIC")).toBeInTheDocument();
+  });
+
+  it("handles model with whitespace-only calc string (defaults to DYNAMIC)", () => {
+    render(
+      <CostAnalysisModal
+        isOpen
+        onClose={() => {}}
+        fleetData={[
+          {
+            label: "FLEET",
+            usd: 5,
+            models: [
+              { id: "m1", name: "Model1", share: 25, calc: "   " },
+            ],
+          },
+        ]}
+      />,
+    );
+    // Whitespace-only calc -> trimmed to "" -> "DYNAMIC"
+    expect(screen.getByText("via DYNAMIC")).toBeInTheDocument();
+  });
+
+  it("handles model with non-finite share (defaults to 0%)", () => {
+    render(
+      <CostAnalysisModal
+        isOpen
+        onClose={() => {}}
+        fleetData={[
+          {
+            label: "FLEET",
+            usd: 10,
+            models: [
+              { id: "m1", name: "ModelInf", share: Infinity },
+            ],
+          },
+        ]}
+      />,
+    );
+    // Infinity is not finite, so shareValue defaults to 0, then "0%"
+    expect(screen.getByText(/ModelInf \(0%\)/)).toBeInTheDocument();
+  });
+
+  it("handles model with NaN share (shows 0%)", () => {
+    render(
+      <CostAnalysisModal
+        isOpen
+        onClose={() => {}}
+        fleetData={[
+          {
+            label: "FLEET",
+            usd: 10,
+            models: [
+              { id: "m1", name: "ModelNaN", share: NaN },
+            ],
+          },
+        ]}
+      />,
+    );
+    // NaN is not finite -> shareValue = 0, then "0%"
+    expect(screen.getByText(/ModelNaN \(0%\)/)).toBeInTheDocument();
+  });
+
+  it("handles fleet with null label (shows empty string)", () => {
+    render(
+      <CostAnalysisModal
+        isOpen
+        onClose={() => {}}
+        fleetData={[
+          {
+            label: null as unknown as string,
+            usd: 5,
+            models: [],
+          },
+        ]}
+      />,
+    );
+    // null label -> "" (empty string)
+    // The fleet section should render but with empty label
+    // Just verify the total cost shows $5.00
+    expect(screen.getAllByText("$5.00").length).toBeGreaterThanOrEqual(1);
+  });
+
+  it("handles fleet with undefined models array (treated as empty)", () => {
+    render(
+      <CostAnalysisModal
+        isOpen
+        onClose={() => {}}
+        fleetData={[
+          {
+            label: "FLEET",
+            usd: 5,
+            models: undefined as unknown as Array<{ name: string; share: number }>,
+          },
+        ]}
+      />,
+    );
+    // undefined models -> [] (empty array)
+    expect(screen.getByText("FLEET")).toBeInTheDocument();
+    // $5.00 appears for both total and fleet
+    expect(screen.getAllByText("$5.00").length).toBeGreaterThanOrEqual(1);
+  });
 });
