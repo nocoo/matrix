@@ -39,13 +39,6 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-/** Flush pending rAF callbacks */
-function _flushRAF(time = 16000) {
-  const toRun = [...rafCallbacks];
-  rafCallbacks = [];
-  toRun.forEach((cb) => cb(time));
-}
-
 // ============================================
 // BackendStatus
 // ============================================

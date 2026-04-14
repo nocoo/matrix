@@ -30,8 +30,7 @@ export default function FlowComparisonPage() {
       <AsciiBox title="MONTHLY CASH FLOW">
         <TrendMonitor
           data={flowData.map((d) => d.inflow)}
-          labels={flowData.map((d) => d.month)}
-          height={160}
+          label="INFLOW"
           color="var(--matrix-ink)"
         />
       </AsciiBox>
