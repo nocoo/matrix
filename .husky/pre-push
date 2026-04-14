@@ -1,1 +1,1 @@
-bun run test && bun run lint
+bun run build && bun run test:coverage && bun run lint
