@@ -37,7 +37,7 @@ export default function LifeAiPage() {
           <span className="font-mono text-sm text-matrix-primary">{dateStr}</span>
           <MatrixButton size="small" onClick={goToNextDay}>[&gt;]</MatrixButton>
         </div>
-        <MatrixButton size="small" variant="ghost" onClick={goToToday}>
+        <MatrixButton size="small" onClick={goToToday}>
           [TODAY]
         </MatrixButton>
       </div>
