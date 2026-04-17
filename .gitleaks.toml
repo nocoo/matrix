@@ -1,0 +1,11 @@
+[extend]
+# Use default gitleaks rules
+
+[allowlist]
+  paths = [
+    '__tests__/',
+    'tests/',
+    'test/',
+    '.*\.test\.ts',
+    '.*\.spec\.ts',
+  ]
