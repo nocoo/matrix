@@ -17,11 +17,15 @@ export default defineConfig({
     include: ["src/**/*.{test,spec}.{ts,tsx}"],
     coverage: {
       provider: "v8",
+      // AST-aware remapping is built into vitest v4+; no opt-in needed.
       reporter: ["text", "text-summary", "lcov"],
       include: ["src/components/ui/**/*.{ts,tsx}", "src/lib/**/*.{ts,tsx}"],
       exclude: [
+        // Test setup and helpers are not production code.
         "src/test/**",
+        // Type-only declaration files contain no executable code.
         "src/**/*.d.ts",
+        // Barrel re-exports have no logic to cover.
         "src/components/ui/index.ts",
       ],
       thresholds: {
