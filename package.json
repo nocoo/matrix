@@ -11,6 +11,7 @@
     "lint": "eslint --max-warnings=0 .",
     "preview": "vite preview",
     "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.app.json --noEmit && tsc -p tsconfig.node.json --noEmit",
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest",
     "prepare": "husky"
