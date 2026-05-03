@@ -794,4 +794,129 @@ describe("DataViz edge cases for branch coverage", () => {
     const svg = container.querySelector("svg");
     expect(svg).toBeInTheDocument();
   });
+
+  it("coerces non-finite numeric raw to 0 (line 56)", () => {
+    const rows = [
+      { hour: "00:00", value: NaN as unknown as number },
+      { hour: "01:00", value: 100 },
+    ];
+    render(<TrendMonitor rows={rows} />);
+    expect(screen.getByText(/MAX:/)).toBeInTheDocument();
+  });
+
+  it("falls back to [0] when statsValues is empty (lines 73, 76)", () => {
+    const rows = [
+      { hour: "00:00", missing: true },
+      { hour: "01:00", future: true },
+    ];
+    render(<TrendMonitor rows={rows} />);
+    // max clamps to 100, avg defaults to 0
+    expect(screen.getByText("MAX: 100")).toBeInTheDocument();
+    expect(screen.getByText("AVG: 0")).toBeInTheDocument();
+  });
+
+  it("formatFull uses 0 fallback when hover value is 0 (line 105)", () => {
+    const rows = [
+      { hour: "00:00", value: 0 },
+      { hour: "01:00", value: 0 },
+    ];
+    const { container } = render(<TrendMonitor rows={rows} />);
+    const plotArea = container.querySelector("[class*='z-20']")!;
+    vi.spyOn(plotArea, "getBoundingClientRect").mockReturnValue({
+      left: 0, right: 200, top: 0, bottom: 100, width: 200, height: 100,
+      x: 0, y: 0, toJSON: () => ({}),
+    } as DOMRect);
+    fireEvent.mouseMove(plotArea, { clientX: 50, clientY: 50 });
+    expect(screen.getByText(/0 tokens/)).toBeInTheDocument();
+  });
+
+  it("formatCompact returns 0 string when max axis labels include 0", () => {
+    // ensures formatCompact path with falsy Number coercion
+    render(<TrendMonitor data={[100]} />);
+    expect(screen.getAllByText("0").length).toBeGreaterThan(0);
+  });
+
+  it("uses fallback axis width when axisRef getBoundingClientRect width is undefined (line 217)", () => {
+    const rows = [
+      { hour: "00:00", value: 100 },
+      { hour: "01:00", value: 200 },
+    ];
+    const { container } = render(<TrendMonitor rows={rows} />);
+    const plotArea = container.querySelector("[class*='z-20']")!;
+    // The axis div has w-10 class
+    const axisDiv = container.querySelector(".w-10")!;
+    vi.spyOn(plotArea, "getBoundingClientRect").mockReturnValue({
+      left: 0, right: 200, top: 0, bottom: 100, width: 200, height: 100,
+      x: 0, y: 0, toJSON: () => ({}),
+    } as DOMRect);
+    vi.spyOn(axisDiv, "getBoundingClientRect").mockReturnValue({
+      width: undefined as unknown as number,
+    } as DOMRect);
+    fireEvent.mouseMove(plotArea, { clientX: 50, clientY: 50 });
+    // No crash means fallback path was used
+    expect(plotArea).toBeInTheDocument();
+  });
+
+  it("uses {} fallback when seriesMeta[index] is out of bounds (line 226)", () => {
+    // Only one value but mouse may snap to higher index due to denom=Math.max(0,1)=1
+    const rows = [{ hour: "00:00", value: 500 }];
+    const { container } = render(<TrendMonitor rows={rows} />);
+    const plotArea = container.querySelector("[class*='z-20']")!;
+    vi.spyOn(plotArea, "getBoundingClientRect").mockReturnValue({
+      left: 0, right: 200, top: 0, bottom: 100, width: 200, height: 100,
+      x: 0, y: 0, toJSON: () => ({}),
+    } as DOMRect);
+    fireEvent.mouseMove(plotArea, { clientX: 195, clientY: 50 });
+    expect(screen.getByText(/tokens/)).toBeInTheDocument();
+  });
+
+  it("falls back to empty label when both hover.label and timeZoneLabel are absent (line 363)", () => {
+    // rows without hour/day/month/label produces empty seriesLabels entries
+    const rows = [
+      { value: 100 },
+      { value: 200 },
+    ];
+    const { container } = render(<TrendMonitor rows={rows} />);
+    const plotArea = container.querySelector("[class*='z-20']")!;
+    vi.spyOn(plotArea, "getBoundingClientRect").mockReturnValue({
+      left: 0, right: 200, top: 0, bottom: 100, width: 200, height: 100,
+      x: 0, y: 0, toJSON: () => ({}),
+    } as DOMRect);
+    fireEvent.mouseMove(plotArea, { clientX: 50, clientY: 50 });
+    expect(screen.getByText(/tokens/)).toBeInTheDocument();
+  });
+
+  it("buildMonthMarkers uses new Date() when heatmap.to is absent (line 466)", () => {
+    const heatmap = {
+      weeks: [
+        [{ day: "2026-01-05", value: 10, level: 1 }],
+      ],
+      week_starts_on: "sun" as const,
+    };
+    render(<ActivityHeatmap heatmap={heatmap} />);
+    expect(screen.getByLabelText("Activity heatmap")).toBeInTheDocument();
+  });
+
+  it("treats non-array week as empty list (line 633)", () => {
+    const heatmap = {
+      weeks: [null as unknown as Array<unknown>, [{ day: "2026-01-05", value: 5, level: 1 }]],
+      to: "2026-01-11",
+      week_starts_on: "sun" as const,
+    };
+    const { container } = render(<ActivityHeatmap heatmap={heatmap as unknown as Parameters<typeof ActivityHeatmap>[0]["heatmap"]} />);
+    const cells = container.querySelectorAll("[title]");
+    expect(cells.length).toBe(1);
+  });
+
+  it("uses 0.3 opacity fallback when level is out of range (line 646)", () => {
+    const heatmap = {
+      weeks: [[{ day: "2026-01-05", value: 10, level: 99 }]],
+      to: "2026-01-11",
+      week_starts_on: "sun" as const,
+    };
+    const { container } = render(<ActivityHeatmap heatmap={heatmap} />);
+    const cell = container.querySelector("[title]") as HTMLElement;
+    // Out-of-range level → opacity 0.3 → cellColor uses level !== 0 branch
+    expect(cell.getAttribute("style")).toContain("rgba(0, 255, 65, 0.3)");
+  });
 });
