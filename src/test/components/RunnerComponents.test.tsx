@@ -1886,4 +1886,47 @@ describe("Runner additional edge branches", () => {
     }
     expect(plot || container).toBeInTheDocument();
   });
+
+  it("RunnerTrendChart hover with invalid date shows raw fallback (line 735)", () => {
+    const data: TrendPoint[] = [
+      { date: "not-a-date", total: 5, success: 5, successRate: 1 },
+      { date: "still-not-a-date", total: 7, success: 7, successRate: 1 },
+    ];
+    const { container } = render(<RunnerTrendChart data={data} />);
+    const hoverOverlay = container.querySelector(".absolute.inset-0.z-20") as HTMLElement;
+    vi.spyOn(hoverOverlay, "getBoundingClientRect").mockReturnValue({
+      left: 0, top: 0, right: 500, bottom: 200, width: 500, height: 200,
+      x: 0, y: 0, toJSON: () => ({}),
+    } as DOMRect);
+    fireEvent.mouseMove(hoverOverlay, { clientX: 250, clientY: 100 });
+    expect(screen.getByText(/runs/)).toBeInTheDocument();
+  });
+
+  it("TaskDetailModal http executor with empty headers omits headers field (line 1432)", () => {
+    const task = makeTask({
+      id: "minimal-http",
+      executor: "http",
+      url: "https://api.example.com",
+      method: "GET",
+      headers: {},
+      body: undefined,
+      command: undefined,
+    });
+    render(<TaskDetailModal task={task} onClose={vi.fn()} />);
+    expect(screen.getByText("https://api.example.com")).toBeInTheDocument();
+  });
+
+  it("TaskDetailModal http executor with no url/method/headers/body omits them (lines 1430-1433)", () => {
+    const task = makeTask({
+      id: "bare-http",
+      executor: "http",
+      url: undefined,
+      method: undefined,
+      headers: undefined,
+      body: undefined,
+      command: undefined,
+    });
+    render(<TaskDetailModal task={task} onClose={vi.fn()} />);
+    expect(screen.getByText(/HTTP Task/)).toBeInTheDocument();
+  });
 });
