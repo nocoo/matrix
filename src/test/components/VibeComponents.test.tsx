@@ -1242,3 +1242,164 @@ describe("CostAnalysisModal", () => {
     expect(screen.getAllByText("$5.00").length).toBeGreaterThanOrEqual(1);
   });
 });
+
+// ---------------------------------------------------------------------------
+// Edge branches for coverage
+// ---------------------------------------------------------------------------
+describe("VibeComponents edge branches", () => {
+  it("IdentityPanel falls back when streakDays is non-finite", () => {
+    const { container } = render(<IdentityPanel name="alice" streakDays={NaN as unknown as number} />);
+    expect(container.textContent).toContain("—");
+  });
+
+  it("IdentityCard with animate=false renders displayName as plain text (no scramble wrapper)", () => {
+    render(<IdentityCard name="Neo" isPublic animate={false} animateTitle={false} />);
+    expect(screen.getByText("Neo")).toBeInTheDocument();
+  });
+
+  it("IdentityCard with avatarUrl renders the img and hides it after onError", () => {
+    const { container } = render(
+      <IdentityCard name="Bob" isPublic avatarUrl="https://example.com/a.png" />,
+    );
+    const img = container.querySelector("img") as HTMLImageElement;
+    expect(img).not.toBeNull();
+    fireEvent.error(img);
+    expect(container.querySelector("img")).toBeNull();
+  });
+
+  it("TopModelsPanel renders 3 placeholder rows when given fewer rows", () => {
+    const { container } = render(<TopModelsPanel rows={[]} />);
+    expect(container.querySelectorAll(".border-b").length).toBeGreaterThanOrEqual(3);
+  });
+
+  it("TopModelsPanel handles row missing name/percent (fallback dash)", () => {
+    render(
+      <TopModelsPanel
+        rows={[{ id: "a", name: "", percent: "" }]}
+      />,
+    );
+    expect(screen.getAllByText("—").length).toBeGreaterThan(0);
+  });
+
+  it("LeaderboardPanel summary mode renders multi-stat grid (stats.length > 1)", () => {
+    render(
+      <LeaderboardPanel
+        rows={[]}
+        summary={{ totalLabel: "TOT", totalValue: "100", stats: [{ label: "A", value: "1" }, { label: "B", value: "2" }] }}
+      />,
+    );
+    expect(screen.getByText("A")).toBeInTheDocument();
+    expect(screen.getByText("B")).toBeInTheDocument();
+  });
+
+  it("LeaderboardPanel summary mode handles stat without label (key fallback)", () => {
+    render(
+      <LeaderboardPanel
+        rows={[]}
+        summary={{ totalLabel: "TOT", totalValue: "100", stats: [{ label: "", value: "x" }] }}
+      />,
+    );
+    expect(screen.getByText("x")).toBeInTheDocument();
+  });
+
+  it("LeaderboardPanel renders self-highlight, top-3 rank class, and isAnon row", () => {
+    render(
+      <LeaderboardPanel
+        rows={[
+          { rank: 1, name: "ME", value: 10, isSelf: true },
+          { rank: 5, name: "ANON", value: 5, isAnon: true },
+        ]}
+      />,
+    );
+    expect(screen.getByText("ME")).toBeInTheDocument();
+    expect(screen.getByText("ANON")).toBeInTheDocument();
+  });
+
+  it("UsagePanel without summaryAnimate renders plain summary value", () => {
+    render(
+      <UsagePanel
+        metrics={[]}
+        showSummary
+        summaryLabel="LBL"
+        summaryValue="42"
+        summaryAnimate={false}
+        rangeLabel="TODAY"
+        rangeTimeZoneLabel="UTC"
+      />,
+    );
+    expect(screen.getByText("42")).toBeInTheDocument();
+    expect(screen.getByText(/TODAY/)).toBeInTheDocument();
+  });
+
+  it("NeuralAdaptiveFleet uses fallback key when model has no id", () => {
+    const { container } = render(
+      <NeuralAdaptiveFleet
+        label="F"
+        totalPercent={50}
+        usage={50}
+        models={[
+          { name: "m1", share: 50 },
+          { name: "m2", share: 50 },
+        ]}
+      />,
+    );
+    expect(container.textContent).toContain("m1");
+  });
+
+  it("NeuralDivergenceMap with odd count > 1 spans first item across both columns", () => {
+    const { container } = render(
+      <NeuralDivergenceMap
+        title="DIV"
+        fleetData={[
+          { label: "A", totalPercent: 10, usage: 10, models: [{ name: "m", share: 100 }] },
+          { label: "B", totalPercent: 20, usage: 20, models: [{ name: "m", share: 100 }] },
+          { label: "C", totalPercent: 30, usage: 30, models: [{ name: "m", share: 100 }] },
+        ]}
+        footer="FOOT"
+      />,
+    );
+    expect(container.querySelector(".md\\:col-span-2")).toBeInTheDocument();
+    expect(screen.getByText("FOOT")).toBeInTheDocument();
+  });
+
+  it("GithubStar renders header size variant", () => {
+    vi.spyOn(window, "fetch").mockResolvedValue({
+      json: () => Promise.resolve({ stargazers_count: 42 }),
+    } as unknown as Response);
+    const { container } = render(<GithubStar repo="a/b" size="header" />);
+    expect(container.querySelector(".matrix-header-chip")).toBeInTheDocument();
+  });
+
+  it("CostAnalysisModal: onClose not a function is a no-op (early return branch)", () => {
+    const { container } = render(
+      <CostAnalysisModal
+        isOpen
+        onClose={undefined as unknown as () => void}
+        fleetData={[]}
+      />,
+    );
+    fireEvent.keyDown(window, { key: "Escape" });
+    expect(container).toBeInTheDocument();
+  });
+
+  it("CostAnalysisModal: model with non-finite share is treated as 0", () => {
+    render(
+      <CostAnalysisModal
+        isOpen
+        onClose={() => {}}
+        fleetData={[
+          {
+            label: "F",
+            usd: 1,
+            models: [
+              { name: "m", share: NaN as unknown as number, calc: "  custom  " },
+            ],
+          },
+        ]}
+      />,
+    );
+    expect(screen.getByText("F")).toBeInTheDocument();
+    // Calc string is trimmed and uppercased ("via CUSTOM")
+    expect(screen.getByText(/CUSTOM/)).toBeInTheDocument();
+  });
+});
