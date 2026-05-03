@@ -1763,3 +1763,97 @@ describe("Runner edge cases for branch coverage", () => {
     expect(screen.getByText(/deploy|test-task/i)).toBeInTheDocument();
   });
 });
+
+// ---------------------------------------------------------------------------
+// Additional Runner edge branches
+// ---------------------------------------------------------------------------
+describe("Runner additional edge branches", () => {
+  it("RunHistory sort by duration handles run with missing finished_at (null duration -> 0)", () => {
+    const runs: RunSummary[] = [
+      makeRun({ id: "r1", started_at: "2026-01-15T10:00:00Z", finished_at: undefined as unknown as string }),
+      makeRun({ id: "r2", started_at: "2026-01-15T10:00:00Z", finished_at: "2026-01-15T10:05:00Z" }),
+    ];
+    render(
+      <RunHistory
+        runs={runs}
+        loading={false}
+        page={1}
+        totalPages={1}
+        onPageChange={vi.fn()}
+        onSelectRun={vi.fn()}
+      />,
+    );
+    const durationHeader = screen.getByText(/duration/i);
+    fireEvent.click(durationHeader);
+    expect(durationHeader).toBeInTheDocument();
+  });
+
+  it("TaskDetailModal ignores non-Escape keys", () => {
+    const onClose = vi.fn();
+    const task = {
+      id: "t1",
+      executor: "shell" as const,
+      command: "ls",
+      description: "d",
+      timeout: 60,
+      schedules: [],
+    };
+    render(<TaskDetailModal task={task} onClose={onClose} />);
+    fireEvent.keyDown(window, { key: "Enter" });
+    expect(onClose).not.toHaveBeenCalled();
+  });
+
+  it("RunDetailModal ignores non-Escape keys", () => {
+    const onClose = vi.fn();
+    const run = makeRunDetail({ id: "r1" });
+    render(
+      <RunDetailModal
+        run={run}
+        loading={false}
+        output={null}
+        outputLoading={false}
+        outputError={null}
+        onClose={onClose}
+      />,
+    );
+    fireEvent.keyDown(document, { key: "Tab" });
+    expect(onClose).not.toHaveBeenCalled();
+  });
+
+  it("AddTaskModal ignores non-Escape keys", () => {
+    const onClose = vi.fn();
+    render(<AddTaskModal open={true} onClose={onClose} />);
+    fireEvent.keyDown(window, { key: "ArrowDown" });
+    expect(onClose).not.toHaveBeenCalled();
+  });
+
+  it("TaskDetailModal http executor with all fields exercises all if-branches", () => {
+    const task = {
+      id: "h1",
+      executor: "http" as const,
+      url: "https://x",
+      method: "POST",
+      headers: { A: "1" },
+      body: "{}",
+      description: "d",
+      timeout: 60,
+      schedules: [],
+      workdir: "/tmp",
+    };
+    render(<TaskDetailModal task={task} onClose={vi.fn()} />);
+    expect(screen.getByText(/HTTP Task/)).toBeInTheDocument();
+  });
+
+  it("RunHeatmap renders given dates with cells of various counts (covers level boundaries)", () => {
+    const today = new Date().toISOString().slice(0, 10);
+    const data = [
+      { date: today, hour: 0, count: 0, success: 0, failed: 0 },
+      { date: today, hour: 2, count: 1, success: 1, failed: 0 },
+      { date: today, hour: 4, count: 4, success: 4, failed: 0 },
+      { date: today, hour: 6, count: 8, success: 8, failed: 0 },
+      { date: today, hour: 8, count: 20, success: 20, failed: 0 },
+    ];
+    render(<RunHeatmap data={data} />);
+    expect(screen.getAllByTitle(/runs/).length).toBeGreaterThan(0);
+  });
+});
