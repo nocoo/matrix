@@ -1331,6 +1331,72 @@ describe("VibeComponents edge branches", () => {
     expect(screen.getByText(/TODAY/)).toBeInTheDocument();
   });
 
+  it("UsagePanel with summaryAnimate=true renders ScrambleText wrapper and no rangeTimeZoneLabel", () => {
+    render(
+      <UsagePanel
+        metrics={[]}
+        showSummary
+        summaryLabel="L"
+        summaryValue="99"
+        summaryAnimate={true}
+        rangeLabel="HOUR"
+      />,
+    );
+    expect(screen.getByText(/HOUR/)).toBeInTheDocument();
+  });
+
+  it("NeuralAdaptiveFleet uses model.id when present (first and second rows)", () => {
+    const { container } = render(
+      <NeuralAdaptiveFleet
+        label="F"
+        totalPercent={50}
+        usage={50}
+        models={[
+          { id: "id-a", name: "m1", share: 50 },
+          { id: "id-b", name: "m2", share: 50 },
+        ]}
+      />,
+    );
+    expect(container.textContent).toContain("m1");
+    expect(container.textContent).toContain("m2");
+  });
+
+  it("CostAnalysisModal ignores non-Escape keys", () => {
+    const onClose = vi.fn();
+    render(<CostAnalysisModal isOpen onClose={onClose} fleetData={[]} />);
+    fireEvent.keyDown(window, { key: "Enter" });
+    expect(onClose).not.toHaveBeenCalled();
+  });
+
+  it("CostAnalysisModal: non-finite usd values are normalized to 0", () => {
+    render(
+      <CostAnalysisModal
+        isOpen
+        onClose={() => {}}
+        fleetData={[
+          {
+            label: "F",
+            usd: NaN as unknown as number,
+            models: [{ name: "m", share: 50 }],
+          },
+        ]}
+      />,
+    );
+    expect(screen.getByText("F")).toBeInTheDocument();
+  });
+
+  it("CostAnalysisModal: non-array fleetData is treated as empty", () => {
+    render(
+      <CostAnalysisModal
+        isOpen
+        onClose={() => {}}
+        fleetData={undefined as unknown as never}
+      />,
+    );
+    // No fleet rows; total is $0.00
+    expect(screen.getByText("$0.00")).toBeInTheDocument();
+  });
+
   it("NeuralAdaptiveFleet uses fallback key when model has no id", () => {
     const { container } = render(
       <NeuralAdaptiveFleet

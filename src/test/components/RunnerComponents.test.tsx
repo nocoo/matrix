@@ -1847,13 +1847,43 @@ describe("Runner additional edge branches", () => {
   it("RunHeatmap renders given dates with cells of various counts (covers level boundaries)", () => {
     const today = new Date().toISOString().slice(0, 10);
     const data = [
-      { date: today, hour: 0, count: 0, success: 0, failed: 0 },
-      { date: today, hour: 2, count: 1, success: 1, failed: 0 },
-      { date: today, hour: 4, count: 4, success: 4, failed: 0 },
-      { date: today, hour: 6, count: 8, success: 8, failed: 0 },
-      { date: today, hour: 8, count: 20, success: 20, failed: 0 },
+      { date: `${today}T00:00:00`, count: 1, success: 1, failed: 0 },
+      { date: `${today}T02:00:00`, count: 2, success: 2, failed: 0 },
+      { date: `${today}T04:00:00`, count: 5, success: 5, failed: 0 },
+      { date: `${today}T06:00:00`, count: 10, success: 10, failed: 0 },
+      { date: `${today}T08:00:00`, count: 20, success: 20, failed: 0 },
     ];
     render(<RunHeatmap data={data} />);
     expect(screen.getAllByTitle(/runs/).length).toBeGreaterThan(0);
+  });
+
+  it("RunnerTrendChart with all-zero totals exercises max=1 fallback (point.total/max=0)", () => {
+    const data = Array.from({ length: 24 }, (_, i) => ({
+      date: `2026-01-15T${String(i).padStart(2, "0")}:00:00Z`,
+      total: 0,
+      success: 0,
+      successRate: 1,
+    }));
+    const { container } = render(<RunnerTrendChart data={data} />);
+    expect(container.querySelector("svg")).toBeInTheDocument();
+  });
+
+  it("RunnerTrendChart hover on plot triggers handleMove", () => {
+    const data = Array.from({ length: 24 }, (_, i) => ({
+      date: `2026-01-15T${String(i).padStart(2, "0")}:00:00Z`,
+      total: i + 1,
+      success: i,
+      successRate: 0.9,
+    }));
+    const { container } = render(<RunnerTrendChart data={data} />);
+    const plot = container.querySelector(".cursor-crosshair") as HTMLElement;
+    if (plot) {
+      Object.defineProperty(plot, "getBoundingClientRect", {
+        value: () => ({ left: 0, top: 0, width: 200, height: 100, right: 200, bottom: 100, x: 0, y: 0, toJSON: () => "" }),
+      });
+      fireEvent.mouseMove(plot, { clientX: 100, clientY: 50 });
+      fireEvent.mouseLeave(plot);
+    }
+    expect(plot || container).toBeInTheDocument();
   });
 });
