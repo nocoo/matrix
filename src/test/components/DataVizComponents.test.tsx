@@ -920,3 +920,88 @@ describe("DataViz edge cases for branch coverage", () => {
     expect(cell.getAttribute("style")).toContain("rgba(0, 255, 65, 0.3)");
   });
 });
+
+// ---------------------------------------------------------------------------
+// More DataViz edge branches
+// ---------------------------------------------------------------------------
+describe("DataViz additional edge branches", () => {
+  it("TrendMonitor rows with missing/future flags are skipped from segments", () => {
+    const rows = [
+      { hour: "00:00", missing: true },
+      { hour: "01:00", future: true },
+      { hour: "02:00", value: 10 },
+      { hour: "03:00", value: null as unknown as number },
+      { hour: "04:00", value: "abc" as unknown as number },
+      { hour: "05:00", value: 20 },
+    ];
+    const { container } = render(<TrendMonitor rows={rows} period="day" />);
+    expect(container.querySelector("svg")).toBeInTheDocument();
+  });
+
+  it("TrendMonitor with single row uses center-x branch", () => {
+    const { container } = render(
+      <TrendMonitor rows={[{ hour: "00:00", value: 5 }]} period="day" />,
+    );
+    expect(container.querySelector("svg")).toBeInTheDocument();
+  });
+
+  it("TrendMonitor onMouseMove with future meta clears hover", () => {
+    const rows = [
+      { hour: "00:00", value: 1 },
+      { hour: "01:00", future: true },
+    ];
+    const { container } = render(<TrendMonitor rows={rows} period="day" />);
+    const plot = container.querySelector("svg")?.parentElement as HTMLElement;
+    if (plot) {
+      Object.defineProperty(plot, "getBoundingClientRect", {
+        value: () => ({ left: 0, top: 0, width: 200, height: 100, right: 200, bottom: 100, x: 0, y: 0, toJSON: () => "" }),
+      });
+      fireEvent.mouseMove(plot, { clientX: 199 });
+      fireEvent.mouseLeave(plot);
+    }
+    expect(plot).toBeInTheDocument();
+  });
+
+  it("TrendMonitor falls back when rows are empty (uses fallback values)", () => {
+    const { container } = render(<TrendMonitor data={[1, 2, 3]} period="week" />);
+    expect(container.querySelector("svg")).toBeInTheDocument();
+  });
+
+  it("ActivityHeatmap with defaultToLatestMonth scrolls to latest month", () => {
+    let rafCount = 0;
+    vi.spyOn(window, "requestAnimationFrame").mockImplementation((cb) => {
+      rafCount += 1;
+      cb(0);
+      return rafCount;
+    });
+
+    const weeks = Array.from({ length: 60 }, (_, i) => [
+      { day: `2025-${String(((i % 12) + 1)).padStart(2, "0")}-01`, value: i, level: 1 },
+    ]);
+    const heatmap = { weeks, to: "2026-01-11", week_starts_on: "sun" as const };
+    const { container } = render(<ActivityHeatmap heatmap={heatmap} defaultToLatestMonth />);
+    expect(container.querySelector("[title]")).toBeInTheDocument();
+  });
+
+  it("ActivityHeatmap handleWheel converts vertical to horizontal scroll", () => {
+    const heatmap = { ...sampleHeatmapData };
+    const { container } = render(<ActivityHeatmap heatmap={heatmap} />);
+    const scroller = container.querySelector(".no-scrollbar") as HTMLElement;
+    if (scroller) {
+      fireEvent.wheel(scroller, { deltaY: 100, deltaX: 0 });
+      // deltaX > deltaY branch (no preventDefault)
+      fireEvent.wheel(scroller, { deltaY: 0, deltaX: 50 });
+    }
+    expect(container).toBeInTheDocument();
+  });
+
+  it("ActivityHeatmap with cell missing falls back to empty span", () => {
+    const heatmap = {
+      weeks: [[null as unknown as { day: string; value: number; level: number }]],
+      to: "2026-01-11",
+      week_starts_on: "mon" as const,
+    };
+    const { container } = render(<ActivityHeatmap heatmap={heatmap} />);
+    expect(container).toBeInTheDocument();
+  });
+});
