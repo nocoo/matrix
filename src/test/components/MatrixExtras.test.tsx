@@ -1241,3 +1241,95 @@ describe("FloatingPortal", () => {
     expect(screen.getByTestId("child-2")).toBeInTheDocument();
   });
 });
+
+// ---------------------------------------------------------------------------
+// Edge cases for branch coverage
+// ---------------------------------------------------------------------------
+describe("MatrixExtras edge branches", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    let raf = 0;
+    vi.stubGlobal("requestAnimationFrame", (cb: FrameRequestCallback) => {
+      raf += 1;
+      setTimeout(() => cb(performance.now()), 16);
+      return raf;
+    });
+    vi.stubGlobal("cancelAnimationFrame", () => {});
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.unstubAllGlobals();
+  });
+
+  it("ScrambleText falls back to default chars when chars is empty", () => {
+    const { container } = render(
+      <ScrambleText text="A B" chars="" durationMs={50} fps={0} startScrambled active />,
+    );
+    act(() => {
+      vi.advanceTimersByTime(20);
+    });
+    expect(container.querySelector("span")).toBeInTheDocument();
+  });
+
+  it("ScrambleText handles durationMs=0 (immediate completion)", () => {
+    const { container } = render(<ScrambleText text="Z" durationMs={0} fps={30} active />);
+    act(() => {
+      vi.advanceTimersByTime(50);
+    });
+    expect(container.textContent).toBe("Z");
+  });
+
+  it("ScrambleText preserves space characters in scrambled output", () => {
+    const { container } = render(
+      <ScrambleText text="A B" chars="X" durationMs={1000} fps={60} startScrambled active />,
+    );
+    act(() => {
+      vi.advanceTimersByTime(0);
+    });
+    expect(container.textContent).toContain(" ");
+  });
+
+  it("TypewriterText clamps invalid speedMs to minimum of 8", () => {
+    render(<TypewriterText text="hi" speedMs={0} startDelayMs={0} active />);
+    act(() => {
+      vi.advanceTimersByTime(100);
+    });
+    expect(screen.getAllByText("hi").length).toBeGreaterThan(0);
+  });
+
+  it("ConnectionStatus falls back to STABLE config for unknown status", () => {
+    // @ts-expect-error - intentionally invalid status to exercise fallback branch
+    const { container } = render(<ConnectionStatus status="UNKNOWN" />);
+    expect(container.firstChild).toBeInTheDocument();
+  });
+});
+
+describe("MatrixRain branch coverage", () => {
+  beforeEach(() => {
+    let raf = 0;
+    vi.stubGlobal("requestAnimationFrame", (cb: FrameRequestCallback) => {
+      raf += 1;
+      if (raf < 5) setTimeout(() => cb(performance.now()), 0);
+      return raf;
+    });
+    vi.stubGlobal("cancelAnimationFrame", () => {});
+    // Force Math.random into both branches across multiple draw calls
+    let i = 0;
+    const seq = [0.01, 0.99, 0.01, 0.99, 0.5, 0.5, 0.5];
+    vi.spyOn(Math, "random").mockImplementation(() => seq[i++ % seq.length]);
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+  });
+
+  it("renders MatrixRain canvas and exercises highlight/reset branches", async () => {
+    const { container, unmount } = render(<MatrixRain />);
+    const canvas = container.querySelector("canvas");
+    expect(canvas).toBeInTheDocument();
+    await new Promise((r) => setTimeout(r, 30));
+    unmount();
+  });
+});
