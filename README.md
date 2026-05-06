@@ -51,7 +51,7 @@ bun install
 bun dev
 
 # Run tests
-bun test
+vitest run
 
 # Build for production
 bun run build
@@ -219,7 +219,7 @@ The sidebar is organized into 5 groups with 27 items:
 
 ```bash
 # Run all 768 tests
-bun test
+vitest run
 
 # Run with coverage report
 bun run test:coverage
