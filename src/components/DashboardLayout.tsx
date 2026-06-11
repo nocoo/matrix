@@ -9,8 +9,9 @@ import {
   ExternalLink, FileText, Layers, HeartPulse,
   Loader, Menu, X, FileQuestion, Component,
   RectangleEllipsis, MousePointerClick, Bell, Layers2,
-  Eye, Navigation, FormInput, Table, Tag, Github,
+  Eye, Navigation, FormInput, Table, Tag,
 } from "lucide-react";
+import { Github } from "@/components/icons/github";
 import { cn } from "@/lib/utils";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import sidebarBg from "@/assets/bg.jpg";
