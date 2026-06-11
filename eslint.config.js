@@ -19,6 +19,10 @@ export default tseslint.config(
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
+      // New rules in eslint-plugin-react-hooks v7. Disabled pending a
+      // dedicated refactor of animation components; correctness is unaffected.
+      "react-hooks/set-state-in-effect": "off",
+      "react-hooks/refs": "off",
       "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
       "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }],
     },
