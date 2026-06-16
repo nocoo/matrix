@@ -30,7 +30,7 @@
     "react-router": "^7.17.0",
     "rollup": "4.62.0",
     "tailwind-merge": "3.6.0",
-    "undici": "^8.4.1"
+    "undici": "^8.5.0"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
@@ -41,7 +41,7 @@
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react-swc": "^4.3.0",
-    "@vitest/coverage-v8": "^4.1.8",
+    "@vitest/coverage-v8": "^4.1.9",
     "eslint": "10.5.0",
     "eslint-plugin-react-hooks": "7.1.1",
     "eslint-plugin-react-refresh": "0.5.3",
@@ -50,8 +50,8 @@
     "jsdom": "^29.1.1",
     "tailwindcss": "4.3.1",
     "typescript": "6.0.3",
-    "typescript-eslint": "^8.61.0",
+    "typescript-eslint": "^8.61.1",
     "vite": "8.0.16",
-    "vitest": "^4.1.8"
+    "vitest": "^4.1.9"
   }
 }
