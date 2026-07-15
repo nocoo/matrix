@@ -12,7 +12,8 @@ This is a **template site**, not a production application. Testing strategy refl
 - **DO test**: UI components (`src/components/ui/`) and utility functions (`src/lib/`). These are the template's core reusable value — the component library and shared utilities.
 - **DO NOT test**: Data models (`src/models/`), viewmodels (`src/viewmodels/`), pages (`src/pages/`), or route smoke tests. These are template scaffolding, not shipped logic.
 - **No global coverage threshold**. Coverage is enforced only for `src/components/ui/` and `src/lib/` at 95% (branches 94%).
-- Pre-commit hook runs `vitest run`. Pre-push runs `vitest run && biome check --error-on-warnings .`.
+- Pre-commit hook runs `typecheck`, `lint`, `test`, and `gitleaks protect --staged`.
+- Pre-push hook runs `build`, `test:coverage`, `lint`, and `osv-scanner scan --lockfile=bun.lock`.
 
 ## Strict Mode Policy
 - TypeScript: `strict: true`, `noUnusedLocals: true`, `noUnusedParameters: true`, `noFallthroughCasesInSwitch: true`
