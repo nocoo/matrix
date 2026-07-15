@@ -259,6 +259,34 @@ describe("IdentityCard", () => {
 		expect(container.querySelector("svg")).toBeInTheDocument();
 	});
 
+	it("re-renders the img after switching to a new avatarUrl following a failure", () => {
+		const { rerender } = render(
+			<IdentityCard
+				name="Neo"
+				isPublic
+				avatarUrl="https://example.com/bad.png"
+				animate={false}
+				animateTitle={false}
+			/>,
+		);
+		// Trigger the error on the first URL.
+		fireEvent.error(screen.getByRole("img"));
+		expect(screen.queryByRole("img")).not.toBeInTheDocument();
+
+		// Swap in a new URL — the fallback flag must reset so a fresh <img> mounts.
+		rerender(
+			<IdentityCard
+				name="Neo"
+				isPublic
+				avatarUrl="https://example.com/good.png"
+				animate={false}
+				animateTitle={false}
+			/>,
+		);
+		const nextImg = screen.getByRole("img") as HTMLImageElement;
+		expect(nextImg.src).toBe("https://example.com/good.png");
+	});
+
 	it("shows stats when showStats=true with rank and streak", () => {
 		render(
 			<IdentityCard

@@ -412,6 +412,22 @@ describe("ActivityHeatmap", () => {
 		// No crash = pass (scrollLeft may not update in jsdom but handler runs)
 	});
 
+	it("is keyboard focusable so users without a wheel can pan", () => {
+		render(<ActivityHeatmap heatmap={sampleHeatmapData} />);
+		const scrollArea = screen.getByLabelText("Activity heatmap");
+		expect(scrollArea.getAttribute("tabindex")).toBe("0");
+		expect(scrollArea.getAttribute("role")).toBe("region");
+	});
+
+	it("responds to arrow / page / home / end keys without throwing", () => {
+		render(<ActivityHeatmap heatmap={sampleHeatmapData} />);
+		const scrollArea = screen.getByLabelText("Activity heatmap") as HTMLElement;
+		for (const key of ["ArrowLeft", "ArrowRight", "PageUp", "PageDown", "Home", "End", "Tab"]) {
+			// Should run without crashing; unhandled keys (like Tab) simply fall through.
+			fireEvent.keyDown(scrollArea, { key });
+		}
+	});
+
 	it("shows timeZoneShortLabel in legend footer", () => {
 		render(<ActivityHeatmap heatmap={sampleHeatmapData} timeZoneShortLabel="PST" />);
 		expect(screen.getByText("PST")).toBeInTheDocument();

@@ -3,7 +3,7 @@
 // 1:1 replica of Basalt's ControlsPage in Matrix cyberpunk style.
 // ============================================
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
 	AsciiBox,
 	FloatingPortal,
@@ -49,6 +49,13 @@ export default function ControlsPage() {
 	const popoverRef = useRef<HTMLButtonElement>(null);
 	const hoverCardRef = useRef<HTMLButtonElement>(null);
 	const menubarRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+
+	// Command palette: focus the input as soon as the dialog opens (was
+	// previously `autoFocus`, which the biome migration stripped).
+	const commandInputRef = useRef<HTMLInputElement>(null);
+	useEffect(() => {
+		if (vm.commandOpen) commandInputRef.current?.focus();
+	}, [vm.commandOpen]);
 
 	return (
 		<div className="space-y-4">
@@ -708,6 +715,7 @@ export default function ControlsPage() {
 							<div className="flex items-center gap-2 border-b border-matrix-primary/20 px-3 py-2">
 								<span className="text-matrix-dim font-mono text-xs">$</span>
 								<input
+									ref={commandInputRef}
 									type="text"
 									placeholder="type a command..."
 									className="flex-1 bg-transparent font-mono text-sm text-matrix-primary placeholder:text-matrix-dim outline-none"

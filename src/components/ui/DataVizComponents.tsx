@@ -561,6 +561,31 @@ export function ActivityHeatmap({
 		}
 	}, []);
 
+	const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+		const el = scrollRef.current;
+		if (!el) return;
+		const step = el.clientWidth * 0.9;
+		if (e.key === "ArrowLeft") {
+			el.scrollLeft -= 40;
+			e.preventDefault();
+		} else if (e.key === "ArrowRight") {
+			el.scrollLeft += 40;
+			e.preventDefault();
+		} else if (e.key === "PageUp") {
+			el.scrollLeft -= step;
+			e.preventDefault();
+		} else if (e.key === "PageDown") {
+			el.scrollLeft += step;
+			e.preventDefault();
+		} else if (e.key === "Home") {
+			el.scrollLeft = 0;
+			e.preventDefault();
+		} else if (e.key === "End") {
+			el.scrollLeft = el.scrollWidth;
+			e.preventDefault();
+		}
+	}, []);
+
 	if (!weeks.length) {
 		return <div className="text-caption text-matrix-muted">No activity data</div>;
 	}
@@ -597,12 +622,21 @@ export function ActivityHeatmap({
 				<div className="absolute inset-y-0 left-0 w-6 pointer-events-none z-10" />
 				<div className="absolute inset-y-0 right-0 w-10 pointer-events-none z-10" />
 
+				{/*
+				  A scrollable region needs to be keyboard-focusable so users without
+				  a wheel can pan with arrow / page keys. Biome flags `tabIndex` on
+				  non-interactive elements by default, but WCAG 2.1 SC 2.1.1 requires
+				  scrollable content to be reachable via keyboard.
+				*/}
 				<div
 					ref={scrollRef}
 					role="region"
-					className="w-full max-w-full overflow-x-scroll no-scrollbar select-none pb-2 outline-none"
+					// biome-ignore lint/a11y/noNoninteractiveTabindex: scrollable region must be keyboard focusable (WCAG 2.1.1)
+					tabIndex={0}
+					className="w-full max-w-full overflow-x-scroll no-scrollbar select-none pb-2 outline-none focus-visible:ring-1 focus-visible:ring-matrix-primary"
 					aria-label="Activity heatmap"
 					onWheel={handleWheel}
+					onKeyDown={handleKeyDown}
 					style={{ scrollbarWidth: "none" }}
 				>
 					<div

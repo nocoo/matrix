@@ -272,6 +272,13 @@ describe("DashboardLayout", () => {
 			expect(screen.getByPlaceholderText("search pages...")).toBeInTheDocument();
 		});
 
+		it("focuses the search input when the dialog opens via Cmd+K", () => {
+			renderLayout("/");
+			fireEvent.keyDown(document, { key: "k", metaKey: true });
+			const input = screen.getByPlaceholderText("search pages...");
+			expect(input).toHaveFocus();
+		});
+
 		it("opens search dialog with Cmd+K shortcut", () => {
 			renderLayout("/");
 			fireEvent.keyDown(document, { key: "k", metaKey: true });
