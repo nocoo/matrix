@@ -2,7 +2,7 @@
 
 ## Project Identity
 - **Type**: Template site / UI kit showcase
-- **Stack**: React 19 + Tailwind CSS v4 + TypeScript 5.9 + Vite 7 + Bun
+- **Stack**: React 19 + Tailwind CSS v4 + TypeScript 7 + Vite 8 + Bun
 - **Architecture**: MVVM (Model → ViewModel → Page)
 - **Theme**: Cyberpunk / Matrix green-on-black, maximalist (极繁主义)
 
@@ -11,13 +11,13 @@ This is a **template site**, not a production application. Testing strategy refl
 
 - **DO test**: UI components (`src/components/ui/`) and utility functions (`src/lib/`). These are the template's core reusable value — the component library and shared utilities.
 - **DO NOT test**: Data models (`src/models/`), viewmodels (`src/viewmodels/`), pages (`src/pages/`), or route smoke tests. These are template scaffolding, not shipped logic.
-- **No global coverage threshold**. Coverage is enforced only for `src/components/ui/` and `src/lib/` at 90%.
-- Pre-commit hook runs `vitest run`. Pre-push runs `vitest run && eslint .`.
+- **No global coverage threshold**. Coverage is enforced only for `src/components/ui/` and `src/lib/` at 95% (branches 94%).
+- Pre-commit hook runs `vitest run`. Pre-push runs `vitest run && biome check --error-on-warnings .`.
 
 ## Strict Mode Policy
 - TypeScript: `strict: true`, `noUnusedLocals: true`, `noUnusedParameters: true`, `noFallthroughCasesInSwitch: true`
-- ESLint: zero errors, zero warnings. All unused vars must be prefixed with `_`.
-- No `any` types unless absolutely unavoidable (and documented with `// eslint-disable-next-line` + reason).
+- Biome: zero errors, zero warnings (`biome check --error-on-warnings .`).
+- No `any` types unless absolutely unavoidable (and documented with a `// biome-ignore` + reason).
 
 ## Design Constraints
 - **No rounded corners** on any rectangular UI element. Only `rounded-full` on true circular elements (dots, spinners, circular avatars).
@@ -67,7 +67,7 @@ consumers derive from it at build time:
 
 1. **Bump version** in `package.json`
 2. **Update `CHANGELOG.md`** — add a new `## [x.y.z] - YYYY-MM-DD` section
-3. **Run full verification**: `bunx eslint . && bun run build && bunx vitest run`
+3. **Run full verification**: `bun run lint && bun run build && bunx vitest run`
 4. **Commit**: `chore: release vX.Y.Z`
 5. **Tag**: `git tag -a vX.Y.Z -m "vX.Y.Z"`
 6. **Push**: `git push && git push --tags`

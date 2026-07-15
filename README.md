@@ -33,7 +33,7 @@ A cyberpunk dashboard UI kit with 40+ components, 27 pages, and a strict MVVM ar
 | Language | [TypeScript 5.9](https://www.typescriptlang.org) (strict mode) |
 | Bundler | [Vite 7](https://vite.dev) |
 | Testing | [Vitest 4](https://vitest.dev) + Testing Library |
-| Linting | [ESLint 9](https://eslint.org) (flat config) |
+| Linting | [Biome 2](https://biomejs.dev) |
 | Hooks | [Husky 9](https://typicode.github.io/husky) |
 | Icons | [Lucide React](https://lucide.dev) |
 
@@ -248,7 +248,7 @@ Tests mirror the source directory layout under `src/test/`:
 | Hook | Runs | Purpose |
 |------|------|---------|
 | **pre-commit** | `bun run test` | All unit tests must pass before committing |
-| **pre-push** | `bun run test && bun run lint` | Full test suite + ESLint must pass before pushing |
+| **pre-push** | `bun run test && bun run lint` | Full test suite + Biome must pass before pushing |
 
 ### Writing Tests
 
