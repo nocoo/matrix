@@ -33,7 +33,7 @@ import {
 	Wallet,
 	X,
 } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Outlet, useLocation, useNavigate } from "react-router";
 import sidebarBg from "@/assets/bg.jpg";
@@ -220,10 +220,14 @@ function SearchDialog({
 	onSelect: (path: string) => void;
 }) {
 	const [query, setQuery] = useState("");
+	const inputRef = useRef<HTMLInputElement>(null);
 	const { t } = useTranslation();
 
 	useEffect(() => {
-		if (open) setQuery("");
+		if (open) {
+			setQuery("");
+			inputRef.current?.focus();
+		}
 	}, [open]);
 
 	useEffect(() => {
@@ -250,6 +254,7 @@ function SearchDialog({
 					<div className="flex items-center gap-2 border-b border-matrix-primary/20 px-3 py-2">
 						<Search className="h-4 w-4 text-matrix-dim" strokeWidth={1.5} />
 						<input
+							ref={inputRef}
 							type="text"
 							value={query}
 							onChange={(e) => setQuery(e.target.value)}

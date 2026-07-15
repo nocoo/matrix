@@ -29,13 +29,14 @@ export default defineConfig({
 				"src/components/ui/index.ts",
 			],
 			thresholds: {
-				// Actual coverage sits ~1–5% above these floors — the gap is the
-				// intentional buffer so a small regression trips the gate before
-				// masking a real drop.
-				statements: 94,
+				// Floors sit ~0.5–1 pp below actual coverage so a small regression trips
+				// the gate before it can mask a real drop. Only `branches` is relaxed —
+				// the other three run high enough that keeping them at 95 leaves plenty
+				// of headroom (97.6/99.7/99.4 for statements/functions/lines).
+				statements: 95,
 				branches: 94,
-				functions: 94,
-				lines: 94,
+				functions: 95,
+				lines: 95,
 			},
 		},
 	},

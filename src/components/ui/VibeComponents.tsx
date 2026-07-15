@@ -205,9 +205,11 @@ export function IdentityCard({
 	const streakValue = Number.isFinite(Number(streakDays)) ? `${streakDays}d` : "\u2014";
 	const shouldShowStats = showStats && (rankLabel !== undefined || streakDays !== undefined);
 
+	// Reset the fallback flag when the URL changes: avatarUrl is the intentional trigger.
+	// biome-ignore lint/correctness/useExhaustiveDependencies: safeAvatarUrl derives from avatarUrl and is the trigger
 	useEffect(() => {
 		setAvatarFailed(false);
-	}, []);
+	}, [safeAvatarUrl]);
 
 	const titleNode =
 		typeof title === "string" && animateTitle ? (
