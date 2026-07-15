@@ -2,11 +2,11 @@
 // Composes model logic with data source — View consumes this hook only.
 
 import { useMemo } from "react";
-import { portfolio, performanceData } from "@/data/mock";
+import { performanceData, portfolio } from "@/data/mock";
 import { computePortfolioTotal } from "@/models/portfolio";
 
 export function usePortfolioViewModel() {
-  const totalValue = useMemo(() => computePortfolioTotal(portfolio), []);
+	const totalValue = useMemo(() => computePortfolioTotal(portfolio), []);
 
-  return { totalValue, holdings: portfolio, performanceData };
+	return { totalValue, holdings: portfolio, performanceData };
 }

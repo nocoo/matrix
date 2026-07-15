@@ -2,75 +2,71 @@
 // UI Foundation Components
 // ============================================
 
-export { AsciiBox, ASCII_CHARS } from "./AsciiBox";
-export { MatrixButton } from "./MatrixButton";
+export { ASCII_CHARS, AsciiBox } from "./AsciiBox";
+// Data visualization components
+export {
+	ActivityHeatmap,
+	ArchiveHeatmap,
+	TrendChart,
+	TrendMonitor,
+} from "./DataVizComponents";
 export type { MatrixButtonProps } from "./MatrixButton";
-export { MatrixShell } from "./MatrixShell";
+export { MatrixButton } from "./MatrixButton";
 
 // Additional components from MatrixExtras
 export {
-  MatrixAvatar,
-  ScrambleText,
-  DecodingText,
-  SignalBox,
-  MatrixInput,
-  MatrixSelect,
-  TypewriterText,
-  ConnectionStatus,
-  DataRow,
-  LeaderboardRow,
-  LiveSniffer,
-  Sparkline,
-  MatrixRain,
-  BootScreen,
-  FloatingPortal,
+	BootScreen,
+	ConnectionStatus,
+	DataRow,
+	DecodingText,
+	FloatingPortal,
+	LeaderboardRow,
+	LiveSniffer,
+	MatrixAvatar,
+	MatrixInput,
+	MatrixRain,
+	MatrixSelect,
+	ScrambleText,
+	SignalBox,
+	Sparkline,
+	TypewriterText,
 } from "./MatrixExtras";
-
+export { MatrixShell } from "./MatrixShell";
 // Pure utility functions (separated for react-refresh compatibility)
 export {
-  shouldFetchGithubStars,
-  shouldRunLiveSniffer,
-  shouldScrambleText,
+	shouldFetchGithubStars,
+	shouldRunLiveSniffer,
+	shouldScrambleText,
 } from "./matrix-utils";
-
-// Data visualization components
-export {
-  TrendMonitor,
-  TrendChart,
-  ActivityHeatmap,
-  ArchiveHeatmap,
-} from "./DataVizComponents";
-
-// Vibe components (from runner vibeusage)
-export {
-  BackendStatus,
-  SystemHeader,
-  IdentityPanel,
-  IdentityCard,
-  TopModelsPanel,
-  LeaderboardPanel,
-  UsagePanel,
-  NeuralAdaptiveFleet,
-  NeuralDivergenceMap,
-  LandingExtras,
-  GithubStar,
-  UpgradeAlertModal,
-  CostAnalysisModal,
-} from "./VibeComponents";
-
 // Runner-specific components
 export {
-  MatrixClock,
-  TaskSchedule,
-  RunHistory,
-  RunHeatmap,
-  RunnerTrendChart,
-  UpcomingTasks,
-  AddTaskModal,
-  TaskDetailModal,
-  RunDetailModal,
+	AddTaskModal,
+	MatrixClock,
+	RunDetailModal,
+	RunHeatmap,
+	RunHistory,
+	RunnerTrendChart,
+	TaskDetailModal,
+	TaskSchedule,
+	UpcomingTasks,
 } from "./RunnerComponents";
+export type { ToastTone } from "./Toast";
 
 // Feedback components
 export { Toast } from "./Toast";
-export type { ToastTone } from "./Toast";
+// Vibe components (from runner vibeusage)
+export {
+	BackendStatus,
+	CostAnalysisModal,
+	GithubStar,
+	IdentityCard,
+	IdentityPanel,
+	LandingExtras,
+	LeaderboardPanel,
+	NeuralAdaptiveFleet,
+	NeuralDivergenceMap,
+	SystemHeader,
+	TopModelsPanel,
+	UpgradeAlertModal,
+	UsagePanel,
+} from "./VibeComponents";

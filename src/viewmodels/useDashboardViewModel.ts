@@ -2,129 +2,127 @@
 // Composes multiple data domains into a single hook for the view layer.
 
 import { useMemo } from "react";
-import {
-  accounts,
-  walletActivity,
-  budgets,
-  analyticsTrend,
-  monthlyFlow,
-  goals,
-} from "@/data/mock";
-import {
-  classifyDirection,
-  formatSignedAmount,
-  computeActivitySummary,
-} from "@/models/accounts";
-import { enrichGoal } from "@/models/target-cards";
-import {
-  generatePixelHeatmap,
-  HEATMAP_ROWS,
-  HEATMAP_COLS,
-  HEATMAP_MAX,
-} from "@/models/pixel-heatmap";
+import { accounts, analyticsTrend, budgets, goals, monthlyFlow, walletActivity } from "@/data/mock";
+import { classifyDirection, computeActivitySummary, formatSignedAmount } from "@/models/accounts";
 import type { HeatmapCell } from "@/models/pixel-heatmap";
+import {
+	generatePixelHeatmap,
+	HEATMAP_COLS,
+	HEATMAP_MAX,
+	HEATMAP_ROWS,
+} from "@/models/pixel-heatmap";
 import type { GoalViewModel } from "@/models/target-cards";
+import { enrichGoal } from "@/models/target-cards";
 import type { AccountItem, ActivityRow } from "@/viewmodels/useAccountsViewModel";
 
 export interface BudgetRow {
-  category: string;
-  spent: number;
-  limit: number;
-  percent: number;
-  overBudget: boolean;
+	category: string;
+	spent: number;
+	limit: number;
+	percent: number;
+	overBudget: boolean;
 }
 
 export interface FlowPoint {
-  month: string;
-  inflow: number;
-  outflow: number;
-  net: number;
+	month: string;
+	inflow: number;
+	outflow: number;
+	net: number;
 }
 
 export interface SignalRow {
-  label: string;
-  value: string;
-  trend: number[];
-  status: "nominal" | "warning" | "critical";
+	label: string;
+	value: string;
+	trend: number[];
+	status: "nominal" | "warning" | "critical";
 }
 
 export function useDashboardViewModel() {
-  const accountList: AccountItem[] = useMemo(
-    () =>
-      accounts
-        .filter((a) => a.name !== "Investment")
-        .map((a) => ({ name: a.name, balance: a.balance, change: a.change })),
-    [],
-  );
+	const accountList: AccountItem[] = useMemo(
+		() =>
+			accounts
+				.filter((a) => a.name !== "Investment")
+				.map((a) => ({ name: a.name, balance: a.balance, change: a.change })),
+		[],
+	);
 
-  const activityList: ActivityRow[] = useMemo(
-    () =>
-      walletActivity.map((item) => ({
-        ...item,
-        direction: classifyDirection(item.amount),
-        formattedAmount: formatSignedAmount(item.amount),
-      })),
-    [],
-  );
+	const activityList: ActivityRow[] = useMemo(
+		() =>
+			walletActivity.map((item) => ({
+				...item,
+				direction: classifyDirection(item.amount),
+				formattedAmount: formatSignedAmount(item.amount),
+			})),
+		[],
+	);
 
-  const activitySummary = useMemo(() => computeActivitySummary(walletActivity), []);
+	const activitySummary = useMemo(() => computeActivitySummary(walletActivity), []);
 
-  const enrichedGoals: GoalViewModel[] = useMemo(
-    () => goals.map((g) => enrichGoal(g)),
-    [],
-  );
+	const enrichedGoals: GoalViewModel[] = useMemo(() => goals.map((g) => enrichGoal(g)), []);
 
-  const budgetRows: BudgetRow[] = useMemo(
-    () =>
-      budgets.map((b) => ({
-        category: b.category,
-        spent: b.spent,
-        limit: b.limit,
-        percent: Math.round((b.spent / b.limit) * 100),
-        overBudget: b.spent > b.limit,
-      })),
-    [],
-  );
+	const budgetRows: BudgetRow[] = useMemo(
+		() =>
+			budgets.map((b) => ({
+				category: b.category,
+				spent: b.spent,
+				limit: b.limit,
+				percent: Math.round((b.spent / b.limit) * 100),
+				overBudget: b.spent > b.limit,
+			})),
+		[],
+	);
 
-  const trendData: number[] = useMemo(
-    () => analyticsTrend.map((d) => Math.round(d.value)),
-    [],
-  );
+	const trendData: number[] = useMemo(() => analyticsTrend.map((d) => Math.round(d.value)), []);
 
-  const flowData: FlowPoint[] = useMemo(
-    () =>
-      monthlyFlow.map((f) => ({
-        month: f.month,
-        inflow: f.inflow,
-        outflow: f.outflow,
-        net: f.inflow - f.outflow,
-      })),
-    [],
-  );
+	const flowData: FlowPoint[] = useMemo(
+		() =>
+			monthlyFlow.map((f) => ({
+				month: f.month,
+				inflow: f.inflow,
+				outflow: f.outflow,
+				net: f.inflow - f.outflow,
+			})),
+		[],
+	);
 
-  const pixelHeatmap: HeatmapCell[] = useMemo(() => generatePixelHeatmap(), []);
+	const pixelHeatmap: HeatmapCell[] = useMemo(() => generatePixelHeatmap(), []);
 
-  const signalRows: SignalRow[] = useMemo(
-    () => [
-      { label: "CPU LOAD", value: "23%", trend: [12, 18, 15, 22, 19, 23, 20, 25, 23], status: "nominal" },
-      { label: "NET I/O", value: "1.2 GB/s", trend: [800, 950, 1100, 900, 1050, 1200, 1150, 1180, 1200], status: "nominal" },
-      { label: "MEM USAGE", value: "67%", trend: [55, 58, 60, 63, 61, 65, 64, 66, 67], status: "warning" },
-    ],
-    [],
-  );
+	const signalRows: SignalRow[] = useMemo(
+		() => [
+			{
+				label: "CPU LOAD",
+				value: "23%",
+				trend: [12, 18, 15, 22, 19, 23, 20, 25, 23],
+				status: "nominal",
+			},
+			{
+				label: "NET I/O",
+				value: "1.2 GB/s",
+				trend: [800, 950, 1100, 900, 1050, 1200, 1150, 1180, 1200],
+				status: "nominal",
+			},
+			{
+				label: "MEM USAGE",
+				value: "67%",
+				trend: [55, 58, 60, 63, 61, 65, 64, 66, 67],
+				status: "warning",
+			},
+		],
+		[],
+	);
 
-  return {
-    accountList,
-    activityList,
-    activitySummary,
-    goals: enrichedGoals,
-    budgetRows,
-    trendData,
-    flowData,
-    pixelHeatmap,
-    pixelHeatmapRows: HEATMAP_ROWS,
-    pixelHeatmapCols: HEATMAP_COLS,
-    pixelHeatmapMax: HEATMAP_MAX,
-    signalRows,
-  };
+	return {
+		accountList,
+		activityList,
+		activitySummary,
+		goals: enrichedGoals,
+		budgetRows,
+		trendData,
+		flowData,
+		pixelHeatmap,
+		pixelHeatmapRows: HEATMAP_ROWS,
+		pixelHeatmapCols: HEATMAP_COLS,
+		pixelHeatmapMax: HEATMAP_MAX,
+		signalRows,
+	};
 }

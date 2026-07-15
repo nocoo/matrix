@@ -3,12 +3,12 @@
 
 import { useMemo } from "react";
 import { monthlyFlow } from "@/data/mock";
-import { computeFlowSummary, deriveNetFlow } from "@/models/flow-comparison";
 import type { FlowSummary, NetFlowEntry } from "@/models/flow-comparison";
+import { computeFlowSummary, deriveNetFlow } from "@/models/flow-comparison";
 
 export function useFlowComparisonViewModel() {
-  const summary: FlowSummary = useMemo(() => computeFlowSummary(monthlyFlow), []);
-  const netFlowData: NetFlowEntry[] = useMemo(() => deriveNetFlow(monthlyFlow), []);
+	const summary: FlowSummary = useMemo(() => computeFlowSummary(monthlyFlow), []);
+	const netFlowData: NetFlowEntry[] = useMemo(() => deriveNetFlow(monthlyFlow), []);
 
-  return { summary, flowData: monthlyFlow, netFlowData };
+	return { summary, flowData: monthlyFlow, netFlowData };
 }

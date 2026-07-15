@@ -1,10 +1,10 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, fireEvent, act } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
-  TrendMonitor,
-  ActivityHeatmap,
-  ArchiveHeatmap,
-  TrendChart,
+	ActivityHeatmap,
+	ArchiveHeatmap,
+	TrendChart,
+	TrendMonitor,
 } from "@/components/ui/DataVizComponents";
 
 // ---------------------------------------------------------------------------
@@ -12,38 +12,38 @@ import {
 // ---------------------------------------------------------------------------
 
 const sampleHeatmapData = {
-  weeks: [
-    [
-      { day: "2026-01-05", value: 100, level: 2 },
-      { day: "2026-01-06", value: 200, level: 3 },
-      { day: "2026-01-07", value: 0, level: 0 },
-      { day: "2026-01-08", value: 50, level: 1 },
-      { day: "2026-01-09", value: 300, level: 4 },
-      { day: "2026-01-10", value: 0, level: 0 },
-      { day: "2026-01-11", value: 150, level: 2 },
-    ],
-  ],
-  to: "2026-01-11",
-  week_starts_on: "sun" as const,
+	weeks: [
+		[
+			{ day: "2026-01-05", value: 100, level: 2 },
+			{ day: "2026-01-06", value: 200, level: 3 },
+			{ day: "2026-01-07", value: 0, level: 0 },
+			{ day: "2026-01-08", value: 50, level: 1 },
+			{ day: "2026-01-09", value: 300, level: 4 },
+			{ day: "2026-01-10", value: 0, level: 0 },
+			{ day: "2026-01-11", value: 150, level: 2 },
+		],
+	],
+	to: "2026-01-11",
+	week_starts_on: "sun" as const,
 };
 
 const sampleHeatmapMonday = {
-  ...sampleHeatmapData,
-  week_starts_on: "mon" as const,
+	...sampleHeatmapData,
+	week_starts_on: "mon" as const,
 };
 
 class MockResizeObserver {
-  observe = vi.fn();
-  unobserve = vi.fn();
-  disconnect = vi.fn();
+	observe = vi.fn();
+	unobserve = vi.fn();
+	disconnect = vi.fn();
 }
 
 beforeEach(() => {
-  (globalThis as unknown as Record<string, unknown>).ResizeObserver = MockResizeObserver;
+	(globalThis as unknown as Record<string, unknown>).ResizeObserver = MockResizeObserver;
 });
 
 afterEach(() => {
-  vi.restoreAllMocks();
+	vi.restoreAllMocks();
 });
 
 // ===========================================================================
@@ -51,281 +51,279 @@ afterEach(() => {
 // ===========================================================================
 
 describe("TrendMonitor", () => {
-  it("renders with data array (fallback mode) showing MAX/AVG stats", () => {
-    render(<TrendMonitor data={[100, 200, 300, 400]} label="USAGE" />);
+	it("renders with data array (fallback mode) showing MAX/AVG stats", () => {
+		render(<TrendMonitor data={[100, 200, 300, 400]} label="USAGE" />);
 
-    expect(screen.getByText("USAGE")).toBeInTheDocument();
-    expect(screen.getByText(/MAX:/)).toBeInTheDocument();
-    expect(screen.getByText(/AVG:/)).toBeInTheDocument();
-  });
+		expect(screen.getByText("USAGE")).toBeInTheDocument();
+		expect(screen.getByText(/MAX:/)).toBeInTheDocument();
+		expect(screen.getByText(/AVG:/)).toBeInTheDocument();
+	});
 
-  it("renders SVG chart elements", () => {
-    const { container } = render(<TrendMonitor data={[10, 50, 30, 80]} />);
-    const svg = container.querySelector("svg");
-    expect(svg).toBeInTheDocument();
-    const paths = svg!.querySelectorAll("path");
-    expect(paths.length).toBeGreaterThan(0);
-  });
+	it("renders SVG chart elements", () => {
+		const { container } = render(<TrendMonitor data={[10, 50, 30, 80]} />);
+		const svg = container.querySelector("svg");
+		expect(svg).toBeInTheDocument();
+		const paths = svg?.querySelectorAll("path");
+		expect(paths?.length ?? 0).toBeGreaterThan(0);
+	});
 
-  it("renders with rows array (series mode) handling missing/future data", () => {
-    const rows = [
-      { hour: "00:00", billable_total_tokens: 1000 },
-      { hour: "01:00", billable_total_tokens: 2000 },
-      { hour: "02:00", missing: true },
-      { hour: "03:00", future: true },
-      { hour: "04:00", total_tokens: 500 },
-    ];
-    const { container } = render(<TrendMonitor rows={rows} label="TOKENS" />);
+	it("renders with rows array (series mode) handling missing/future data", () => {
+		const rows = [
+			{ hour: "00:00", billable_total_tokens: 1000 },
+			{ hour: "01:00", billable_total_tokens: 2000 },
+			{ hour: "02:00", missing: true },
+			{ hour: "03:00", future: true },
+			{ hour: "04:00", total_tokens: 500 },
+		];
+		const { container } = render(<TrendMonitor rows={rows} label="TOKENS" />);
 
-    expect(screen.getByText("TOKENS")).toBeInTheDocument();
-    const svg = container.querySelector("svg");
-    expect(svg).toBeInTheDocument();
-  });
+		expect(screen.getByText("TOKENS")).toBeInTheDocument();
+		const svg = container.querySelector("svg");
+		expect(svg).toBeInTheDocument();
+	});
 
-  it("handles rows with value field", () => {
-    const rows = [
-      { label: "A", value: 100 },
-      { label: "B", value: 200 },
-    ];
-    render(<TrendMonitor rows={rows} />);
-    expect(screen.getByText(/MAX:/)).toBeInTheDocument();
-  });
+	it("handles rows with value field", () => {
+		const rows = [
+			{ label: "A", value: 100 },
+			{ label: "B", value: 200 },
+		];
+		render(<TrendMonitor rows={rows} />);
+		expect(screen.getByText(/MAX:/)).toBeInTheDocument();
+	});
 
-  it("renders day period x-axis labels", () => {
-    render(<TrendMonitor data={[10, 20]} period="day" />);
+	it("renders day period x-axis labels", () => {
+		render(<TrendMonitor data={[10, 20]} period="day" />);
 
-    expect(screen.getByText("00:00")).toBeInTheDocument();
-    expect(screen.getByText("04:00")).toBeInTheDocument();
-    expect(screen.getByText("08:00")).toBeInTheDocument();
-    expect(screen.getByText("12:00")).toBeInTheDocument();
-    expect(screen.getByText("16:00")).toBeInTheDocument();
-    expect(screen.getByText("20:00")).toBeInTheDocument();
-    expect(screen.getByText("23:00")).toBeInTheDocument();
-  });
+		expect(screen.getByText("00:00")).toBeInTheDocument();
+		expect(screen.getByText("04:00")).toBeInTheDocument();
+		expect(screen.getByText("08:00")).toBeInTheDocument();
+		expect(screen.getByText("12:00")).toBeInTheDocument();
+		expect(screen.getByText("16:00")).toBeInTheDocument();
+		expect(screen.getByText("20:00")).toBeInTheDocument();
+		expect(screen.getByText("23:00")).toBeInTheDocument();
+	});
 
-  it("renders default period x-axis labels with T-N and NOW", () => {
-    render(<TrendMonitor data={[10, 20]} />);
+	it("renders default period x-axis labels with T-N and NOW", () => {
+		render(<TrendMonitor data={[10, 20]} />);
 
-    expect(screen.getByText("T-24")).toBeInTheDocument();
-    expect(screen.getByText("T-18")).toBeInTheDocument();
-    expect(screen.getByText("T-12")).toBeInTheDocument();
-    expect(screen.getByText("T-6")).toBeInTheDocument();
-    expect(screen.getByText("NOW")).toBeInTheDocument();
-  });
+		expect(screen.getByText("T-24")).toBeInTheDocument();
+		expect(screen.getByText("T-18")).toBeInTheDocument();
+		expect(screen.getByText("T-12")).toBeInTheDocument();
+		expect(screen.getByText("T-6")).toBeInTheDocument();
+		expect(screen.getByText("NOW")).toBeInTheDocument();
+	});
 
-  it("renders with empty data (all zeros)", () => {
-    render(<TrendMonitor data={[]} />);
+	it("renders with empty data (all zeros)", () => {
+		render(<TrendMonitor data={[]} />);
 
-    expect(screen.getByText("MAX: 100")).toBeInTheDocument();
-    expect(screen.getByText("AVG: 0")).toBeInTheDocument();
-  });
+		expect(screen.getByText("MAX: 100")).toBeInTheDocument();
+		expect(screen.getByText("AVG: 0")).toBeInTheDocument();
+	});
 
-  it("renders with explicitly zero data", () => {
-    render(<TrendMonitor data={[0, 0, 0]} />);
+	it("renders with explicitly zero data", () => {
+		render(<TrendMonitor data={[0, 0, 0]} />);
 
-    expect(screen.getByText("MAX: 100")).toBeInTheDocument();
-    expect(screen.getByText("AVG: 0")).toBeInTheDocument();
-  });
+		expect(screen.getByText("MAX: 100")).toBeInTheDocument();
+		expect(screen.getByText("AVG: 0")).toBeInTheDocument();
+	});
 
-  it("formats large numbers with formatCompact (thousands)", () => {
-    render(<TrendMonitor data={[5000, 1000, 3000]} />);
-    expect(screen.getByText("MAX: 5000")).toBeInTheDocument();
-  });
+	it("formats large numbers with formatCompact (thousands)", () => {
+		render(<TrendMonitor data={[5000, 1000, 3000]} />);
+		expect(screen.getByText("MAX: 5000")).toBeInTheDocument();
+	});
 
-  it("formats large numbers with formatCompact (millions)", () => {
-    render(<TrendMonitor data={[2000000, 1000000]} />);
-    expect(screen.getByText("2.0M")).toBeInTheDocument();
-  });
+	it("formats large numbers with formatCompact (millions)", () => {
+		render(<TrendMonitor data={[2000000, 1000000]} />);
+		expect(screen.getByText("2.0M")).toBeInTheDocument();
+	});
 
-  it("formats large numbers with formatCompact (billions)", () => {
-    render(<TrendMonitor data={[2000000000, 1000000000]} />);
-    expect(screen.getByText("2.0B")).toBeInTheDocument();
-  });
+	it("formats large numbers with formatCompact (billions)", () => {
+		render(<TrendMonitor data={[2000000000, 1000000000]} />);
+		expect(screen.getByText("2.0B")).toBeInTheDocument();
+	});
 
-  it("formats large numbers (>=10B) without decimal", () => {
-    render(<TrendMonitor data={[20000000000]} />);
-    expect(screen.getByText("20B")).toBeInTheDocument();
-  });
+	it("formats large numbers (>=10B) without decimal", () => {
+		render(<TrendMonitor data={[20000000000]} />);
+		expect(screen.getByText("20B")).toBeInTheDocument();
+	});
 
-  it("formats large numbers (>=10M) without decimal", () => {
-    render(<TrendMonitor data={[50000000]} />);
-    expect(screen.getByText("50M")).toBeInTheDocument();
-  });
+	it("formats large numbers (>=10M) without decimal", () => {
+		render(<TrendMonitor data={[50000000]} />);
+		expect(screen.getByText("50M")).toBeInTheDocument();
+	});
 
-  it("formats large numbers (>=10K) without decimal", () => {
-    render(<TrendMonitor data={[50000]} />);
-    expect(screen.getByText("50K")).toBeInTheDocument();
-  });
+	it("formats large numbers (>=10K) without decimal", () => {
+		render(<TrendMonitor data={[50000]} />);
+		expect(screen.getByText("50K")).toBeInTheDocument();
+	});
 
-  it("handles hover (mouseMove) and shows tooltip", () => {
-    const rows = [
-      { hour: "00:00", billable_total_tokens: 1000 },
-      { hour: "01:00", billable_total_tokens: 2000 },
-      { hour: "02:00", billable_total_tokens: 3000 },
-    ];
-    const { container } = render(<TrendMonitor rows={rows} label="HOVER" />);
+	it("handles hover (mouseMove) and shows tooltip", () => {
+		const rows = [
+			{ hour: "00:00", billable_total_tokens: 1000 },
+			{ hour: "01:00", billable_total_tokens: 2000 },
+			{ hour: "02:00", billable_total_tokens: 3000 },
+		];
+		const { container } = render(<TrendMonitor rows={rows} label="HOVER" />);
 
-    const plotArea = container.querySelector("[class*='z-20']");
-    expect(plotArea).toBeInTheDocument();
+		const plotArea = container.querySelector("[class*='z-20']");
+		expect(plotArea).toBeInTheDocument();
 
-    fireEvent.mouseMove(plotArea!, {
-      clientX: 50,
-      clientY: 50,
-    });
+		fireEvent.mouseMove(plotArea!, {
+			clientX: 50,
+			clientY: 50,
+		});
 
-    expect(screen.getByText(/tokens/i)).toBeInTheDocument();
-  });
+		expect(screen.getByText(/tokens/i)).toBeInTheDocument();
+	});
 
-  it("handles mouseLeave to hide tooltip", () => {
-    const rows = [
-      { hour: "00:00", billable_total_tokens: 1000 },
-      { hour: "01:00", billable_total_tokens: 2000 },
-    ];
-    const { container } = render(<TrendMonitor rows={rows} />);
-    const plotArea = container.querySelector("[class*='z-20']");
+	it("handles mouseLeave to hide tooltip", () => {
+		const rows = [
+			{ hour: "00:00", billable_total_tokens: 1000 },
+			{ hour: "01:00", billable_total_tokens: 2000 },
+		];
+		const { container } = render(<TrendMonitor rows={rows} />);
+		const plotArea = container.querySelector("[class*='z-20']");
 
-    fireEvent.mouseMove(plotArea!, { clientX: 50, clientY: 50 });
-    expect(screen.getByText(/tokens/i)).toBeInTheDocument();
+		fireEvent.mouseMove(plotArea!, { clientX: 50, clientY: 50 });
+		expect(screen.getByText(/tokens/i)).toBeInTheDocument();
 
-    fireEvent.mouseLeave(plotArea!);
-    expect(screen.queryByText(/\d+ tokens$/)).not.toBeInTheDocument();
-  });
+		fireEvent.mouseLeave(plotArea!);
+		expect(screen.queryByText(/\d+ tokens$/)).not.toBeInTheDocument();
+	});
 
-  it("shows UNSYNCED for missing data points on hover", () => {
-    const rows = [
-      { hour: "00:00", billable_total_tokens: 1000 },
-      { hour: "01:00", missing: true },
-    ];
-    const { container } = render(<TrendMonitor rows={rows} />);
-    const plotArea = container.querySelector("[class*='z-20']");
+	it("shows UNSYNCED for missing data points on hover", () => {
+		const rows = [
+			{ hour: "00:00", billable_total_tokens: 1000 },
+			{ hour: "01:00", missing: true },
+		];
+		const { container } = render(<TrendMonitor rows={rows} />);
+		const plotArea = container.querySelector("[class*='z-20']");
 
-    vi.spyOn(plotArea!, "getBoundingClientRect").mockReturnValue({
-      left: 0,
-      right: 200,
-      top: 0,
-      bottom: 100,
-      width: 200,
-      height: 100,
-      x: 0,
-      y: 0,
-      toJSON: () => {},
-    });
+		vi.spyOn(plotArea!, "getBoundingClientRect").mockReturnValue({
+			left: 0,
+			right: 200,
+			top: 0,
+			bottom: 100,
+			width: 200,
+			height: 100,
+			x: 0,
+			y: 0,
+			toJSON: () => {},
+		});
 
-    fireEvent.mouseMove(plotArea!, { clientX: 180, clientY: 50 });
-    expect(screen.getByText("UNSYNCED")).toBeInTheDocument();
-  });
+		fireEvent.mouseMove(plotArea!, { clientX: 180, clientY: 50 });
+		expect(screen.getByText("UNSYNCED")).toBeInTheDocument();
+	});
 
-  it("hides tooltip when hovering over a future data point", () => {
-    const rows = [
-      { hour: "00:00", billable_total_tokens: 1000 },
-      { hour: "01:00", future: true },
-    ];
-    const { container } = render(<TrendMonitor rows={rows} />);
-    const plotArea = container.querySelector("[class*='z-20']");
+	it("hides tooltip when hovering over a future data point", () => {
+		const rows = [
+			{ hour: "00:00", billable_total_tokens: 1000 },
+			{ hour: "01:00", future: true },
+		];
+		const { container } = render(<TrendMonitor rows={rows} />);
+		const plotArea = container.querySelector("[class*='z-20']");
 
-    vi.spyOn(plotArea!, "getBoundingClientRect").mockReturnValue({
-      left: 0,
-      right: 200,
-      top: 0,
-      bottom: 100,
-      width: 200,
-      height: 100,
-      x: 0,
-      y: 0,
-      toJSON: () => {},
-    });
+		vi.spyOn(plotArea!, "getBoundingClientRect").mockReturnValue({
+			left: 0,
+			right: 200,
+			top: 0,
+			bottom: 100,
+			width: 200,
+			height: 100,
+			x: 0,
+			y: 0,
+			toJSON: () => {},
+		});
 
-    fireEvent.mouseMove(plotArea!, { clientX: 190, clientY: 50 });
-    expect(screen.queryByText(/\d+ tokens$/)).not.toBeInTheDocument();
-  });
+		fireEvent.mouseMove(plotArea!, { clientX: 190, clientY: 50 });
+		expect(screen.queryByText(/\d+ tokens$/)).not.toBeInTheDocument();
+	});
 
-  it("applies custom className", () => {
-    const { container } = render(<TrendMonitor className="my-custom" />);
-    expect(container.querySelector(".my-custom")).toBeInTheDocument();
-  });
+	it("applies custom className", () => {
+		const { container } = render(<TrendMonitor className="my-custom" />);
+		expect(container.querySelector(".my-custom")).toBeInTheDocument();
+	});
 
-  it("applies custom color", () => {
-    const { container } = render(<TrendMonitor data={[10, 20]} color="#FF0000" />);
-    const stops = container.querySelectorAll("stop");
-    expect(stops.length).toBeGreaterThan(0);
-    expect(stops[0].getAttribute("stop-color")).toBe("#FF0000");
-  });
+	it("applies custom color", () => {
+		const { container } = render(<TrendMonitor data={[10, 20]} color="#FF0000" />);
+		const stops = container.querySelectorAll("stop");
+		expect(stops.length).toBeGreaterThan(0);
+		expect(stops[0].getAttribute("stop-color")).toBe("#FF0000");
+	});
 
-  it("renders single point as a dot (singlePoints)", () => {
-    const rows = [
-      { hour: "00:00", missing: true },
-      { hour: "01:00", billable_total_tokens: 500 },
-      { hour: "02:00", missing: true },
-    ];
-    const { container } = render(<TrendMonitor rows={rows} />);
-    const dots = container.querySelectorAll("[class*='rounded-full']");
-    expect(dots.length).toBeGreaterThanOrEqual(1);
-  });
+	it("renders single point as a dot (singlePoints)", () => {
+		const rows = [
+			{ hour: "00:00", missing: true },
+			{ hour: "01:00", billable_total_tokens: 500 },
+			{ hour: "02:00", missing: true },
+		];
+		const { container } = render(<TrendMonitor rows={rows} />);
+		const dots = container.querySelectorAll("[class*='rounded-full']");
+		expect(dots.length).toBeGreaterThanOrEqual(1);
+	});
 
-  it("shows timeZoneLabel in tooltip when no label on data point", () => {
-    const rows = [{ billable_total_tokens: 1000 }];
-    const { container } = render(
-      <TrendMonitor rows={rows} timeZoneLabel="EST" />,
-    );
-    const plotArea = container.querySelector("[class*='z-20']");
+	it("shows timeZoneLabel in tooltip when no label on data point", () => {
+		const rows = [{ billable_total_tokens: 1000 }];
+		const { container } = render(<TrendMonitor rows={rows} timeZoneLabel="EST" />);
+		const plotArea = container.querySelector("[class*='z-20']");
 
-    vi.spyOn(plotArea!, "getBoundingClientRect").mockReturnValue({
-      left: 0,
-      right: 200,
-      top: 0,
-      bottom: 100,
-      width: 200,
-      height: 100,
-      x: 0,
-      y: 0,
-      toJSON: () => {},
-    });
+		vi.spyOn(plotArea!, "getBoundingClientRect").mockReturnValue({
+			left: 0,
+			right: 200,
+			top: 0,
+			bottom: 100,
+			width: 200,
+			height: 100,
+			x: 0,
+			y: 0,
+			toJSON: () => {},
+		});
 
-    fireEvent.mouseMove(plotArea!, { clientX: 100, clientY: 50 });
-    expect(screen.getByText("EST")).toBeInTheDocument();
-  });
+		fireEvent.mouseMove(plotArea!, { clientX: 100, clientY: 50 });
+		expect(screen.getByText("EST")).toBeInTheDocument();
+	});
 
-  it("renders axis labels with compact formatting", () => {
-    render(<TrendMonitor data={[1000, 500]} />);
-    expect(screen.getByText("1.0K")).toBeInTheDocument();
-    expect(screen.getByText("0")).toBeInTheDocument();
-  });
+	it("renders axis labels with compact formatting", () => {
+		render(<TrendMonitor data={[1000, 500]} />);
+		expect(screen.getByText("1.0K")).toBeInTheDocument();
+		expect(screen.getByText("0")).toBeInTheDocument();
+	});
 
-  it("handles rows with day and month labels", () => {
-    const rows = [
-      { day: "Mon", value: 10 },
-      { month: "Jan", value: 20 },
-    ];
-    render(<TrendMonitor rows={rows} />);
-    expect(screen.getByText(/MAX:/)).toBeInTheDocument();
-  });
+	it("handles rows with day and month labels", () => {
+		const rows = [
+			{ day: "Mon", value: 10 },
+			{ month: "Jan", value: 20 },
+		];
+		render(<TrendMonitor rows={rows} />);
+		expect(screen.getByText(/MAX:/)).toBeInTheDocument();
+	});
 
-  it("renders with a single data point in data array", () => {
-    const { container } = render(<TrendMonitor data={[500]} />);
-    const svg = container.querySelector("svg");
-    expect(svg).toBeInTheDocument();
-  });
+	it("renders with a single data point in data array", () => {
+		const { container } = render(<TrendMonitor data={[500]} />);
+		const svg = container.querySelector("svg");
+		expect(svg).toBeInTheDocument();
+	});
 
-  it("renders with two data points (linear path)", () => {
-    const { container } = render(<TrendMonitor data={[100, 200]} />);
-    const svg = container.querySelector("svg");
-    expect(svg).toBeInTheDocument();
-    const paths = svg!.querySelectorAll("path");
-    expect(paths.length).toBeGreaterThan(0);
-  });
+	it("renders with two data points (linear path)", () => {
+		const { container } = render(<TrendMonitor data={[100, 200]} />);
+		const svg = container.querySelector("svg");
+		expect(svg).toBeInTheDocument();
+		const paths = svg?.querySelectorAll("path");
+		expect(paths?.length ?? 0).toBeGreaterThan(0);
+	});
 
-  it("falls back to window resize listener when ResizeObserver is undefined", () => {
-    // Remove ResizeObserver to trigger the fallback path
-    const original = (globalThis as unknown as Record<string, unknown>).ResizeObserver;
-    delete (globalThis as unknown as Record<string, unknown>).ResizeObserver;
+	it("falls back to window resize listener when ResizeObserver is undefined", () => {
+		// Remove ResizeObserver to trigger the fallback path
+		const original = (globalThis as unknown as Record<string, unknown>).ResizeObserver;
+		delete (globalThis as unknown as Record<string, unknown>).ResizeObserver;
 
-    const addSpy = vi.spyOn(window, "addEventListener");
-    render(<TrendMonitor data={[10, 20]} />);
-    expect(addSpy).toHaveBeenCalledWith("resize", expect.any(Function));
+		const addSpy = vi.spyOn(window, "addEventListener");
+		render(<TrendMonitor data={[10, 20]} />);
+		expect(addSpy).toHaveBeenCalledWith("resize", expect.any(Function));
 
-    // Restore
-    (globalThis as unknown as Record<string, unknown>).ResizeObserver = original;
-  });
+		// Restore
+		(globalThis as unknown as Record<string, unknown>).ResizeObserver = original;
+	});
 });
 
 // ===========================================================================
@@ -333,262 +331,261 @@ describe("TrendMonitor", () => {
 // ===========================================================================
 
 describe("ActivityHeatmap", () => {
-  it("shows 'No activity data' when weeks is empty", () => {
-    render(<ActivityHeatmap heatmap={{ weeks: [] }} />);
-    expect(screen.getByText("No activity data")).toBeInTheDocument();
-  });
+	it("shows 'No activity data' when weeks is empty", () => {
+		render(<ActivityHeatmap heatmap={{ weeks: [] }} />);
+		expect(screen.getByText("No activity data")).toBeInTheDocument();
+	});
 
-  it("shows 'No activity data' when heatmap is undefined", () => {
-    render(<ActivityHeatmap />);
-    expect(screen.getByText("No activity data")).toBeInTheDocument();
-  });
+	it("shows 'No activity data' when heatmap is undefined", () => {
+		render(<ActivityHeatmap />);
+		expect(screen.getByText("No activity data")).toBeInTheDocument();
+	});
 
-  it("renders with valid heatmap data", () => {
-    const { container } = render(<ActivityHeatmap heatmap={sampleHeatmapData} />);
-    const cells = container.querySelectorAll("[title]");
-    expect(cells.length).toBeGreaterThan(0);
-    expect(cells[0].getAttribute("title")).toMatch(/2026-01-05.*tokens/);
-  });
+	it("renders with valid heatmap data", () => {
+		const { container } = render(<ActivityHeatmap heatmap={sampleHeatmapData} />);
+		const cells = container.querySelectorAll("[title]");
+		expect(cells.length).toBeGreaterThan(0);
+		expect(cells[0].getAttribute("title")).toMatch(/2026-01-05.*tokens/);
+	});
 
-  it("renders legend by default", () => {
-    render(<ActivityHeatmap heatmap={sampleHeatmapData} />);
-    expect(screen.getByText("Less")).toBeInTheDocument();
-    expect(screen.getByText("More")).toBeInTheDocument();
-  });
+	it("renders legend by default", () => {
+		render(<ActivityHeatmap heatmap={sampleHeatmapData} />);
+		expect(screen.getByText("Less")).toBeInTheDocument();
+		expect(screen.getByText("More")).toBeInTheDocument();
+	});
 
-  it("hides legend when hideLegend=true", () => {
-    render(<ActivityHeatmap heatmap={sampleHeatmapData} hideLegend />);
-    expect(screen.queryByText("Less")).not.toBeInTheDocument();
-    expect(screen.queryByText("More")).not.toBeInTheDocument();
-  });
+	it("hides legend when hideLegend=true", () => {
+		render(<ActivityHeatmap heatmap={sampleHeatmapData} hideLegend />);
+		expect(screen.queryByText("Less")).not.toBeInTheDocument();
+		expect(screen.queryByText("More")).not.toBeInTheDocument();
+	});
 
-  it("shows day labels for Sunday start (default)", () => {
-    render(<ActivityHeatmap heatmap={sampleHeatmapData} />);
-    expect(screen.getByText("SUN")).toBeInTheDocument();
-    expect(screen.getByText("MON")).toBeInTheDocument();
-    expect(screen.getByText("SAT")).toBeInTheDocument();
-  });
+	it("shows day labels for Sunday start (default)", () => {
+		render(<ActivityHeatmap heatmap={sampleHeatmapData} />);
+		expect(screen.getByText("SUN")).toBeInTheDocument();
+		expect(screen.getByText("MON")).toBeInTheDocument();
+		expect(screen.getByText("SAT")).toBeInTheDocument();
+	});
 
-  it("shows day labels for Monday start", () => {
-    render(<ActivityHeatmap heatmap={sampleHeatmapMonday} />);
-    const dayLabels = screen.getAllByText(/^(MON|TUE|WED|THU|FRI|SAT|SUN)$/);
-    expect(dayLabels[0].textContent).toBe("MON");
-    expect(dayLabels[dayLabels.length - 1].textContent).toBe("SUN");
-  });
+	it("shows day labels for Monday start", () => {
+		render(<ActivityHeatmap heatmap={sampleHeatmapMonday} />);
+		const dayLabels = screen.getAllByText(/^(MON|TUE|WED|THU|FRI|SAT|SUN)$/);
+		expect(dayLabels[0].textContent).toBe("MON");
+		expect(dayLabels[dayLabels.length - 1].textContent).toBe("SUN");
+	});
 
-  it("renders month markers", () => {
-    const manyWeeks = Array.from({ length: 52 }, (_, i) => [
-      { day: `2025-01-${String((i % 28) + 1).padStart(2, "0")}`, value: i * 10, level: i % 5 },
-    ]);
-    const heatmap = {
-      weeks: manyWeeks,
-      to: "2026-01-11",
-      week_starts_on: "sun" as const,
-    };
-    render(<ActivityHeatmap heatmap={heatmap} />);
-    const monthLabels = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
-    const found = monthLabels.some((label) => screen.queryByText(label) !== null);
-    expect(found).toBe(true);
-  });
+	it("renders month markers", () => {
+		const manyWeeks = Array.from({ length: 52 }, (_, i) => [
+			{ day: `2025-01-${String((i % 28) + 1).padStart(2, "0")}`, value: i * 10, level: i % 5 },
+		]);
+		const heatmap = {
+			weeks: manyWeeks,
+			to: "2026-01-11",
+			week_starts_on: "sun" as const,
+		};
+		render(<ActivityHeatmap heatmap={heatmap} />);
+		const monthLabels = [
+			"JAN",
+			"FEB",
+			"MAR",
+			"APR",
+			"MAY",
+			"JUN",
+			"JUL",
+			"AUG",
+			"SEP",
+			"OCT",
+			"NOV",
+			"DEC",
+		];
+		const found = monthLabels.some((label) => screen.queryByText(label) !== null);
+		expect(found).toBe(true);
+	});
 
-  it("handles wheel event for horizontal scrolling", () => {
-    render(<ActivityHeatmap heatmap={sampleHeatmapData} />);
-    const scrollArea = screen.getByLabelText("Activity heatmap");
-    expect(scrollArea).toBeInTheDocument();
+	it("handles wheel event for horizontal scrolling", () => {
+		render(<ActivityHeatmap heatmap={sampleHeatmapData} />);
+		const scrollArea = screen.getByLabelText("Activity heatmap");
+		expect(scrollArea).toBeInTheDocument();
 
-    // fireEvent.wheel uses React's onWheel synthetic event handler
-    fireEvent.wheel(scrollArea, { deltaX: 0, deltaY: 100 });
-    // No crash = pass (scrollLeft may not update in jsdom but handler runs)
-  });
+		// fireEvent.wheel uses React's onWheel synthetic event handler
+		fireEvent.wheel(scrollArea, { deltaX: 0, deltaY: 100 });
+		// No crash = pass (scrollLeft may not update in jsdom but handler runs)
+	});
 
-  it("shows timeZoneShortLabel in legend footer", () => {
-    render(
-      <ActivityHeatmap
-        heatmap={sampleHeatmapData}
-        timeZoneShortLabel="PST"
-      />,
-    );
-    expect(screen.getByText("PST")).toBeInTheDocument();
-  });
+	it("shows timeZoneShortLabel in legend footer", () => {
+		render(<ActivityHeatmap heatmap={sampleHeatmapData} timeZoneShortLabel="PST" />);
+		expect(screen.getByText("PST")).toBeInTheDocument();
+	});
 
-  it("shows UTC as default timezone in legend", () => {
-    render(<ActivityHeatmap heatmap={sampleHeatmapData} />);
-    expect(screen.getByText("UTC")).toBeInTheDocument();
-  });
+	it("shows UTC as default timezone in legend", () => {
+		render(<ActivityHeatmap heatmap={sampleHeatmapData} />);
+		expect(screen.getByText("UTC")).toBeInTheDocument();
+	});
 
-  it("includes timezone info in cell titles", () => {
-    const { container } = render(
-      <ActivityHeatmap
-        heatmap={sampleHeatmapData}
-        timeZoneLabel="America/New_York"
-      />,
-    );
-    const cell = container.querySelector("[title]");
-    expect(cell?.getAttribute("title")).toContain("America/New_York");
-  });
+	it("includes timezone info in cell titles", () => {
+		const { container } = render(
+			<ActivityHeatmap heatmap={sampleHeatmapData} timeZoneLabel="America/New_York" />,
+		);
+		const cell = container.querySelector("[title]");
+		expect(cell?.getAttribute("title")).toContain("America/New_York");
+	});
 
-  it("handles null cells in weeks", () => {
-    const heatmap = {
-      weeks: [[null, { day: "2026-01-06", value: 100, level: 2 }, null]],
-      to: "2026-01-11",
-      week_starts_on: "sun" as const,
-    };
-    const { container } = render(<ActivityHeatmap heatmap={heatmap} />);
-    const titledCells = container.querySelectorAll("[title]");
-    expect(titledCells.length).toBe(1);
-  });
+	it("handles null cells in weeks", () => {
+		const heatmap = {
+			weeks: [[null, { day: "2026-01-06", value: 100, level: 2 }, null]],
+			to: "2026-01-11",
+			week_starts_on: "sun" as const,
+		};
+		const { container } = render(<ActivityHeatmap heatmap={heatmap} />);
+		const titledCells = container.querySelectorAll("[title]");
+		expect(titledCells.length).toBe(1);
+	});
 
-  it("uses total_tokens when value is not present", () => {
-    const heatmap = {
-      weeks: [[{ day: "2026-01-05", total_tokens: 999, level: 1 }]],
-      to: "2026-01-11",
-      week_starts_on: "sun" as const,
-    };
-    const { container } = render(<ActivityHeatmap heatmap={heatmap} />);
-    const cell = container.querySelector("[title]");
-    expect(cell?.getAttribute("title")).toContain("999");
-  });
+	it("uses total_tokens when value is not present", () => {
+		const heatmap = {
+			weeks: [[{ day: "2026-01-05", total_tokens: 999, level: 1 }]],
+			to: "2026-01-11",
+			week_starts_on: "sun" as const,
+		};
+		const { container } = render(<ActivityHeatmap heatmap={heatmap} />);
+		const cell = container.querySelector("[title]");
+		expect(cell?.getAttribute("title")).toContain("999");
+	});
 
-  it("uses billable_total_tokens when value and total_tokens are not present", () => {
-    const heatmap = {
-      weeks: [[{ day: "2026-01-05", billable_total_tokens: 777, level: 1 }]],
-      to: "2026-01-11",
-      week_starts_on: "sun" as const,
-    };
-    const { container } = render(<ActivityHeatmap heatmap={heatmap} />);
-    const cell = container.querySelector("[title]");
-    expect(cell?.getAttribute("title")).toContain("777");
-  });
+	it("uses billable_total_tokens when value and total_tokens are not present", () => {
+		const heatmap = {
+			weeks: [[{ day: "2026-01-05", billable_total_tokens: 777, level: 1 }]],
+			to: "2026-01-11",
+			week_starts_on: "sun" as const,
+		};
+		const { container } = render(<ActivityHeatmap heatmap={heatmap} />);
+		const cell = container.querySelector("[title]");
+		expect(cell?.getAttribute("title")).toContain("777");
+	});
 
-  it("handles defaultToLatestMonth prop", () => {
-    render(
-      <ActivityHeatmap heatmap={sampleHeatmapData} defaultToLatestMonth />,
-    );
-    expect(screen.getByLabelText("Activity heatmap")).toBeInTheDocument();
-  });
+	it("handles defaultToLatestMonth prop", () => {
+		render(<ActivityHeatmap heatmap={sampleHeatmapData} defaultToLatestMonth />);
+		expect(screen.getByLabelText("Activity heatmap")).toBeInTheDocument();
+	});
 
-  it("fires requestAnimationFrame scroll when scrollWidth > clientWidth", () => {
-    const rAFCallbacks: FrameRequestCallback[] = [];
-    const rAFSpy = vi.spyOn(window, "requestAnimationFrame").mockImplementation((cb) => {
-      rAFCallbacks.push(cb);
-      return rAFCallbacks.length;
-    });
+	it("fires requestAnimationFrame scroll when scrollWidth > clientWidth", () => {
+		const rAFCallbacks: FrameRequestCallback[] = [];
+		const rAFSpy = vi.spyOn(window, "requestAnimationFrame").mockImplementation((cb) => {
+			rAFCallbacks.push(cb);
+			return rAFCallbacks.length;
+		});
 
-    // Mock scrollWidth and clientWidth on HTMLDivElement prototype so the effect
-    // sees scrollWidth > clientWidth when it runs on mount
-    const scrollWidthDesc = Object.getOwnPropertyDescriptor(Element.prototype, "scrollWidth");
-    const clientWidthDesc = Object.getOwnPropertyDescriptor(Element.prototype, "clientWidth");
-    Object.defineProperty(Element.prototype, "scrollWidth", { value: 2000, configurable: true });
-    Object.defineProperty(Element.prototype, "clientWidth", { value: 300, configurable: true });
+		// Mock scrollWidth and clientWidth on HTMLDivElement prototype so the effect
+		// sees scrollWidth > clientWidth when it runs on mount
+		const scrollWidthDesc = Object.getOwnPropertyDescriptor(Element.prototype, "scrollWidth");
+		const clientWidthDesc = Object.getOwnPropertyDescriptor(Element.prototype, "clientWidth");
+		Object.defineProperty(Element.prototype, "scrollWidth", { value: 2000, configurable: true });
+		Object.defineProperty(Element.prototype, "clientWidth", { value: 300, configurable: true });
 
-    const manyWeeks = Array.from({ length: 80 }, () => [
-      { day: "2026-01-05", value: 10, level: 1 },
-    ]);
-    const heatmap = {
-      weeks: manyWeeks,
-      to: "2026-01-11",
-      week_starts_on: "sun" as const,
-    };
+		const manyWeeks = Array.from({ length: 80 }, () => [
+			{ day: "2026-01-05", value: 10, level: 1 },
+		]);
+		const heatmap = {
+			weeks: manyWeeks,
+			to: "2026-01-11",
+			week_starts_on: "sun" as const,
+		};
 
-    render(
-      <ActivityHeatmap heatmap={heatmap} defaultToLatestMonth />,
-    );
+		render(<ActivityHeatmap heatmap={heatmap} defaultToLatestMonth />);
 
-    // Flush nested rAF callbacks (the effect calls rAF(() => rAF(snapToLatest)))
-    act(() => {
-      for (let i = 0; i < 10 && rAFCallbacks.length > 0; i++) {
-        const cb = rAFCallbacks.shift()!;
-        cb(performance.now());
-      }
-    });
+		// Flush nested rAF callbacks (the effect calls rAF(() => rAF(snapToLatest)))
+		act(() => {
+			for (let i = 0; i < 10 && rAFCallbacks.length > 0; i++) {
+				const cb = rAFCallbacks.shift()!;
+				cb(performance.now());
+			}
+		});
 
-    expect(screen.getByLabelText("Activity heatmap")).toBeInTheDocument();
+		expect(screen.getByLabelText("Activity heatmap")).toBeInTheDocument();
 
-    // Restore
-    if (scrollWidthDesc) Object.defineProperty(Element.prototype, "scrollWidth", scrollWidthDesc);
-    if (clientWidthDesc) Object.defineProperty(Element.prototype, "clientWidth", clientWidthDesc);
-    rAFSpy.mockRestore();
-  });
+		// Restore
+		if (scrollWidthDesc) Object.defineProperty(Element.prototype, "scrollWidth", scrollWidthDesc);
+		if (clientWidthDesc) Object.defineProperty(Element.prototype, "clientWidth", clientWidthDesc);
+		rAFSpy.mockRestore();
+	});
 
-  it("mouseEnter and mouseLeave on heatmap container", () => {
-    const { container } = render(<ActivityHeatmap heatmap={sampleHeatmapData} />);
-    // The outermost div has onMouseEnter/onMouseLeave
-    const outerDiv = container.querySelector(".flex.flex-col.gap-2")!;
-    expect(outerDiv).toBeInTheDocument();
+	it("mouseEnter and mouseLeave on heatmap container", () => {
+		const { container } = render(<ActivityHeatmap heatmap={sampleHeatmapData} />);
+		// The outermost div has onMouseEnter/onMouseLeave
+		const outerDiv = container.querySelector(".flex.flex-col.gap-2")!;
+		expect(outerDiv).toBeInTheDocument();
 
-    fireEvent.mouseEnter(outerDiv);
-    fireEvent.mouseLeave(outerDiv);
-    // No crash = pass (internal state isHoveringHeatmap toggles)
-  });
+		fireEvent.mouseEnter(outerDiv);
+		fireEvent.mouseLeave(outerDiv);
+		// No crash = pass (internal state isHoveringHeatmap toggles)
+	});
 
-  it("wheel event with deltaX > deltaY does not scroll horizontally", () => {
-    render(<ActivityHeatmap heatmap={sampleHeatmapData} />);
-    const scrollArea = screen.getByLabelText("Activity heatmap");
+	it("wheel event with deltaX > deltaY does not scroll horizontally", () => {
+		render(<ActivityHeatmap heatmap={sampleHeatmapData} />);
+		const scrollArea = screen.getByLabelText("Activity heatmap");
 
-    // When deltaX > deltaY, the handler should not override horizontal scrolling
-    fireEvent.wheel(scrollArea, { deltaX: 100, deltaY: 10 });
-    // No crash = handler properly skipped the scrollLeft override
-  });
+		// When deltaX > deltaY, the handler should not override horizontal scrolling
+		fireEvent.wheel(scrollArea, { deltaX: 100, deltaY: 10 });
+		// No crash = handler properly skipped the scrollLeft override
+	});
 
-  it("uses timeZoneShortLabel in cell title when timeZoneLabel is absent", () => {
-    const heatmap = {
-      weeks: [[{ day: "2026-01-05", value: 42, level: 1 }]],
-      to: "2026-01-11",
-      week_starts_on: "sun" as const,
-    };
-    const { container } = render(
-      <ActivityHeatmap heatmap={heatmap} timeZoneShortLabel="CET" />,
-    );
-    const cell = container.querySelector("[title]");
-    expect(cell?.getAttribute("title")).toContain("CET");
-  });
+	it("uses timeZoneShortLabel in cell title when timeZoneLabel is absent", () => {
+		const heatmap = {
+			weeks: [[{ day: "2026-01-05", value: 42, level: 1 }]],
+			to: "2026-01-11",
+			week_starts_on: "sun" as const,
+		};
+		const { container } = render(<ActivityHeatmap heatmap={heatmap} timeZoneShortLabel="CET" />);
+		const cell = container.querySelector("[title]");
+		expect(cell?.getAttribute("title")).toContain("CET");
+	});
 
-  it("renders cell with no value fields (defaults to 0)", () => {
-    const heatmap = {
-      weeks: [[{ day: "2026-01-05", level: 1 }]],
-      to: "2026-01-11",
-      week_starts_on: "sun" as const,
-    };
-    const { container } = render(<ActivityHeatmap heatmap={heatmap} />);
-    const cell = container.querySelector("[title]");
-    expect(cell?.getAttribute("title")).toContain("0 tokens");
-  });
+	it("renders cell with no value fields (defaults to 0)", () => {
+		const heatmap = {
+			weeks: [[{ day: "2026-01-05", level: 1 }]],
+			to: "2026-01-11",
+			week_starts_on: "sun" as const,
+		};
+		const { container } = render(<ActivityHeatmap heatmap={heatmap} />);
+		const cell = container.querySelector("[title]");
+		expect(cell?.getAttribute("title")).toContain("0 tokens");
+	});
 
-  it("renders cell with string-typed value for formatTokenValue string branch", () => {
-    const heatmap = {
-      weeks: [[{ day: "2026-01-05", value: "1234" as unknown as number, level: 2 }]],
-      to: "2026-01-11",
-      week_starts_on: "sun" as const,
-    };
-    const { container } = render(<ActivityHeatmap heatmap={heatmap} />);
-    const cell = container.querySelector("[title]");
-    // formatTokenValue with string "1234" → "1,234"
-    expect(cell?.getAttribute("title")).toContain("1,234");
-  });
+	it("renders cell with string-typed value for formatTokenValue string branch", () => {
+		const heatmap = {
+			weeks: [[{ day: "2026-01-05", value: "1234" as unknown as number, level: 2 }]],
+			to: "2026-01-11",
+			week_starts_on: "sun" as const,
+		};
+		const { container } = render(<ActivityHeatmap heatmap={heatmap} />);
+		const cell = container.querySelector("[title]");
+		// formatTokenValue with string "1234" → "1,234"
+		expect(cell?.getAttribute("title")).toContain("1,234");
+	});
 
-  it("renders cell with non-finite number value", () => {
-    const heatmap = {
-      weeks: [[{ day: "2026-01-05", value: Infinity, level: 0 }]],
-      to: "2026-01-11",
-      week_starts_on: "sun" as const,
-    };
-    const { container } = render(<ActivityHeatmap heatmap={heatmap} />);
-    const cell = container.querySelector("[title]");
-    // formatTokenValue(Infinity) returns "0" since !Number.isFinite
-    expect(cell?.getAttribute("title")).toContain("0 tokens");
-  });
+	it("renders cell with non-finite number value", () => {
+		const heatmap = {
+			weeks: [[{ day: "2026-01-05", value: Infinity, level: 0 }]],
+			to: "2026-01-11",
+			week_starts_on: "sun" as const,
+		};
+		const { container } = render(<ActivityHeatmap heatmap={heatmap} />);
+		const cell = container.querySelector("[title]");
+		// formatTokenValue(Infinity) returns "0" since !Number.isFinite
+		expect(cell?.getAttribute("title")).toContain("0 tokens");
+	});
 
-  it("renders cell with non-numeric string value", () => {
-    const heatmap = {
-      weeks: [[{ day: "2026-01-05", value: "abc" as unknown as number, level: 1 }]],
-      to: "2026-01-11",
-      week_starts_on: "sun" as const,
-    };
-    const { container } = render(<ActivityHeatmap heatmap={heatmap} />);
-    const cell = container.querySelector("[title]");
-    // formatTokenValue("abc") → Number("abc") is NaN → returns the original string "abc"
-    expect(cell?.getAttribute("title")).toContain("abc");
-  });
+	it("renders cell with non-numeric string value", () => {
+		const heatmap = {
+			weeks: [[{ day: "2026-01-05", value: "abc" as unknown as number, level: 1 }]],
+			to: "2026-01-11",
+			week_starts_on: "sun" as const,
+		};
+		const { container } = render(<ActivityHeatmap heatmap={heatmap} />);
+		const cell = container.querySelector("[title]");
+		// formatTokenValue("abc") → Number("abc") is NaN → returns the original string "abc"
+		expect(cell?.getAttribute("title")).toContain("abc");
+	});
 });
 
 // ===========================================================================
@@ -596,56 +593,54 @@ describe("ActivityHeatmap", () => {
 // ===========================================================================
 
 describe("ArchiveHeatmap", () => {
-  it("renders with default props", () => {
-    render(<ArchiveHeatmap />);
-    expect(screen.getByText("ARCHIVE")).toBeInTheDocument();
-    expect(screen.getByText("Historical data")).toBeInTheDocument();
-  });
+	it("renders with default props", () => {
+		render(<ArchiveHeatmap />);
+		expect(screen.getByText("ARCHIVE")).toBeInTheDocument();
+		expect(screen.getByText("Historical data")).toBeInTheDocument();
+	});
 
-  it("renders custom title", () => {
-    render(<ArchiveHeatmap title="MY ARCHIVE" />);
-    expect(screen.getByText("MY ARCHIVE")).toBeInTheDocument();
-  });
+	it("renders custom title", () => {
+		render(<ArchiveHeatmap title="MY ARCHIVE" />);
+		expect(screen.getByText("MY ARCHIVE")).toBeInTheDocument();
+	});
 
-  it("shows rangeLabel when provided", () => {
-    render(<ArchiveHeatmap rangeLabel="Jan 2026 - Feb 2026" />);
-    expect(screen.getByText(/Range: Jan 2026 - Feb 2026/)).toBeInTheDocument();
-  });
+	it("shows rangeLabel when provided", () => {
+		render(<ArchiveHeatmap rangeLabel="Jan 2026 - Feb 2026" />);
+		expect(screen.getByText(/Range: Jan 2026 - Feb 2026/)).toBeInTheDocument();
+	});
 
-  it("does not show rangeLabel when not provided", () => {
-    render(<ArchiveHeatmap />);
-    expect(screen.queryByText(/Range:/)).not.toBeInTheDocument();
-  });
+	it("does not show rangeLabel when not provided", () => {
+		render(<ArchiveHeatmap />);
+		expect(screen.queryByText(/Range:/)).not.toBeInTheDocument();
+	});
 
-  it("shows footerLeft and footerRight", () => {
-    render(
-      <ArchiveHeatmap footerLeft="Left text" footerRight="Right text" />,
-    );
-    expect(screen.getByText("Left text")).toBeInTheDocument();
-    expect(screen.getByText("Right text")).toBeInTheDocument();
-  });
+	it("shows footerLeft and footerRight", () => {
+		render(<ArchiveHeatmap footerLeft="Left text" footerRight="Right text" />);
+		expect(screen.getByText("Left text")).toBeInTheDocument();
+		expect(screen.getByText("Right text")).toBeInTheDocument();
+	});
 
-  it("does not show footer when footerLeft is empty string and footerRight is undefined", () => {
-    const { container } = render(<ArchiveHeatmap footerLeft="" />);
-    // The footer div has the class combo "mt-auto pt-3 border-t ..."; it should not exist
-    const footerDiv = container.querySelector(".mt-auto.pt-3");
-    expect(footerDiv).not.toBeInTheDocument();
-  });
+	it("does not show footer when footerLeft is empty string and footerRight is undefined", () => {
+		const { container } = render(<ArchiveHeatmap footerLeft="" />);
+		// The footer div has the class combo "mt-auto pt-3 border-t ..."; it should not exist
+		const footerDiv = container.querySelector(".mt-auto.pt-3");
+		expect(footerDiv).not.toBeInTheDocument();
+	});
 
-  it("shows footer when only footerRight is provided", () => {
-    render(<ArchiveHeatmap footerLeft="" footerRight="Some right" />);
-    expect(screen.getByText("Some right")).toBeInTheDocument();
-  });
+	it("shows footer when only footerRight is provided", () => {
+		render(<ArchiveHeatmap footerLeft="" footerRight="Some right" />);
+		expect(screen.getByText("Some right")).toBeInTheDocument();
+	});
 
-  it("passes heatmap data to ActivityHeatmap", () => {
-    render(<ArchiveHeatmap heatmap={sampleHeatmapData} />);
-    expect(screen.queryByText("No activity data")).not.toBeInTheDocument();
-  });
+	it("passes heatmap data to ActivityHeatmap", () => {
+		render(<ArchiveHeatmap heatmap={sampleHeatmapData} />);
+		expect(screen.queryByText("No activity data")).not.toBeInTheDocument();
+	});
 
-  it("applies custom className", () => {
-    const { container } = render(<ArchiveHeatmap className="archive-custom" />);
-    expect(container.querySelector(".archive-custom")).toBeInTheDocument();
-  });
+	it("applies custom className", () => {
+		const { container } = render(<ArchiveHeatmap className="archive-custom" />);
+		expect(container.querySelector(".archive-custom")).toBeInTheDocument();
+	});
 });
 
 // ===========================================================================
@@ -653,67 +648,65 @@ describe("ArchiveHeatmap", () => {
 // ===========================================================================
 
 describe("TrendChart", () => {
-  it("shows 'No trend data' when data is empty", () => {
-    render(<TrendChart data={[]} />);
-    expect(screen.getByText("No trend data")).toBeInTheDocument();
-  });
+	it("shows 'No trend data' when data is empty", () => {
+		render(<TrendChart data={[]} />);
+		expect(screen.getByText("No trend data")).toBeInTheDocument();
+	});
 
-  it("shows 'No trend data' when data is undefined", () => {
-    render(<TrendChart />);
-    expect(screen.getByText("No trend data")).toBeInTheDocument();
-  });
+	it("shows 'No trend data' when data is undefined", () => {
+		render(<TrendChart />);
+		expect(screen.getByText("No trend data")).toBeInTheDocument();
+	});
 
-  it("renders bars for each data point", () => {
-    const { container } = render(<TrendChart data={[10, 20, 30]} />);
-    const bars = container.querySelectorAll(".flex-1.relative");
-    expect(bars.length).toBe(3);
-  });
+	it("renders bars for each data point", () => {
+		const { container } = render(<TrendChart data={[10, 20, 30]} />);
+		const bars = container.querySelectorAll(".flex-1.relative");
+		expect(bars.length).toBe(3);
+	});
 
-  it("shows peak label with correct max value", () => {
-    render(<TrendChart data={[100, 500, 200]} />);
-    expect(screen.getByText("PEAK: 500 tokens")).toBeInTheDocument();
-  });
+	it("shows peak label with correct max value", () => {
+		render(<TrendChart data={[100, 500, 200]} />);
+		expect(screen.getByText("PEAK: 500 tokens")).toBeInTheDocument();
+	});
 
-  it("uses custom unitLabel", () => {
-    render(<TrendChart data={[100, 200]} unitLabel="requests" />);
-    expect(screen.getByText("PEAK: 200 requests")).toBeInTheDocument();
-  });
+	it("uses custom unitLabel", () => {
+		render(<TrendChart data={[100, 200]} unitLabel="requests" />);
+		expect(screen.getByText("PEAK: 200 requests")).toBeInTheDocument();
+	});
 
-  it("shows custom leftLabel and rightLabel", () => {
-    render(
-      <TrendChart data={[10]} leftLabel="BEGIN" rightLabel="END" />,
-    );
-    expect(screen.getByText("BEGIN")).toBeInTheDocument();
-    expect(screen.getByText("END")).toBeInTheDocument();
-  });
+	it("shows custom leftLabel and rightLabel", () => {
+		render(<TrendChart data={[10]} leftLabel="BEGIN" rightLabel="END" />);
+		expect(screen.getByText("BEGIN")).toBeInTheDocument();
+		expect(screen.getByText("END")).toBeInTheDocument();
+	});
 
-  it("uses default labels START and NOW", () => {
-    render(<TrendChart data={[10, 20]} />);
-    expect(screen.getByText("START")).toBeInTheDocument();
-    expect(screen.getByText("NOW")).toBeInTheDocument();
-  });
+	it("uses default labels START and NOW", () => {
+		render(<TrendChart data={[10, 20]} />);
+		expect(screen.getByText("START")).toBeInTheDocument();
+		expect(screen.getByText("NOW")).toBeInTheDocument();
+	});
 
-  it("renders bar heights proportional to max", () => {
-    const { container } = render(<TrendChart data={[50, 100]} />);
-    const barInners = container.querySelectorAll(".flex-1.relative > div");
-    expect(barInners[0].getAttribute("style")).toContain("50%");
-    expect(barInners[1].getAttribute("style")).toContain("100%");
-  });
+	it("renders bar heights proportional to max", () => {
+		const { container } = render(<TrendChart data={[50, 100]} />);
+		const barInners = container.querySelectorAll(".flex-1.relative > div");
+		expect(barInners[0].getAttribute("style")).toContain("50%");
+		expect(barInners[1].getAttribute("style")).toContain("100%");
+	});
 
-  it("handles single data point", () => {
-    render(<TrendChart data={[42]} />);
-    expect(screen.getByText("PEAK: 42 tokens")).toBeInTheDocument();
-  });
+	it("handles single data point", () => {
+		render(<TrendChart data={[42]} />);
+		expect(screen.getByText("PEAK: 42 tokens")).toBeInTheDocument();
+	});
 
-  it("handles zero values (max clamped to 1)", () => {
-    render(<TrendChart data={[0, 0]} />);
-    expect(screen.getByText("PEAK: 1 tokens")).toBeInTheDocument();
-  });
+	it("handles zero values (max clamped to 1)", () => {
+		render(<TrendChart data={[0, 0]} />);
+		expect(screen.getByText("PEAK: 1 tokens")).toBeInTheDocument();
+	});
 
-  it("handles NaN values by converting to 0", () => {
-    render(<TrendChart data={[NaN, 10]} />);
-    expect(screen.getByText("PEAK: 10 tokens")).toBeInTheDocument();
-  });
+	it("handles NaN values by converting to 0", () => {
+		render(<TrendChart data={[NaN, 10]} />);
+		expect(screen.getByText("PEAK: 10 tokens")).toBeInTheDocument();
+	});
 });
 
 // ===========================================================================
@@ -721,287 +714,322 @@ describe("TrendChart", () => {
 // ===========================================================================
 
 describe("DataViz edge cases for branch coverage", () => {
-  it("formatTokenValue handles non-number non-string value (coverage line 500)", () => {
-    // formatTokenValue with an object as value (neither number nor string)
-    const heatmap = {
-      weeks: [[{ day: "2026-01-05", value: { custom: true } as unknown as number, level: 1 }]],
-      to: "2026-01-11",
-      week_starts_on: "sun" as const,
-    };
-    const { container } = render(<ActivityHeatmap heatmap={heatmap} />);
-    const cell = container.querySelector("[title]");
-    // formatTokenValue with non-number, non-string returns "0"
-    expect(cell?.getAttribute("title")).toContain("0 tokens");
-  });
+	it("formatTokenValue handles non-number non-string value (coverage line 500)", () => {
+		// formatTokenValue with an object as value (neither number nor string)
+		const heatmap = {
+			weeks: [[{ day: "2026-01-05", value: { custom: true } as unknown as number, level: 1 }]],
+			to: "2026-01-11",
+			week_starts_on: "sun" as const,
+		};
+		const { container } = render(<ActivityHeatmap heatmap={heatmap} />);
+		const cell = container.querySelector("[title]");
+		// formatTokenValue with non-number, non-string returns "0"
+		expect(cell?.getAttribute("title")).toContain("0 tokens");
+	});
 
-  it("formatTokenValue handles null value", () => {
-    const heatmap = {
-      weeks: [[{ day: "2026-01-05", value: null as unknown as number, level: 1 }]],
-      to: "2026-01-11",
-      week_starts_on: "sun" as const,
-    };
-    const { container } = render(<ActivityHeatmap heatmap={heatmap} />);
-    const cell = container.querySelector("[title]");
-    // null coalesces to 0 for cellValue, but formatTokenValue(null) would be caught by the ?? 0
-    // In the component: cellValue = cell.value ?? cell.total_tokens ?? cell.billable_total_tokens ?? 0
-    // So null becomes 0 via the chain
-    expect(cell?.getAttribute("title")).toContain("0 tokens");
-  });
+	it("formatTokenValue handles null value", () => {
+		const heatmap = {
+			weeks: [[{ day: "2026-01-05", value: null as unknown as number, level: 1 }]],
+			to: "2026-01-11",
+			week_starts_on: "sun" as const,
+		};
+		const { container } = render(<ActivityHeatmap heatmap={heatmap} />);
+		const cell = container.querySelector("[title]");
+		// null coalesces to 0 for cellValue, but formatTokenValue(null) would be caught by the ?? 0
+		// In the component: cellValue = cell.value ?? cell.total_tokens ?? cell.billable_total_tokens ?? 0
+		// So null becomes 0 via the chain
+		expect(cell?.getAttribute("title")).toContain("0 tokens");
+	});
 
-  it("formatTokenValue handles undefined value", () => {
-    const heatmap = {
-      weeks: [[{ day: "2026-01-05", value: undefined as unknown as number, level: 1 }]],
-      to: "2026-01-11",
-      week_starts_on: "sun" as const,
-    };
-    const { container } = render(<ActivityHeatmap heatmap={heatmap} />);
-    const cell = container.querySelector("[title]");
-    expect(cell?.getAttribute("title")).toContain("0 tokens");
-  });
+	it("formatTokenValue handles undefined value", () => {
+		const heatmap = {
+			weeks: [[{ day: "2026-01-05", value: undefined as unknown as number, level: 1 }]],
+			to: "2026-01-11",
+			week_starts_on: "sun" as const,
+		};
+		const { container } = render(<ActivityHeatmap heatmap={heatmap} />);
+		const cell = container.querySelector("[title]");
+		expect(cell?.getAttribute("title")).toContain("0 tokens");
+	});
 
-  it("formatTokenValue handles boolean value", () => {
-    const heatmap = {
-      weeks: [[{ day: "2026-01-05", value: true as unknown as number, level: 1 }]],
-      to: "2026-01-11",
-      week_starts_on: "sun" as const,
-    };
-    const { container } = render(<ActivityHeatmap heatmap={heatmap} />);
-    const cell = container.querySelector("[title]");
-    // boolean is neither number nor string -> return "0"
-    expect(cell?.getAttribute("title")).toContain("0 tokens");
-  });
+	it("formatTokenValue handles boolean value", () => {
+		const heatmap = {
+			weeks: [[{ day: "2026-01-05", value: true as unknown as number, level: 1 }]],
+			to: "2026-01-11",
+			week_starts_on: "sun" as const,
+		};
+		const { container } = render(<ActivityHeatmap heatmap={heatmap} />);
+		const cell = container.querySelector("[title]");
+		// boolean is neither number nor string -> return "0"
+		expect(cell?.getAttribute("title")).toContain("0 tokens");
+	});
 
-  it("renders TrendMonitor with single isolated point between missing data", () => {
-    // This tests the solveSmoothPath with 1 point (line 144)
-    const rows = [
-      { hour: "00:00", missing: true },
-      { hour: "01:00", billable_total_tokens: 500 },
-      { hour: "02:00", missing: true },
-      { hour: "03:00", missing: true },
-    ];
-    const { container } = render(<TrendMonitor rows={rows} />);
-    // The single point should render as a dot
-    const dots = container.querySelectorAll("[class*='rounded-full']");
-    expect(dots.length).toBeGreaterThanOrEqual(1);
-  });
+	it("renders TrendMonitor with single isolated point between missing data", () => {
+		// This tests the solveSmoothPath with 1 point (line 144)
+		const rows = [
+			{ hour: "00:00", missing: true },
+			{ hour: "01:00", billable_total_tokens: 500 },
+			{ hour: "02:00", missing: true },
+			{ hour: "03:00", missing: true },
+		];
+		const { container } = render(<TrendMonitor rows={rows} />);
+		// The single point should render as a dot
+		const dots = container.querySelectorAll("[class*='rounded-full']");
+		expect(dots.length).toBeGreaterThanOrEqual(1);
+	});
 
-  it("renders TrendMonitor with exactly 1 non-missing value", () => {
-    // Ensures singlePoints logic is exercised for the 1-point path case
-    const rows = [
-      { hour: "00:00", billable_total_tokens: 1000 },
-    ];
-    const { container } = render(<TrendMonitor rows={rows} />);
-    const svg = container.querySelector("svg");
-    expect(svg).toBeInTheDocument();
-  });
+	it("renders TrendMonitor with exactly 1 non-missing value", () => {
+		// Ensures singlePoints logic is exercised for the 1-point path case
+		const rows = [{ hour: "00:00", billable_total_tokens: 1000 }];
+		const { container } = render(<TrendMonitor rows={rows} />);
+		const svg = container.querySelector("svg");
+		expect(svg).toBeInTheDocument();
+	});
 
-  it("coerces non-finite numeric raw to 0 (line 56)", () => {
-    const rows = [
-      { hour: "00:00", value: NaN as unknown as number },
-      { hour: "01:00", value: 100 },
-    ];
-    render(<TrendMonitor rows={rows} />);
-    expect(screen.getByText(/MAX:/)).toBeInTheDocument();
-  });
+	it("coerces non-finite numeric raw to 0 (line 56)", () => {
+		const rows = [
+			{ hour: "00:00", value: NaN as unknown as number },
+			{ hour: "01:00", value: 100 },
+		];
+		render(<TrendMonitor rows={rows} />);
+		expect(screen.getByText(/MAX:/)).toBeInTheDocument();
+	});
 
-  it("falls back to [0] when statsValues is empty (lines 73, 76)", () => {
-    const rows = [
-      { hour: "00:00", missing: true },
-      { hour: "01:00", future: true },
-    ];
-    render(<TrendMonitor rows={rows} />);
-    // max clamps to 100, avg defaults to 0
-    expect(screen.getByText("MAX: 100")).toBeInTheDocument();
-    expect(screen.getByText("AVG: 0")).toBeInTheDocument();
-  });
+	it("falls back to [0] when statsValues is empty (lines 73, 76)", () => {
+		const rows = [
+			{ hour: "00:00", missing: true },
+			{ hour: "01:00", future: true },
+		];
+		render(<TrendMonitor rows={rows} />);
+		// max clamps to 100, avg defaults to 0
+		expect(screen.getByText("MAX: 100")).toBeInTheDocument();
+		expect(screen.getByText("AVG: 0")).toBeInTheDocument();
+	});
 
-  it("formatFull uses 0 fallback when hover value is 0 (line 105)", () => {
-    const rows = [
-      { hour: "00:00", value: 0 },
-      { hour: "01:00", value: 0 },
-    ];
-    const { container } = render(<TrendMonitor rows={rows} />);
-    const plotArea = container.querySelector("[class*='z-20']")!;
-    vi.spyOn(plotArea, "getBoundingClientRect").mockReturnValue({
-      left: 0, right: 200, top: 0, bottom: 100, width: 200, height: 100,
-      x: 0, y: 0, toJSON: () => ({}),
-    } as DOMRect);
-    fireEvent.mouseMove(plotArea, { clientX: 50, clientY: 50 });
-    expect(screen.getByText(/0 tokens/)).toBeInTheDocument();
-  });
+	it("formatFull uses 0 fallback when hover value is 0 (line 105)", () => {
+		const rows = [
+			{ hour: "00:00", value: 0 },
+			{ hour: "01:00", value: 0 },
+		];
+		const { container } = render(<TrendMonitor rows={rows} />);
+		const plotArea = container.querySelector("[class*='z-20']")!;
+		vi.spyOn(plotArea, "getBoundingClientRect").mockReturnValue({
+			left: 0,
+			right: 200,
+			top: 0,
+			bottom: 100,
+			width: 200,
+			height: 100,
+			x: 0,
+			y: 0,
+			toJSON: () => ({}),
+		} as DOMRect);
+		fireEvent.mouseMove(plotArea, { clientX: 50, clientY: 50 });
+		expect(screen.getByText(/0 tokens/)).toBeInTheDocument();
+	});
 
-  it("formatCompact returns 0 string when max axis labels include 0", () => {
-    // ensures formatCompact path with falsy Number coercion
-    render(<TrendMonitor data={[100]} />);
-    expect(screen.getAllByText("0").length).toBeGreaterThan(0);
-  });
+	it("formatCompact returns 0 string when max axis labels include 0", () => {
+		// ensures formatCompact path with falsy Number coercion
+		render(<TrendMonitor data={[100]} />);
+		expect(screen.getAllByText("0").length).toBeGreaterThan(0);
+	});
 
-  it("uses fallback axis width when axisRef getBoundingClientRect width is undefined (line 217)", () => {
-    const rows = [
-      { hour: "00:00", value: 100 },
-      { hour: "01:00", value: 200 },
-    ];
-    const { container } = render(<TrendMonitor rows={rows} />);
-    const plotArea = container.querySelector("[class*='z-20']")!;
-    // The axis div has w-10 class
-    const axisDiv = container.querySelector(".w-10")!;
-    vi.spyOn(plotArea, "getBoundingClientRect").mockReturnValue({
-      left: 0, right: 200, top: 0, bottom: 100, width: 200, height: 100,
-      x: 0, y: 0, toJSON: () => ({}),
-    } as DOMRect);
-    vi.spyOn(axisDiv, "getBoundingClientRect").mockReturnValue({
-      width: undefined as unknown as number,
-    } as DOMRect);
-    fireEvent.mouseMove(plotArea, { clientX: 50, clientY: 50 });
-    // No crash means fallback path was used
-    expect(plotArea).toBeInTheDocument();
-  });
+	it("uses fallback axis width when axisRef getBoundingClientRect width is undefined (line 217)", () => {
+		const rows = [
+			{ hour: "00:00", value: 100 },
+			{ hour: "01:00", value: 200 },
+		];
+		const { container } = render(<TrendMonitor rows={rows} />);
+		const plotArea = container.querySelector("[class*='z-20']")!;
+		// The axis div has w-10 class
+		const axisDiv = container.querySelector(".w-10")!;
+		vi.spyOn(plotArea, "getBoundingClientRect").mockReturnValue({
+			left: 0,
+			right: 200,
+			top: 0,
+			bottom: 100,
+			width: 200,
+			height: 100,
+			x: 0,
+			y: 0,
+			toJSON: () => ({}),
+		} as DOMRect);
+		vi.spyOn(axisDiv, "getBoundingClientRect").mockReturnValue({
+			width: undefined as unknown as number,
+		} as DOMRect);
+		fireEvent.mouseMove(plotArea, { clientX: 50, clientY: 50 });
+		// No crash means fallback path was used
+		expect(plotArea).toBeInTheDocument();
+	});
 
-  it("uses {} fallback when seriesMeta[index] is out of bounds (line 226)", () => {
-    // Only one value but mouse may snap to higher index due to denom=Math.max(0,1)=1
-    const rows = [{ hour: "00:00", value: 500 }];
-    const { container } = render(<TrendMonitor rows={rows} />);
-    const plotArea = container.querySelector("[class*='z-20']")!;
-    vi.spyOn(plotArea, "getBoundingClientRect").mockReturnValue({
-      left: 0, right: 200, top: 0, bottom: 100, width: 200, height: 100,
-      x: 0, y: 0, toJSON: () => ({}),
-    } as DOMRect);
-    fireEvent.mouseMove(plotArea, { clientX: 195, clientY: 50 });
-    expect(screen.getByText(/tokens/)).toBeInTheDocument();
-  });
+	it("uses {} fallback when seriesMeta[index] is out of bounds (line 226)", () => {
+		// Only one value but mouse may snap to higher index due to denom=Math.max(0,1)=1
+		const rows = [{ hour: "00:00", value: 500 }];
+		const { container } = render(<TrendMonitor rows={rows} />);
+		const plotArea = container.querySelector("[class*='z-20']")!;
+		vi.spyOn(plotArea, "getBoundingClientRect").mockReturnValue({
+			left: 0,
+			right: 200,
+			top: 0,
+			bottom: 100,
+			width: 200,
+			height: 100,
+			x: 0,
+			y: 0,
+			toJSON: () => ({}),
+		} as DOMRect);
+		fireEvent.mouseMove(plotArea, { clientX: 195, clientY: 50 });
+		expect(screen.getByText(/tokens/)).toBeInTheDocument();
+	});
 
-  it("falls back to empty label when both hover.label and timeZoneLabel are absent (line 363)", () => {
-    // rows without hour/day/month/label produces empty seriesLabels entries
-    const rows = [
-      { value: 100 },
-      { value: 200 },
-    ];
-    const { container } = render(<TrendMonitor rows={rows} />);
-    const plotArea = container.querySelector("[class*='z-20']")!;
-    vi.spyOn(plotArea, "getBoundingClientRect").mockReturnValue({
-      left: 0, right: 200, top: 0, bottom: 100, width: 200, height: 100,
-      x: 0, y: 0, toJSON: () => ({}),
-    } as DOMRect);
-    fireEvent.mouseMove(plotArea, { clientX: 50, clientY: 50 });
-    expect(screen.getByText(/tokens/)).toBeInTheDocument();
-  });
+	it("falls back to empty label when both hover.label and timeZoneLabel are absent (line 363)", () => {
+		// rows without hour/day/month/label produces empty seriesLabels entries
+		const rows = [{ value: 100 }, { value: 200 }];
+		const { container } = render(<TrendMonitor rows={rows} />);
+		const plotArea = container.querySelector("[class*='z-20']")!;
+		vi.spyOn(plotArea, "getBoundingClientRect").mockReturnValue({
+			left: 0,
+			right: 200,
+			top: 0,
+			bottom: 100,
+			width: 200,
+			height: 100,
+			x: 0,
+			y: 0,
+			toJSON: () => ({}),
+		} as DOMRect);
+		fireEvent.mouseMove(plotArea, { clientX: 50, clientY: 50 });
+		expect(screen.getByText(/tokens/)).toBeInTheDocument();
+	});
 
-  it("buildMonthMarkers uses new Date() when heatmap.to is absent (line 466)", () => {
-    const heatmap = {
-      weeks: [
-        [{ day: "2026-01-05", value: 10, level: 1 }],
-      ],
-      week_starts_on: "sun" as const,
-    };
-    render(<ActivityHeatmap heatmap={heatmap} />);
-    expect(screen.getByLabelText("Activity heatmap")).toBeInTheDocument();
-  });
+	it("buildMonthMarkers uses new Date() when heatmap.to is absent (line 466)", () => {
+		const heatmap = {
+			weeks: [[{ day: "2026-01-05", value: 10, level: 1 }]],
+			week_starts_on: "sun" as const,
+		};
+		render(<ActivityHeatmap heatmap={heatmap} />);
+		expect(screen.getByLabelText("Activity heatmap")).toBeInTheDocument();
+	});
 
-  it("treats non-array week as empty list (line 633)", () => {
-    const heatmap = {
-      weeks: [null as unknown as Array<unknown>, [{ day: "2026-01-05", value: 5, level: 1 }]],
-      to: "2026-01-11",
-      week_starts_on: "sun" as const,
-    };
-    const { container } = render(<ActivityHeatmap heatmap={heatmap as unknown as Parameters<typeof ActivityHeatmap>[0]["heatmap"]} />);
-    const cells = container.querySelectorAll("[title]");
-    expect(cells.length).toBe(1);
-  });
+	it("treats non-array week as empty list (line 633)", () => {
+		const heatmap = {
+			weeks: [null as unknown as Array<unknown>, [{ day: "2026-01-05", value: 5, level: 1 }]],
+			to: "2026-01-11",
+			week_starts_on: "sun" as const,
+		};
+		const { container } = render(
+			<ActivityHeatmap
+				heatmap={heatmap as unknown as Parameters<typeof ActivityHeatmap>[0]["heatmap"]}
+			/>,
+		);
+		const cells = container.querySelectorAll("[title]");
+		expect(cells.length).toBe(1);
+	});
 
-  it("uses 0.3 opacity fallback when level is out of range (line 646)", () => {
-    const heatmap = {
-      weeks: [[{ day: "2026-01-05", value: 10, level: 99 }]],
-      to: "2026-01-11",
-      week_starts_on: "sun" as const,
-    };
-    const { container } = render(<ActivityHeatmap heatmap={heatmap} />);
-    const cell = container.querySelector("[title]") as HTMLElement;
-    // Out-of-range level → opacity 0.3 → cellColor uses level !== 0 branch
-    expect(cell.getAttribute("style")).toContain("rgba(0, 255, 65, 0.3)");
-  });
+	it("uses 0.3 opacity fallback when level is out of range (line 646)", () => {
+		const heatmap = {
+			weeks: [[{ day: "2026-01-05", value: 10, level: 99 }]],
+			to: "2026-01-11",
+			week_starts_on: "sun" as const,
+		};
+		const { container } = render(<ActivityHeatmap heatmap={heatmap} />);
+		const cell = container.querySelector("[title]") as HTMLElement;
+		// Out-of-range level → opacity 0.3 → cellColor uses level !== 0 branch
+		expect(cell.getAttribute("style")).toContain("rgba(0, 255, 65, 0.3)");
+	});
 });
 
 // ---------------------------------------------------------------------------
 // More DataViz edge branches
 // ---------------------------------------------------------------------------
 describe("DataViz additional edge branches", () => {
-  it("TrendMonitor rows with missing/future flags are skipped from segments", () => {
-    const rows = [
-      { hour: "00:00", missing: true },
-      { hour: "01:00", future: true },
-      { hour: "02:00", value: 10 },
-      { hour: "03:00", value: null as unknown as number },
-      { hour: "04:00", value: "abc" as unknown as number },
-      { hour: "05:00", value: 20 },
-    ];
-    const { container } = render(<TrendMonitor rows={rows} period="day" />);
-    expect(container.querySelector("svg")).toBeInTheDocument();
-  });
+	it("TrendMonitor rows with missing/future flags are skipped from segments", () => {
+		const rows = [
+			{ hour: "00:00", missing: true },
+			{ hour: "01:00", future: true },
+			{ hour: "02:00", value: 10 },
+			{ hour: "03:00", value: null as unknown as number },
+			{ hour: "04:00", value: "abc" as unknown as number },
+			{ hour: "05:00", value: 20 },
+		];
+		const { container } = render(<TrendMonitor rows={rows} period="day" />);
+		expect(container.querySelector("svg")).toBeInTheDocument();
+	});
 
-  it("TrendMonitor with single row uses center-x branch", () => {
-    const { container } = render(
-      <TrendMonitor rows={[{ hour: "00:00", value: 5 }]} period="day" />,
-    );
-    expect(container.querySelector("svg")).toBeInTheDocument();
-  });
+	it("TrendMonitor with single row uses center-x branch", () => {
+		const { container } = render(
+			<TrendMonitor rows={[{ hour: "00:00", value: 5 }]} period="day" />,
+		);
+		expect(container.querySelector("svg")).toBeInTheDocument();
+	});
 
-  it("TrendMonitor onMouseMove with future meta clears hover", () => {
-    const rows = [
-      { hour: "00:00", value: 1 },
-      { hour: "01:00", future: true },
-    ];
-    const { container } = render(<TrendMonitor rows={rows} period="day" />);
-    const plot = container.querySelector("svg")?.parentElement as HTMLElement;
-    if (plot) {
-      Object.defineProperty(plot, "getBoundingClientRect", {
-        value: () => ({ left: 0, top: 0, width: 200, height: 100, right: 200, bottom: 100, x: 0, y: 0, toJSON: () => "" }),
-      });
-      fireEvent.mouseMove(plot, { clientX: 199 });
-      fireEvent.mouseLeave(plot);
-    }
-    expect(plot).toBeInTheDocument();
-  });
+	it("TrendMonitor onMouseMove with future meta clears hover", () => {
+		const rows = [
+			{ hour: "00:00", value: 1 },
+			{ hour: "01:00", future: true },
+		];
+		const { container } = render(<TrendMonitor rows={rows} period="day" />);
+		const plot = container.querySelector("svg")?.parentElement as HTMLElement;
+		if (plot) {
+			Object.defineProperty(plot, "getBoundingClientRect", {
+				value: () => ({
+					left: 0,
+					top: 0,
+					width: 200,
+					height: 100,
+					right: 200,
+					bottom: 100,
+					x: 0,
+					y: 0,
+					toJSON: () => "",
+				}),
+			});
+			fireEvent.mouseMove(plot, { clientX: 199 });
+			fireEvent.mouseLeave(plot);
+		}
+		expect(plot).toBeInTheDocument();
+	});
 
-  it("TrendMonitor falls back when rows are empty (uses fallback values)", () => {
-    const { container } = render(<TrendMonitor data={[1, 2, 3]} period="week" />);
-    expect(container.querySelector("svg")).toBeInTheDocument();
-  });
+	it("TrendMonitor falls back when rows are empty (uses fallback values)", () => {
+		const { container } = render(<TrendMonitor data={[1, 2, 3]} period="week" />);
+		expect(container.querySelector("svg")).toBeInTheDocument();
+	});
 
-  it("ActivityHeatmap with defaultToLatestMonth scrolls to latest month", () => {
-    let rafCount = 0;
-    vi.spyOn(window, "requestAnimationFrame").mockImplementation((cb) => {
-      rafCount += 1;
-      cb(0);
-      return rafCount;
-    });
+	it("ActivityHeatmap with defaultToLatestMonth scrolls to latest month", () => {
+		let rafCount = 0;
+		vi.spyOn(window, "requestAnimationFrame").mockImplementation((cb) => {
+			rafCount += 1;
+			cb(0);
+			return rafCount;
+		});
 
-    const weeks = Array.from({ length: 60 }, (_, i) => [
-      { day: `2025-${String(((i % 12) + 1)).padStart(2, "0")}-01`, value: i, level: 1 },
-    ]);
-    const heatmap = { weeks, to: "2026-01-11", week_starts_on: "sun" as const };
-    const { container } = render(<ActivityHeatmap heatmap={heatmap} defaultToLatestMonth />);
-    expect(container.querySelector("[title]")).toBeInTheDocument();
-  });
+		const weeks = Array.from({ length: 60 }, (_, i) => [
+			{ day: `2025-${String((i % 12) + 1).padStart(2, "0")}-01`, value: i, level: 1 },
+		]);
+		const heatmap = { weeks, to: "2026-01-11", week_starts_on: "sun" as const };
+		const { container } = render(<ActivityHeatmap heatmap={heatmap} defaultToLatestMonth />);
+		expect(container.querySelector("[title]")).toBeInTheDocument();
+	});
 
-  it("ActivityHeatmap handleWheel converts vertical to horizontal scroll", () => {
-    const heatmap = { ...sampleHeatmapData };
-    const { container } = render(<ActivityHeatmap heatmap={heatmap} />);
-    const scroller = container.querySelector(".no-scrollbar") as HTMLElement;
-    if (scroller) {
-      fireEvent.wheel(scroller, { deltaY: 100, deltaX: 0 });
-      // deltaX > deltaY branch (no preventDefault)
-      fireEvent.wheel(scroller, { deltaY: 0, deltaX: 50 });
-    }
-    expect(container).toBeInTheDocument();
-  });
+	it("ActivityHeatmap handleWheel converts vertical to horizontal scroll", () => {
+		const heatmap = { ...sampleHeatmapData };
+		const { container } = render(<ActivityHeatmap heatmap={heatmap} />);
+		const scroller = container.querySelector(".no-scrollbar") as HTMLElement;
+		if (scroller) {
+			fireEvent.wheel(scroller, { deltaY: 100, deltaX: 0 });
+			// deltaX > deltaY branch (no preventDefault)
+			fireEvent.wheel(scroller, { deltaY: 0, deltaX: 50 });
+		}
+		expect(container).toBeInTheDocument();
+	});
 
-  it("ActivityHeatmap with cell missing falls back to empty span", () => {
-    const heatmap = {
-      weeks: [[null as unknown as { day: string; value: number; level: number }]],
-      to: "2026-01-11",
-      week_starts_on: "mon" as const,
-    };
-    const { container } = render(<ActivityHeatmap heatmap={heatmap} />);
-    expect(container).toBeInTheDocument();
-  });
+	it("ActivityHeatmap with cell missing falls back to empty span", () => {
+		const heatmap = {
+			weeks: [[null as unknown as { day: string; value: number; level: number }]],
+			to: "2026-01-11",
+			week_starts_on: "mon" as const,
+		};
+		const { container } = render(<ActivityHeatmap heatmap={heatmap} />);
+		expect(container).toBeInTheDocument();
+	});
 });

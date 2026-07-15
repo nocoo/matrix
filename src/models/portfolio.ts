@@ -4,5 +4,5 @@
 import type { PortfolioItem } from "@/models/types";
 
 export function computePortfolioTotal(items: PortfolioItem[]): number {
-  return items.reduce((sum, item) => sum + item.value, 0);
+	return items.reduce((sum, item) => sum + item.value, 0);
 }

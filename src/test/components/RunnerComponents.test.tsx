@@ -1,23 +1,23 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, fireEvent, within, act } from "@testing-library/react";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
-  MatrixClock,
-  TaskSchedule,
-  RunHistory,
-  RunHeatmap,
-  RunnerTrendChart,
-  UpcomingTasks,
-  AddTaskModal,
-  TaskDetailModal,
-  RunDetailModal,
+	AddTaskModal,
+	MatrixClock,
+	RunDetailModal,
+	RunHeatmap,
+	RunHistory,
+	RunnerTrendChart,
+	TaskDetailModal,
+	TaskSchedule,
+	UpcomingTasks,
 } from "@/components/ui/RunnerComponents";
 import type {
-  TaskWithSchedule,
-  RunSummary,
-  RunDetail,
-  HeatmapCell,
-  TrendPoint,
-  UpcomingTask,
+	HeatmapCell,
+	RunDetail,
+	RunSummary,
+	TaskWithSchedule,
+	TrendPoint,
+	UpcomingTask,
 } from "@/models/types";
 
 // ============================================
@@ -25,39 +25,39 @@ import type {
 // ============================================
 
 function makeTask(overrides: Partial<TaskWithSchedule> = {}): TaskWithSchedule {
-  return {
-    id: "test-task",
-    executor: "shell",
-    description: "Test task description",
-    timeout: 300,
-    command: "echo hello",
-    schedules: [],
-    ...overrides,
-  };
+	return {
+		id: "test-task",
+		executor: "shell",
+		description: "Test task description",
+		timeout: 300,
+		command: "echo hello",
+		schedules: [],
+		...overrides,
+	};
 }
 
 function makeRun(overrides: Partial<RunSummary> = {}): RunSummary {
-  return {
-    id: "run-1",
-    task: "test-task",
-    exit_code: 0,
-    started_at: "2026-01-15T10:00:00Z",
-    finished_at: "2026-01-15T10:01:00Z",
-    ...overrides,
-  };
+	return {
+		id: "run-1",
+		task: "test-task",
+		exit_code: 0,
+		started_at: "2026-01-15T10:00:00Z",
+		finished_at: "2026-01-15T10:01:00Z",
+		...overrides,
+	};
 }
 
 function makeRunDetail(overrides: Partial<RunDetail> = {}): RunDetail {
-  return {
-    id: "run-1",
-    task: "test-task",
-    trigger: "auto",
-    started_at: "2026-01-15T10:00:00Z",
-    finished_at: "2026-01-15T10:01:00Z",
-    duration_seconds: 60,
-    exit_code: 0,
-    ...overrides,
-  };
+	return {
+		id: "run-1",
+		task: "test-task",
+		trigger: "auto",
+		started_at: "2026-01-15T10:00:00Z",
+		finished_at: "2026-01-15T10:01:00Z",
+		duration_seconds: 60,
+		exit_code: 0,
+		...overrides,
+	};
 }
 
 // ============================================
@@ -65,83 +65,83 @@ function makeRunDetail(overrides: Partial<RunDetail> = {}): RunDetail {
 // ============================================
 
 describe("MatrixClock", () => {
-  beforeEach(() => {
-    vi.useFakeTimers();
-  });
+	beforeEach(() => {
+		vi.useFakeTimers();
+	});
 
-  afterEach(() => {
-    vi.useRealTimers();
-  });
+	afterEach(() => {
+		vi.useRealTimers();
+	});
 
-  it("renders time digits", () => {
-    vi.setSystemTime(new Date(2026, 0, 15, 14, 30, 45));
-    render(<MatrixClock />);
-    // The clock renders individual digit spans; check for separators ":"
-    const colons = screen.getAllByText(":");
-    expect(colons.length).toBe(2);
-  });
+	it("renders time digits", () => {
+		vi.setSystemTime(new Date(2026, 0, 15, 14, 30, 45));
+		render(<MatrixClock />);
+		// The clock renders individual digit spans; check for separators ":"
+		const colons = screen.getAllByText(":");
+		expect(colons.length).toBe(2);
+	});
 
-  it("shows label when provided", () => {
-    render(<MatrixClock label="SYSTEM TIME" />);
-    expect(screen.getByText("SYSTEM TIME")).toBeInTheDocument();
-  });
+	it("shows label when provided", () => {
+		render(<MatrixClock label="SYSTEM TIME" />);
+		expect(screen.getByText("SYSTEM TIME")).toBeInTheDocument();
+	});
 
-  it("does not show label when not provided", () => {
-    render(<MatrixClock />);
-    expect(screen.queryByText("SYSTEM TIME")).not.toBeInTheDocument();
-  });
+	it("does not show label when not provided", () => {
+		render(<MatrixClock />);
+		expect(screen.queryByText("SYSTEM TIME")).not.toBeInTheDocument();
+	});
 
-  it("updates clock after 1 second interval", () => {
-    vi.setSystemTime(new Date(2026, 0, 15, 14, 30, 45));
-    render(<MatrixClock />);
+	it("updates clock after 1 second interval", () => {
+		vi.setSystemTime(new Date(2026, 0, 15, 14, 30, 45));
+		render(<MatrixClock />);
 
-    act(() => {
-      vi.setSystemTime(new Date(2026, 0, 15, 14, 30, 46));
-      vi.advanceTimersByTime(1000);
-    });
+		act(() => {
+			vi.setSystemTime(new Date(2026, 0, 15, 14, 30, 46));
+			vi.advanceTimersByTime(1000);
+		});
 
-    // After advancing, the ClockSeparator blink also fires (500ms).
-    // We just verify no crash and the component re-rendered.
-    const colons = screen.getAllByText(":");
-    expect(colons.length).toBe(2);
-  });
+		// After advancing, the ClockSeparator blink also fires (500ms).
+		// We just verify no crash and the component re-rendered.
+		const colons = screen.getAllByText(":");
+		expect(colons.length).toBe(2);
+	});
 
-  it("ClockDigit fires glitch and flip timers after value change", () => {
-    vi.setSystemTime(new Date(2026, 0, 15, 14, 30, 45));
-    render(<MatrixClock />);
+	it("ClockDigit fires glitch and flip timers after value change", () => {
+		vi.setSystemTime(new Date(2026, 0, 15, 14, 30, 45));
+		render(<MatrixClock />);
 
-    // Advance 1s to trigger the interval -> value changes in ClockDigit
-    act(() => {
-      vi.setSystemTime(new Date(2026, 0, 15, 14, 30, 46));
-      vi.advanceTimersByTime(1000);
-    });
+		// Advance 1s to trigger the interval -> value changes in ClockDigit
+		act(() => {
+			vi.setSystemTime(new Date(2026, 0, 15, 14, 30, 46));
+			vi.advanceTimersByTime(1000);
+		});
 
-    // Now advance 50ms more to fire the glitchTimer setTimeout callback
-    act(() => {
-      vi.advanceTimersByTime(50);
-    });
+		// Now advance 50ms more to fire the glitchTimer setTimeout callback
+		act(() => {
+			vi.advanceTimersByTime(50);
+		});
 
-    // Advance 100ms more to fire the flipTimer setTimeout callback (150ms total)
-    act(() => {
-      vi.advanceTimersByTime(100);
-    });
+		// Advance 100ms more to fire the flipTimer setTimeout callback (150ms total)
+		act(() => {
+			vi.advanceTimersByTime(100);
+		});
 
-    // After both timers fire, the digits should show the current value (no glitch)
-    const colons = screen.getAllByText(":");
-    expect(colons.length).toBe(2);
-  });
+		// After both timers fire, the digits should show the current value (no glitch)
+		const colons = screen.getAllByText(":");
+		expect(colons.length).toBe(2);
+	});
 
-  it("ClockSeparator blinks on interval", () => {
-    render(<MatrixClock />);
+	it("ClockSeparator blinks on interval", () => {
+		render(<MatrixClock />);
 
-    act(() => {
-      vi.advanceTimersByTime(500);
-    });
+		act(() => {
+			vi.advanceTimersByTime(500);
+		});
 
-    // The separator should still be in the DOM (just with different opacity)
-    const colons = screen.getAllByText(":");
-    expect(colons.length).toBe(2);
-  });
+		// The separator should still be in the DOM (just with different opacity)
+		const colons = screen.getAllByText(":");
+		expect(colons.length).toBe(2);
+	});
 });
 
 // ============================================
@@ -149,153 +149,145 @@ describe("MatrixClock", () => {
 // ============================================
 
 describe("TaskSchedule", () => {
-  const defaultProps = {
-    tasks: [] as TaskWithSchedule[],
-    loading: false,
-    onTrigger: vi.fn(),
-    triggerLoading: false,
-  };
+	const defaultProps = {
+		tasks: [] as TaskWithSchedule[],
+		loading: false,
+		onTrigger: vi.fn(),
+		triggerLoading: false,
+	};
 
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
 
-  it("renders loading state when loading with no tasks", () => {
-    render(<TaskSchedule {...defaultProps} loading={true} />);
-    expect(screen.getByText("Loading tasks...")).toBeInTheDocument();
-  });
+	it("renders loading state when loading with no tasks", () => {
+		render(<TaskSchedule {...defaultProps} loading={true} />);
+		expect(screen.getByText("Loading tasks...")).toBeInTheDocument();
+	});
 
-  it("renders tasks with id and description", () => {
-    const tasks = [makeTask({ id: "my-task", description: "Run tests" })];
-    render(<TaskSchedule {...defaultProps} tasks={tasks} />);
-    expect(screen.getByText("my-task")).toBeInTheDocument();
-    expect(screen.getByText("Run tests")).toBeInTheDocument();
-  });
+	it("renders tasks with id and description", () => {
+		const tasks = [makeTask({ id: "my-task", description: "Run tests" })];
+		render(<TaskSchedule {...defaultProps} tasks={tasks} />);
+		expect(screen.getByText("my-task")).toBeInTheDocument();
+		expect(screen.getByText("Run tests")).toBeInTheDocument();
+	});
 
-  it("displays manual badge when no schedules", () => {
-    const tasks = [makeTask({ schedules: [] })];
-    render(<TaskSchedule {...defaultProps} tasks={tasks} />);
-    expect(screen.getByText("manual")).toBeInTheDocument();
-  });
+	it("displays manual badge when no schedules", () => {
+		const tasks = [makeTask({ schedules: [] })];
+		render(<TaskSchedule {...defaultProps} tasks={tasks} />);
+		expect(screen.getByText("manual")).toBeInTheDocument();
+	});
 
-  it("displays auto badge when schedules exist", () => {
-    const tasks = [
-      makeTask({
-        schedules: [{ task: "test-task", hour: 10, minute: 30, weekday: "*" }],
-      }),
-    ];
-    render(<TaskSchedule {...defaultProps} tasks={tasks} />);
-    expect(screen.getByText("auto")).toBeInTheDocument();
-  });
+	it("displays auto badge when schedules exist", () => {
+		const tasks = [
+			makeTask({
+				schedules: [{ task: "test-task", hour: 10, minute: 30, weekday: "*" }],
+			}),
+		];
+		render(<TaskSchedule {...defaultProps} tasks={tasks} />);
+		expect(screen.getByText("auto")).toBeInTheDocument();
+	});
 
-  it("shows executor badge for shell", () => {
-    const tasks = [makeTask({ executor: "shell" })];
-    render(<TaskSchedule {...defaultProps} tasks={tasks} />);
-    expect(screen.getByText("shell")).toBeInTheDocument();
-  });
+	it("shows executor badge for shell", () => {
+		const tasks = [makeTask({ executor: "shell" })];
+		render(<TaskSchedule {...defaultProps} tasks={tasks} />);
+		expect(screen.getByText("shell")).toBeInTheDocument();
+	});
 
-  it("shows executor badge for opencode", () => {
-    const tasks = [makeTask({ executor: "opencode", prompt: "Analyze code" })];
-    render(<TaskSchedule {...defaultProps} tasks={tasks} />);
-    expect(screen.getByText("opencode")).toBeInTheDocument();
-  });
+	it("shows executor badge for opencode", () => {
+		const tasks = [makeTask({ executor: "opencode", prompt: "Analyze code" })];
+		render(<TaskSchedule {...defaultProps} tasks={tasks} />);
+		expect(screen.getByText("opencode")).toBeInTheDocument();
+	});
 
-  it("shows executor badge for http with url display", () => {
-    const tasks = [
-      makeTask({
-        executor: "http",
-        url: "https://api.example.com/hook",
-        method: "POST",
-        command: undefined,
-      }),
-    ];
-    render(<TaskSchedule {...defaultProps} tasks={tasks} />);
-    expect(screen.getByText("http")).toBeInTheDocument();
-    expect(screen.getByText("POST https://api.example.com/hook")).toBeInTheDocument();
-  });
+	it("shows executor badge for http with url display", () => {
+		const tasks = [
+			makeTask({
+				executor: "http",
+				url: "https://api.example.com/hook",
+				method: "POST",
+				command: undefined,
+			}),
+		];
+		render(<TaskSchedule {...defaultProps} tasks={tasks} />);
+		expect(screen.getByText("http")).toBeInTheDocument();
+		expect(screen.getByText("POST https://api.example.com/hook")).toBeInTheDocument();
+	});
 
-  it("shows schedule badges with formatted time", () => {
-    const tasks = [
-      makeTask({
-        schedules: [{ task: "test-task", hour: 8, minute: 0, weekday: "*" }],
-      }),
-    ];
-    render(<TaskSchedule {...defaultProps} tasks={tasks} />);
-    expect(screen.getByText("08:00")).toBeInTheDocument();
-    expect(screen.getByText("Daily")).toBeInTheDocument();
-  });
+	it("shows schedule badges with formatted time", () => {
+		const tasks = [
+			makeTask({
+				schedules: [{ task: "test-task", hour: 8, minute: 0, weekday: "*" }],
+			}),
+		];
+		render(<TaskSchedule {...defaultProps} tasks={tasks} />);
+		expect(screen.getByText("08:00")).toBeInTheDocument();
+		expect(screen.getByText("Daily")).toBeInTheDocument();
+	});
 
-  it("calls onTrigger when Run button is clicked", () => {
-    const onTrigger = vi.fn();
-    const tasks = [makeTask({ id: "task-a" })];
-    render(
-      <TaskSchedule {...defaultProps} tasks={tasks} onTrigger={onTrigger} />,
-    );
+	it("calls onTrigger when Run button is clicked", () => {
+		const onTrigger = vi.fn();
+		const tasks = [makeTask({ id: "task-a" })];
+		render(<TaskSchedule {...defaultProps} tasks={tasks} onTrigger={onTrigger} />);
 
-    fireEvent.click(screen.getByText("Run"));
-    expect(onTrigger).toHaveBeenCalledWith("task-a");
-  });
+		fireEvent.click(screen.getByText("Run"));
+		expect(onTrigger).toHaveBeenCalledWith("task-a");
+	});
 
-  it("disables Run button when triggerLoading is true", () => {
-    const tasks = [makeTask()];
-    render(<TaskSchedule {...defaultProps} tasks={tasks} triggerLoading={true} />);
+	it("disables Run button when triggerLoading is true", () => {
+		const tasks = [makeTask()];
+		render(<TaskSchedule {...defaultProps} tasks={tasks} triggerLoading={true} />);
 
-    const runButton = screen.getByText("Run").closest("button")!;
-    expect(runButton).toBeDisabled();
-  });
+		const runButton = screen.getByText("Run").closest("button")!;
+		expect(runButton).toBeDisabled();
+	});
 
-  it("calls onSelectTask when task row is clicked", () => {
-    const onSelectTask = vi.fn();
-    const task = makeTask({ id: "clickable" });
-    render(
-      <TaskSchedule
-        {...defaultProps}
-        tasks={[task]}
-        onSelectTask={onSelectTask}
-      />,
-    );
+	it("calls onSelectTask when task row is clicked", () => {
+		const onSelectTask = vi.fn();
+		const task = makeTask({ id: "clickable" });
+		render(<TaskSchedule {...defaultProps} tasks={[task]} onSelectTask={onSelectTask} />);
 
-    // Click on the task description area (not the Run button)
-    fireEvent.click(screen.getByText("clickable"));
-    expect(onSelectTask).toHaveBeenCalledWith(task);
-  });
+		// Click on the task description area (not the Run button)
+		fireEvent.click(screen.getByText("clickable"));
+		expect(onSelectTask).toHaveBeenCalledWith(task);
+	});
 
-  it("shows Add button when onAddTask is provided", () => {
-    const onAddTask = vi.fn();
-    render(<TaskSchedule {...defaultProps} onAddTask={onAddTask} />);
+	it("shows Add button when onAddTask is provided", () => {
+		const onAddTask = vi.fn();
+		render(<TaskSchedule {...defaultProps} onAddTask={onAddTask} />);
 
-    fireEvent.click(screen.getByText("Add"));
-    expect(onAddTask).toHaveBeenCalledOnce();
-  });
+		fireEvent.click(screen.getByText("Add"));
+		expect(onAddTask).toHaveBeenCalledOnce();
+	});
 
-  it("does not show Add button when onAddTask is not provided", () => {
-    render(<TaskSchedule {...defaultProps} />);
-    expect(screen.queryByText("Add")).not.toBeInTheDocument();
-  });
+	it("does not show Add button when onAddTask is not provided", () => {
+		render(<TaskSchedule {...defaultProps} />);
+		expect(screen.queryByText("Add")).not.toBeInTheDocument();
+	});
 
-  it("Run button click does not trigger onSelectTask", () => {
-    const onSelectTask = vi.fn();
-    const onTrigger = vi.fn();
-    const task = makeTask();
-    render(
-      <TaskSchedule
-        {...defaultProps}
-        tasks={[task]}
-        onTrigger={onTrigger}
-        onSelectTask={onSelectTask}
-      />,
-    );
+	it("Run button click does not trigger onSelectTask", () => {
+		const onSelectTask = vi.fn();
+		const onTrigger = vi.fn();
+		const task = makeTask();
+		render(
+			<TaskSchedule
+				{...defaultProps}
+				tasks={[task]}
+				onTrigger={onTrigger}
+				onSelectTask={onSelectTask}
+			/>,
+		);
 
-    fireEvent.click(screen.getByText("Run"));
-    expect(onTrigger).toHaveBeenCalledOnce();
-    expect(onSelectTask).not.toHaveBeenCalled();
-  });
+		fireEvent.click(screen.getByText("Run"));
+		expect(onTrigger).toHaveBeenCalledOnce();
+		expect(onSelectTask).not.toHaveBeenCalled();
+	});
 
-  it("renders subtitle with task count", () => {
-    const tasks = [makeTask({ id: "a" }), makeTask({ id: "b" })];
-    render(<TaskSchedule {...defaultProps} tasks={tasks} />);
-    expect(screen.getByText(/2 tasks/)).toBeInTheDocument();
-  });
+	it("renders subtitle with task count", () => {
+		const tasks = [makeTask({ id: "a" }), makeTask({ id: "b" })];
+		render(<TaskSchedule {...defaultProps} tasks={tasks} />);
+		expect(screen.getByText(/2 tasks/)).toBeInTheDocument();
+	});
 });
 
 // ============================================
@@ -303,251 +295,255 @@ describe("TaskSchedule", () => {
 // ============================================
 
 describe("RunHistory", () => {
-  const defaultProps = {
-    runs: [] as RunSummary[],
-    loading: false,
-    page: 1,
-    totalPages: 1,
-    onPageChange: vi.fn(),
-    onSelectRun: vi.fn(),
-  };
+	const defaultProps = {
+		runs: [] as RunSummary[],
+		loading: false,
+		page: 1,
+		totalPages: 1,
+		onPageChange: vi.fn(),
+		onSelectRun: vi.fn(),
+	};
 
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
 
-  it("renders loading state", () => {
-    render(<RunHistory {...defaultProps} loading={true} />);
-    expect(screen.getByText("Loading runs...")).toBeInTheDocument();
-  });
+	it("renders loading state", () => {
+		render(<RunHistory {...defaultProps} loading={true} />);
+		expect(screen.getByText("Loading runs...")).toBeInTheDocument();
+	});
 
-  it("renders empty state when not loading", () => {
-    render(<RunHistory {...defaultProps} />);
-    expect(screen.getByText("No runs recorded yet")).toBeInTheDocument();
-  });
+	it("renders empty state when not loading", () => {
+		render(<RunHistory {...defaultProps} />);
+		expect(screen.getByText("No runs recorded yet")).toBeInTheDocument();
+	});
 
-  it("renders run rows", () => {
-    const runs = [
-      makeRun({ id: "r1", task: "deploy" }),
-      makeRun({ id: "r2", task: "backup" }),
-    ];
-    render(<RunHistory {...defaultProps} runs={runs} />);
-    expect(screen.getByText("deploy")).toBeInTheDocument();
-    expect(screen.getByText("backup")).toBeInTheDocument();
-  });
+	it("renders run rows", () => {
+		const runs = [makeRun({ id: "r1", task: "deploy" }), makeRun({ id: "r2", task: "backup" })];
+		render(<RunHistory {...defaultProps} runs={runs} />);
+		expect(screen.getByText("deploy")).toBeInTheDocument();
+		expect(screen.getByText("backup")).toBeInTheDocument();
+	});
 
-  it("displays OK status for exit_code 0", () => {
-    const runs = [makeRun({ exit_code: 0 })];
-    render(<RunHistory {...defaultProps} runs={runs} />);
-    expect(screen.getByText("OK")).toBeInTheDocument();
-  });
+	it("displays OK status for exit_code 0", () => {
+		const runs = [makeRun({ exit_code: 0 })];
+		render(<RunHistory {...defaultProps} runs={runs} />);
+		expect(screen.getByText("OK")).toBeInTheDocument();
+	});
 
-  it("displays FAILED status with exit code", () => {
-    const runs = [makeRun({ exit_code: 1 })];
-    render(<RunHistory {...defaultProps} runs={runs} />);
-    expect(screen.getByText("FAILED")).toBeInTheDocument();
-    expect(screen.getByText("(1)")).toBeInTheDocument();
-  });
+	it("displays FAILED status with exit code", () => {
+		const runs = [makeRun({ exit_code: 1 })];
+		render(<RunHistory {...defaultProps} runs={runs} />);
+		expect(screen.getByText("FAILED")).toBeInTheDocument();
+		expect(screen.getByText("(1)")).toBeInTheDocument();
+	});
 
-  it("displays RUNNING status for null exit_code", () => {
-    const runs = [makeRun({ exit_code: null, finished_at: null })];
-    render(<RunHistory {...defaultProps} runs={runs} />);
-    expect(screen.getByText("RUNNING")).toBeInTheDocument();
-  });
+	it("displays RUNNING status for null exit_code", () => {
+		const runs = [makeRun({ exit_code: null, finished_at: null })];
+		render(<RunHistory {...defaultProps} runs={runs} />);
+		expect(screen.getByText("RUNNING")).toBeInTheDocument();
+	});
 
-  it("displays INTERRUPTED status for exit_code -1", () => {
-    const runs = [makeRun({ exit_code: -1 })];
-    render(<RunHistory {...defaultProps} runs={runs} />);
-    expect(screen.getByText("INTERRUPTED")).toBeInTheDocument();
-  });
+	it("displays INTERRUPTED status for exit_code -1", () => {
+		const runs = [makeRun({ exit_code: -1 })];
+		render(<RunHistory {...defaultProps} runs={runs} />);
+		expect(screen.getByText("INTERRUPTED")).toBeInTheDocument();
+	});
 
-  it("calls onSelectRun when row is clicked", () => {
-    const onSelectRun = vi.fn();
-    const runs = [makeRun({ id: "r1", task: "deploy" })];
-    render(
-      <RunHistory {...defaultProps} runs={runs} onSelectRun={onSelectRun} />,
-    );
+	it("calls onSelectRun when row is clicked", () => {
+		const onSelectRun = vi.fn();
+		const runs = [makeRun({ id: "r1", task: "deploy" })];
+		render(<RunHistory {...defaultProps} runs={runs} onSelectRun={onSelectRun} />);
 
-    fireEvent.click(screen.getByText("deploy"));
-    expect(onSelectRun).toHaveBeenCalledWith("r1");
-  });
+		fireEvent.click(screen.getByText("deploy"));
+		expect(onSelectRun).toHaveBeenCalledWith("r1");
+	});
 
-  it("toggles sort direction when clicking same column", () => {
-    const runs = [
-      makeRun({ id: "r1", task: "alpha" }),
-      makeRun({ id: "r2", task: "beta" }),
-    ];
-    render(<RunHistory {...defaultProps} runs={runs} />);
+	it("toggles sort direction when clicking same column", () => {
+		const runs = [makeRun({ id: "r1", task: "alpha" }), makeRun({ id: "r2", task: "beta" })];
+		render(<RunHistory {...defaultProps} runs={runs} />);
 
-    // Click "Task" column header to sort by task (desc first)
-    const taskButton = screen.getByTitle("Sort by task name");
-    fireEvent.click(taskButton);
+		// Click "Task" column header to sort by task (desc first)
+		const taskButton = screen.getByTitle("Sort by task name");
+		fireEvent.click(taskButton);
 
-    // Click again to toggle to asc
-    fireEvent.click(taskButton);
+		// Click again to toggle to asc
+		fireEvent.click(taskButton);
 
-    // Verify both runs still render (sorting doesn't remove anything)
-    expect(screen.getByText("alpha")).toBeInTheDocument();
-    expect(screen.getByText("beta")).toBeInTheDocument();
-  });
+		// Verify both runs still render (sorting doesn't remove anything)
+		expect(screen.getByText("alpha")).toBeInTheDocument();
+		expect(screen.getByText("beta")).toBeInTheDocument();
+	});
 
-  it("changes sort key when clicking different column", () => {
-    const runs = [makeRun({ id: "r1", task: "test" })];
-    render(<RunHistory {...defaultProps} runs={runs} />);
+	it("changes sort key when clicking different column", () => {
+		const runs = [makeRun({ id: "r1", task: "test" })];
+		render(<RunHistory {...defaultProps} runs={runs} />);
 
-    // Click "Status" column
-    const statusButton = screen.getByTitle("Sort by status");
-    fireEvent.click(statusButton);
+		// Click "Status" column
+		const statusButton = screen.getByTitle("Sort by status");
+		fireEvent.click(statusButton);
 
-    // Click "Duration" column
-    const durationButton = screen.getByTitle("Sort by duration");
-    fireEvent.click(durationButton);
+		// Click "Duration" column
+		const durationButton = screen.getByTitle("Sort by duration");
+		fireEvent.click(durationButton);
 
-    expect(screen.getByText("test")).toBeInTheDocument();
-  });
+		expect(screen.getByText("test")).toBeInTheDocument();
+	});
 
-  it("sorts by status using getStatusPriority with multiple statuses", () => {
-    const runs = [
-      makeRun({ id: "r1", task: "success-task", exit_code: 0, finished_at: "2026-01-15T10:01:00Z" }),
-      makeRun({ id: "r2", task: "running-task", exit_code: null, finished_at: null }),
-      makeRun({ id: "r3", task: "failed-task", exit_code: 1, finished_at: "2026-01-15T10:02:00Z" }),
-      makeRun({ id: "r4", task: "interrupted-task", exit_code: -1, finished_at: "2026-01-15T10:03:00Z" }),
-    ];
-    render(<RunHistory {...defaultProps} runs={runs} />);
+	it("sorts by status using getStatusPriority with multiple statuses", () => {
+		const runs = [
+			makeRun({
+				id: "r1",
+				task: "success-task",
+				exit_code: 0,
+				finished_at: "2026-01-15T10:01:00Z",
+			}),
+			makeRun({ id: "r2", task: "running-task", exit_code: null, finished_at: null }),
+			makeRun({ id: "r3", task: "failed-task", exit_code: 1, finished_at: "2026-01-15T10:02:00Z" }),
+			makeRun({
+				id: "r4",
+				task: "interrupted-task",
+				exit_code: -1,
+				finished_at: "2026-01-15T10:03:00Z",
+			}),
+		];
+		render(<RunHistory {...defaultProps} runs={runs} />);
 
-    // Click "Status" column to sort by status
-    const statusButton = screen.getByTitle("Sort by status");
-    fireEvent.click(statusButton);
+		// Click "Status" column to sort by status
+		const statusButton = screen.getByTitle("Sort by status");
+		fireEvent.click(statusButton);
 
-    // All four tasks should be rendered (sorting applied via getStatusPriority)
-    expect(screen.getByText("success-task")).toBeInTheDocument();
-    expect(screen.getByText("running-task")).toBeInTheDocument();
-    expect(screen.getByText("failed-task")).toBeInTheDocument();
-    expect(screen.getByText("interrupted-task")).toBeInTheDocument();
-  });
+		// All four tasks should be rendered (sorting applied via getStatusPriority)
+		expect(screen.getByText("success-task")).toBeInTheDocument();
+		expect(screen.getByText("running-task")).toBeInTheDocument();
+		expect(screen.getByText("failed-task")).toBeInTheDocument();
+		expect(screen.getByText("interrupted-task")).toBeInTheDocument();
+	});
 
-  it("shows pagination when totalPages > 1", () => {
-    const runs = [makeRun()];
-    render(
-      <RunHistory {...defaultProps} runs={runs} page={2} totalPages={5} />,
-    );
-    expect(screen.getByText("Page 2 / 5")).toBeInTheDocument();
-  });
+	it("shows pagination when totalPages > 1", () => {
+		const runs = [makeRun()];
+		render(<RunHistory {...defaultProps} runs={runs} page={2} totalPages={5} />);
+		expect(screen.getByText("Page 2 / 5")).toBeInTheDocument();
+	});
 
-  it("does not show pagination when totalPages is 1", () => {
-    const runs = [makeRun()];
-    render(
-      <RunHistory {...defaultProps} runs={runs} page={1} totalPages={1} />,
-    );
-    expect(screen.queryByText(/Page/)).not.toBeInTheDocument();
-  });
+	it("does not show pagination when totalPages is 1", () => {
+		const runs = [makeRun()];
+		render(<RunHistory {...defaultProps} runs={runs} page={1} totalPages={1} />);
+		expect(screen.queryByText(/Page/)).not.toBeInTheDocument();
+	});
 
-  it("calls onPageChange for Prev button", () => {
-    const onPageChange = vi.fn();
-    const runs = [makeRun()];
-    render(
-      <RunHistory
-        {...defaultProps}
-        runs={runs}
-        page={2}
-        totalPages={3}
-        onPageChange={onPageChange}
-      />,
-    );
+	it("calls onPageChange for Prev button", () => {
+		const onPageChange = vi.fn();
+		const runs = [makeRun()];
+		render(
+			<RunHistory
+				{...defaultProps}
+				runs={runs}
+				page={2}
+				totalPages={3}
+				onPageChange={onPageChange}
+			/>,
+		);
 
-    fireEvent.click(screen.getByText(/Prev/));
-    expect(onPageChange).toHaveBeenCalledWith(1);
-  });
+		fireEvent.click(screen.getByText(/Prev/));
+		expect(onPageChange).toHaveBeenCalledWith(1);
+	});
 
-  it("calls onPageChange for Next button", () => {
-    const onPageChange = vi.fn();
-    const runs = [makeRun()];
-    render(
-      <RunHistory
-        {...defaultProps}
-        runs={runs}
-        page={1}
-        totalPages={3}
-        onPageChange={onPageChange}
-      />,
-    );
+	it("calls onPageChange for Next button", () => {
+		const onPageChange = vi.fn();
+		const runs = [makeRun()];
+		render(
+			<RunHistory
+				{...defaultProps}
+				runs={runs}
+				page={1}
+				totalPages={3}
+				onPageChange={onPageChange}
+			/>,
+		);
 
-    fireEvent.click(screen.getByText(/Next/));
-    expect(onPageChange).toHaveBeenCalledWith(2);
-  });
+		fireEvent.click(screen.getByText(/Next/));
+		expect(onPageChange).toHaveBeenCalledWith(2);
+	});
 
-  it("disables Prev button on first page", () => {
-    const runs = [makeRun()];
-    render(
-      <RunHistory {...defaultProps} runs={runs} page={1} totalPages={3} />,
-    );
+	it("disables Prev button on first page", () => {
+		const runs = [makeRun()];
+		render(<RunHistory {...defaultProps} runs={runs} page={1} totalPages={3} />);
 
-    const prevBtn = screen.getByText(/Prev/).closest("button")!;
-    expect(prevBtn).toBeDisabled();
-  });
+		const prevBtn = screen.getByText(/Prev/).closest("button")!;
+		expect(prevBtn).toBeDisabled();
+	});
 
-  it("disables Next button on last page", () => {
-    const runs = [makeRun()];
-    render(
-      <RunHistory {...defaultProps} runs={runs} page={3} totalPages={3} />,
-    );
+	it("disables Next button on last page", () => {
+		const runs = [makeRun()];
+		render(<RunHistory {...defaultProps} runs={runs} page={3} totalPages={3} />);
 
-    const nextBtn = screen.getByText(/Next/).closest("button")!;
-    expect(nextBtn).toBeDisabled();
-  });
+		const nextBtn = screen.getByText(/Next/).closest("button")!;
+		expect(nextBtn).toBeDisabled();
+	});
 
-  it("displays duration for completed runs", () => {
-    const runs = [
-      makeRun({
-        started_at: "2026-01-15T10:00:00Z",
-        finished_at: "2026-01-15T10:01:00Z",
-        exit_code: 0,
-      }),
-    ];
-    render(<RunHistory {...defaultProps} runs={runs} />);
-    // 60000ms = 1m 0s
-    expect(screen.getByText("1m")).toBeInTheDocument();
-  });
+	it("displays duration for completed runs", () => {
+		const runs = [
+			makeRun({
+				started_at: "2026-01-15T10:00:00Z",
+				finished_at: "2026-01-15T10:01:00Z",
+				exit_code: 0,
+			}),
+		];
+		render(<RunHistory {...defaultProps} runs={runs} />);
+		// 60000ms = 1m 0s
+		expect(screen.getByText("1m")).toBeInTheDocument();
+	});
 
-  it("displays ... for running tasks duration", () => {
-    const runs = [makeRun({ exit_code: null, finished_at: null })];
-    render(<RunHistory {...defaultProps} runs={runs} />);
-    expect(screen.getByText("...")).toBeInTheDocument();
-  });
+	it("displays ... for running tasks duration", () => {
+		const runs = [makeRun({ exit_code: null, finished_at: null })];
+		render(<RunHistory {...defaultProps} runs={runs} />);
+		expect(screen.getByText("...")).toBeInTheDocument();
+	});
 
-  it("renders arrow indicator in each row", () => {
-    const runs = [makeRun()];
-    render(<RunHistory {...defaultProps} runs={runs} />);
-    expect(screen.getByText("→")).toBeInTheDocument();
-  });
+	it("renders arrow indicator in each row", () => {
+		const runs = [makeRun()];
+		render(<RunHistory {...defaultProps} runs={runs} />);
+		expect(screen.getByText("→")).toBeInTheDocument();
+	});
 
-  it("renders all column headers", () => {
-    render(<RunHistory {...defaultProps} />);
-    expect(screen.getByText("Time")).toBeInTheDocument();
-    expect(screen.getByText("Task")).toBeInTheDocument();
-    expect(screen.getByText("Status")).toBeInTheDocument();
-    expect(screen.getByText("Duration")).toBeInTheDocument();
-  });
+	it("renders all column headers", () => {
+		render(<RunHistory {...defaultProps} />);
+		expect(screen.getByText("Time")).toBeInTheDocument();
+		expect(screen.getByText("Task")).toBeInTheDocument();
+		expect(screen.getByText("Status")).toBeInTheDocument();
+		expect(screen.getByText("Duration")).toBeInTheDocument();
+	});
 
-  it("sorts runs by time column correctly", () => {
-    const runs = [
-      makeRun({ id: "r1", task: "early", started_at: "2026-01-15T08:00:00Z", finished_at: "2026-01-15T08:01:00Z" }),
-      makeRun({ id: "r2", task: "late", started_at: "2026-01-15T12:00:00Z", finished_at: "2026-01-15T12:01:00Z" }),
-    ];
-    render(<RunHistory {...defaultProps} runs={runs} />);
+	it("sorts runs by time column correctly", () => {
+		const runs = [
+			makeRun({
+				id: "r1",
+				task: "early",
+				started_at: "2026-01-15T08:00:00Z",
+				finished_at: "2026-01-15T08:01:00Z",
+			}),
+			makeRun({
+				id: "r2",
+				task: "late",
+				started_at: "2026-01-15T12:00:00Z",
+				finished_at: "2026-01-15T12:01:00Z",
+			}),
+		];
+		render(<RunHistory {...defaultProps} runs={runs} />);
 
-    // Default sort is "finished_at" desc, so "late" should be first
-    const rows = screen.getAllByRole("row");
-    // rows[0] is the header row
-    expect(within(rows[1]).getByText("late")).toBeInTheDocument();
-    expect(within(rows[2]).getByText("early")).toBeInTheDocument();
+		// Default sort is "finished_at" desc, so "late" should be first
+		const rows = screen.getAllByRole("row");
+		// rows[0] is the header row
+		expect(within(rows[1]).getByText("late")).toBeInTheDocument();
+		expect(within(rows[2]).getByText("early")).toBeInTheDocument();
 
-    // Click Time to toggle to asc
-    fireEvent.click(screen.getByTitle("Sort by time"));
-    const rowsAsc = screen.getAllByRole("row");
-    expect(within(rowsAsc[1]).getByText("early")).toBeInTheDocument();
-    expect(within(rowsAsc[2]).getByText("late")).toBeInTheDocument();
-  });
+		// Click Time to toggle to asc
+		fireEvent.click(screen.getByTitle("Sort by time"));
+		const rowsAsc = screen.getAllByRole("row");
+		expect(within(rowsAsc[1]).getByText("early")).toBeInTheDocument();
+		expect(within(rowsAsc[2]).getByText("late")).toBeInTheDocument();
+	});
 });
 
 // ============================================
@@ -555,44 +551,40 @@ describe("RunHistory", () => {
 // ============================================
 
 describe("RunHeatmap", () => {
-  it("renders with data", () => {
-    const data: HeatmapCell[] = [
-      { date: "2026-01-15T10:00:00", count: 5, success: 4, failed: 1 },
-    ];
-    render(<RunHeatmap data={data} />);
-    expect(screen.getByText("Activity")).toBeInTheDocument();
-    expect(screen.getByText(/last 30 days/)).toBeInTheDocument();
-  });
+	it("renders with data", () => {
+		const data: HeatmapCell[] = [{ date: "2026-01-15T10:00:00", count: 5, success: 4, failed: 1 }];
+		render(<RunHeatmap data={data} />);
+		expect(screen.getByText("Activity")).toBeInTheDocument();
+		expect(screen.getByText(/last 30 days/)).toBeInTheDocument();
+	});
 
-  it("renders with empty data", () => {
-    render(<RunHeatmap data={[]} />);
-    expect(screen.getByText("Activity")).toBeInTheDocument();
-  });
+	it("renders with empty data", () => {
+		render(<RunHeatmap data={[]} />);
+		expect(screen.getByText("Activity")).toBeInTheDocument();
+	});
 
-  it("displays legend with Less and More labels", () => {
-    render(<RunHeatmap data={[]} />);
-    expect(screen.getByText("Less")).toBeInTheDocument();
-    expect(screen.getByText("More")).toBeInTheDocument();
-  });
+	it("displays legend with Less and More labels", () => {
+		render(<RunHeatmap data={[]} />);
+		expect(screen.getByText("Less")).toBeInTheDocument();
+		expect(screen.getByText("More")).toBeInTheDocument();
+	});
 
-  it("renders Chinese hour labels", () => {
-    render(<RunHeatmap data={[]} />);
-    // Check for one of the Chinese hour characters (卯 = slot 4)
-    const labels = screen.getAllByText("卯");
-    expect(labels.length).toBeGreaterThanOrEqual(1);
-  });
+	it("renders Chinese hour labels", () => {
+		render(<RunHeatmap data={[]} />);
+		// Check for one of the Chinese hour characters (卯 = slot 4)
+		const labels = screen.getAllByText("卯");
+		expect(labels.length).toBeGreaterThanOrEqual(1);
+	});
 
-  it("renders cells with title attributes for data cells", () => {
-    const today = new Date();
-    const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
-    const data: HeatmapCell[] = [
-      { date: `${dateStr}T10:00:00`, count: 3, success: 2, failed: 1 },
-    ];
-    const { container } = render(<RunHeatmap data={data} />);
-    // Look for cells with title attributes containing "runs"
-    const titledCells = container.querySelectorAll("[title*='runs']");
-    expect(titledCells.length).toBeGreaterThanOrEqual(1);
-  });
+	it("renders cells with title attributes for data cells", () => {
+		const today = new Date();
+		const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+		const data: HeatmapCell[] = [{ date: `${dateStr}T10:00:00`, count: 3, success: 2, failed: 1 }];
+		const { container } = render(<RunHeatmap data={data} />);
+		// Look for cells with title attributes containing "runs"
+		const titledCells = container.querySelectorAll("[title*='runs']");
+		expect(titledCells.length).toBeGreaterThanOrEqual(1);
+	});
 });
 
 // ============================================
@@ -600,86 +592,86 @@ describe("RunHeatmap", () => {
 // ============================================
 
 describe("RunnerTrendChart", () => {
-  it("renders empty state message when no data", () => {
-    render(<RunnerTrendChart data={[]} />);
-    expect(screen.getByText("No trend data available")).toBeInTheDocument();
-    expect(screen.getByText(/no data/)).toBeInTheDocument();
-  });
+	it("renders empty state message when no data", () => {
+		render(<RunnerTrendChart data={[]} />);
+		expect(screen.getByText("No trend data available")).toBeInTheDocument();
+		expect(screen.getByText(/no data/)).toBeInTheDocument();
+	});
 
-  it("renders with data showing stats", () => {
-    const data: TrendPoint[] = [
-      { date: "2026-01-15T08:00:00Z", total: 10, success: 8, successRate: 0.8 },
-      { date: "2026-01-15T10:00:00Z", total: 20, success: 18, successRate: 0.9 },
-    ];
-    render(<RunnerTrendChart data={data} />);
-    expect(screen.getByText("TOTAL: 30")).toBeInTheDocument();
-    expect(screen.getByText("MAX: 20")).toBeInTheDocument();
-    expect(screen.getByText("AVG: 15.0")).toBeInTheDocument();
-  });
+	it("renders with data showing stats", () => {
+		const data: TrendPoint[] = [
+			{ date: "2026-01-15T08:00:00Z", total: 10, success: 8, successRate: 0.8 },
+			{ date: "2026-01-15T10:00:00Z", total: 20, success: 18, successRate: 0.9 },
+		];
+		render(<RunnerTrendChart data={data} />);
+		expect(screen.getByText("TOTAL: 30")).toBeInTheDocument();
+		expect(screen.getByText("MAX: 20")).toBeInTheDocument();
+		expect(screen.getByText("AVG: 15.0")).toBeInTheDocument();
+	});
 
-  it("renders SVG paths when data is provided", () => {
-    const data: TrendPoint[] = [
-      { date: "2026-01-15T08:00:00Z", total: 10, success: 8, successRate: 0.8 },
-      { date: "2026-01-15T10:00:00Z", total: 20, success: 18, successRate: 0.9 },
-      { date: "2026-01-15T12:00:00Z", total: 15, success: 12, successRate: 0.8 },
-    ];
-    const { container } = render(<RunnerTrendChart data={data} />);
-    const paths = container.querySelectorAll("path");
-    // Should have fill path + line path = 2 paths
-    expect(paths.length).toBe(2);
-  });
+	it("renders SVG paths when data is provided", () => {
+		const data: TrendPoint[] = [
+			{ date: "2026-01-15T08:00:00Z", total: 10, success: 8, successRate: 0.8 },
+			{ date: "2026-01-15T10:00:00Z", total: 20, success: 18, successRate: 0.9 },
+			{ date: "2026-01-15T12:00:00Z", total: 15, success: 12, successRate: 0.8 },
+		];
+		const { container } = render(<RunnerTrendChart data={data} />);
+		const paths = container.querySelectorAll("path");
+		// Should have fill path + line path = 2 paths
+		expect(paths.length).toBe(2);
+	});
 
-  it("renders subtitle 24h when data exists", () => {
-    const data: TrendPoint[] = [
-      { date: "2026-01-15T08:00:00Z", total: 5, success: 5, successRate: 1 },
-    ];
-    render(<RunnerTrendChart data={data} />);
-    expect(screen.getByText(/24h/)).toBeInTheDocument();
-  });
+	it("renders subtitle 24h when data exists", () => {
+		const data: TrendPoint[] = [
+			{ date: "2026-01-15T08:00:00Z", total: 5, success: 5, successRate: 1 },
+		];
+		render(<RunnerTrendChart data={data} />);
+		expect(screen.getByText(/24h/)).toBeInTheDocument();
+	});
 
-  it("shows tooltip on mouse move and hides on mouse leave", () => {
-    const data: TrendPoint[] = [
-      { date: "2026-01-15T08:00:00Z", total: 10, success: 8, successRate: 0.8 },
-      { date: "2026-01-15T10:00:00Z", total: 20, success: 18, successRate: 0.9 },
-    ];
-    const { container } = render(<RunnerTrendChart data={data} />);
+	it("shows tooltip on mouse move and hides on mouse leave", () => {
+		const data: TrendPoint[] = [
+			{ date: "2026-01-15T08:00:00Z", total: 10, success: 8, successRate: 0.8 },
+			{ date: "2026-01-15T10:00:00Z", total: 20, success: 18, successRate: 0.9 },
+		];
+		const { container } = render(<RunnerTrendChart data={data} />);
 
-    // The hover overlay div is the last absolute positioned child in the chart area
-    const hoverOverlay = container.querySelector(".absolute.inset-0.z-20") as HTMLElement;
-    expect(hoverOverlay).toBeTruthy();
+		// The hover overlay div is the last absolute positioned child in the chart area
+		const hoverOverlay = container.querySelector(".absolute.inset-0.z-20") as HTMLElement;
+		expect(hoverOverlay).toBeTruthy();
 
-    // Simulate mouse move - we need to mock getBoundingClientRect
-    vi.spyOn(hoverOverlay, "getBoundingClientRect").mockReturnValue({
-      left: 0,
-      top: 0,
-      right: 500,
-      bottom: 200,
-      width: 500,
-      height: 200,
-      x: 0,
-      y: 0,
-      toJSON: () => {},
-    });
+		// Simulate mouse move - we need to mock getBoundingClientRect
+		vi.spyOn(hoverOverlay, "getBoundingClientRect").mockReturnValue({
+			left: 0,
+			top: 0,
+			right: 500,
+			bottom: 200,
+			width: 500,
+			height: 200,
+			x: 0,
+			y: 0,
+			toJSON: () => {},
+		});
 
-    fireEvent.mouseMove(hoverOverlay, { clientX: 250, clientY: 100 });
+		fireEvent.mouseMove(hoverOverlay, { clientX: 250, clientY: 100 });
 
-    // After hover, a tooltip with "runs" should appear
-    expect(screen.getByText(/runs/)).toBeInTheDocument();
+		// After hover, a tooltip with "runs" should appear
+		expect(screen.getByText(/runs/)).toBeInTheDocument();
 
-    // Mouse leave should hide tooltip
-    fireEvent.mouseLeave(hoverOverlay);
-    expect(screen.queryByText(/\d+ runs/)).not.toBeInTheDocument();
-  });
+		// Mouse leave should hide tooltip
+		fireEvent.mouseLeave(hoverOverlay);
+		expect(screen.queryByText(/\d+ runs/)).not.toBeInTheDocument();
+	});
 
-  it("renders with a single data point", () => {
-    const data: TrendPoint[] = [
-      { date: "2026-01-15T08:00:00Z", total: 5, success: 5, successRate: 1 },
-    ];
-    const { container } = render(<RunnerTrendChart data={data} />);
-    // Single point: line path has M only (no C), no fill path
-    const svg = container.querySelector("svg");
-    expect(svg).toBeTruthy();
-  });
+	it("renders with a single data point", () => {
+		const data: TrendPoint[] = [
+			{ date: "2026-01-15T08:00:00Z", total: 5, success: 5, successRate: 1 },
+		];
+		const { container } = render(<RunnerTrendChart data={data} />);
+		// Single point: line path has M only (no C), no fill path
+		const svg = container.querySelector("svg");
+		expect(svg).toBeTruthy();
+	});
 });
 
 // ============================================
@@ -687,138 +679,138 @@ describe("RunnerTrendChart", () => {
 // ============================================
 
 describe("UpcomingTasks", () => {
-  it("renders empty state", () => {
-    render(<UpcomingTasks items={[]} />);
-    expect(screen.getByText("No scheduled tasks")).toBeInTheDocument();
-    expect(screen.getByText(/no data/)).toBeInTheDocument();
-  });
+	it("renders empty state", () => {
+		render(<UpcomingTasks items={[]} />);
+		expect(screen.getByText("No scheduled tasks")).toBeInTheDocument();
+		expect(screen.getByText(/no data/)).toBeInTheDocument();
+	});
 
-  it("renders items with task info", () => {
-    const now = new Date();
-    const nextRun = new Date(now.getTime() + 60 * 60 * 1000); // 1h from now
-    const items: UpcomingTask[] = [
-      {
-        task: {
-          id: "build-check",
-          executor: "shell",
-          description: "Run build check",
-          timeout: 300,
-          command: "make build",
-        },
-        schedule: { task: "build-check", hour: 10, minute: 0, weekday: "*" },
-        nextRun,
-        countdown: 60 * 60 * 1000,
-      },
-    ];
-    render(<UpcomingTasks items={items} />);
-    expect(screen.getByText("build-check")).toBeInTheDocument();
-    expect(screen.getByText("Run build check")).toBeInTheDocument();
-  });
+	it("renders items with task info", () => {
+		const now = new Date();
+		const nextRun = new Date(now.getTime() + 60 * 60 * 1000); // 1h from now
+		const items: UpcomingTask[] = [
+			{
+				task: {
+					id: "build-check",
+					executor: "shell",
+					description: "Run build check",
+					timeout: 300,
+					command: "make build",
+				},
+				schedule: { task: "build-check", hour: 10, minute: 0, weekday: "*" },
+				nextRun,
+				countdown: 60 * 60 * 1000,
+			},
+		];
+		render(<UpcomingTasks items={items} />);
+		expect(screen.getByText("build-check")).toBeInTheDocument();
+		expect(screen.getByText("Run build check")).toBeInTheDocument();
+	});
 
-  it("shows 'Next' badge on first item", () => {
-    const now = new Date();
-    const items: UpcomingTask[] = [
-      {
-        task: { id: "t1", executor: "shell", description: "desc1", timeout: 60 },
-        schedule: { task: "t1", hour: 10, minute: 0, weekday: "*" },
-        nextRun: new Date(now.getTime() + 30 * 60 * 1000),
-        countdown: 30 * 60 * 1000,
-      },
-      {
-        task: { id: "t2", executor: "shell", description: "desc2", timeout: 60 },
-        schedule: { task: "t2", hour: 11, minute: 0, weekday: "*" },
-        nextRun: new Date(now.getTime() + 90 * 60 * 1000),
-        countdown: 90 * 60 * 1000,
-      },
-    ];
-    render(<UpcomingTasks items={items} />);
-    expect(screen.getByText("Next")).toBeInTheDocument();
-  });
+	it("shows 'Next' badge on first item", () => {
+		const now = new Date();
+		const items: UpcomingTask[] = [
+			{
+				task: { id: "t1", executor: "shell", description: "desc1", timeout: 60 },
+				schedule: { task: "t1", hour: 10, minute: 0, weekday: "*" },
+				nextRun: new Date(now.getTime() + 30 * 60 * 1000),
+				countdown: 30 * 60 * 1000,
+			},
+			{
+				task: { id: "t2", executor: "shell", description: "desc2", timeout: 60 },
+				schedule: { task: "t2", hour: 11, minute: 0, weekday: "*" },
+				nextRun: new Date(now.getTime() + 90 * 60 * 1000),
+				countdown: 90 * 60 * 1000,
+			},
+		];
+		render(<UpcomingTasks items={items} />);
+		expect(screen.getByText("Next")).toBeInTheDocument();
+	});
 
-  it("formats countdown correctly for hours", () => {
-    const now = new Date();
-    const items: UpcomingTask[] = [
-      {
-        task: { id: "t1", executor: "shell", description: "d", timeout: 60 },
-        schedule: { task: "t1", hour: 10, minute: 0, weekday: "*" },
-        nextRun: new Date(now.getTime() + 2 * 60 * 60 * 1000 + 30 * 60 * 1000),
-        countdown: 2 * 60 * 60 * 1000 + 30 * 60 * 1000, // 2h 30m
-      },
-    ];
-    render(<UpcomingTasks items={items} />);
-    expect(screen.getByText("2h 30m")).toBeInTheDocument();
-  });
+	it("formats countdown correctly for hours", () => {
+		const now = new Date();
+		const items: UpcomingTask[] = [
+			{
+				task: { id: "t1", executor: "shell", description: "d", timeout: 60 },
+				schedule: { task: "t1", hour: 10, minute: 0, weekday: "*" },
+				nextRun: new Date(now.getTime() + 2 * 60 * 60 * 1000 + 30 * 60 * 1000),
+				countdown: 2 * 60 * 60 * 1000 + 30 * 60 * 1000, // 2h 30m
+			},
+		];
+		render(<UpcomingTasks items={items} />);
+		expect(screen.getByText("2h 30m")).toBeInTheDocument();
+	});
 
-  it("formats countdown correctly for minutes", () => {
-    const now = new Date();
-    const items: UpcomingTask[] = [
-      {
-        task: { id: "t1", executor: "shell", description: "d", timeout: 60 },
-        schedule: { task: "t1", hour: 10, minute: 0, weekday: "*" },
-        nextRun: new Date(now.getTime() + 5 * 60 * 1000 + 30 * 1000),
-        countdown: 5 * 60 * 1000 + 30 * 1000, // 5m 30s
-      },
-    ];
-    render(<UpcomingTasks items={items} />);
-    expect(screen.getByText("5m 30s")).toBeInTheDocument();
-  });
+	it("formats countdown correctly for minutes", () => {
+		const now = new Date();
+		const items: UpcomingTask[] = [
+			{
+				task: { id: "t1", executor: "shell", description: "d", timeout: 60 },
+				schedule: { task: "t1", hour: 10, minute: 0, weekday: "*" },
+				nextRun: new Date(now.getTime() + 5 * 60 * 1000 + 30 * 1000),
+				countdown: 5 * 60 * 1000 + 30 * 1000, // 5m 30s
+			},
+		];
+		render(<UpcomingTasks items={items} />);
+		expect(screen.getByText("5m 30s")).toBeInTheDocument();
+	});
 
-  it("formats countdown correctly for seconds only", () => {
-    const now = new Date();
-    const items: UpcomingTask[] = [
-      {
-        task: { id: "t1", executor: "shell", description: "d", timeout: 60 },
-        schedule: { task: "t1", hour: 10, minute: 0, weekday: "*" },
-        nextRun: new Date(now.getTime() + 45 * 1000),
-        countdown: 45 * 1000, // 45s
-      },
-    ];
-    render(<UpcomingTasks items={items} />);
-    expect(screen.getByText("45s")).toBeInTheDocument();
-  });
+	it("formats countdown correctly for seconds only", () => {
+		const now = new Date();
+		const items: UpcomingTask[] = [
+			{
+				task: { id: "t1", executor: "shell", description: "d", timeout: 60 },
+				schedule: { task: "t1", hour: 10, minute: 0, weekday: "*" },
+				nextRun: new Date(now.getTime() + 45 * 1000),
+				countdown: 45 * 1000, // 45s
+			},
+		];
+		render(<UpcomingTasks items={items} />);
+		expect(screen.getByText("45s")).toBeInTheDocument();
+	});
 
-  it("formats countdown as 'now' for 0 ms", () => {
-    const now = new Date();
-    const items: UpcomingTask[] = [
-      {
-        task: { id: "t1", executor: "shell", description: "d", timeout: 60 },
-        schedule: { task: "t1", hour: 10, minute: 0, weekday: "*" },
-        nextRun: now,
-        countdown: 0,
-      },
-    ];
-    render(<UpcomingTasks items={items} />);
-    expect(screen.getByText("now")).toBeInTheDocument();
-  });
+	it("formats countdown as 'now' for 0 ms", () => {
+		const now = new Date();
+		const items: UpcomingTask[] = [
+			{
+				task: { id: "t1", executor: "shell", description: "d", timeout: 60 },
+				schedule: { task: "t1", hour: 10, minute: 0, weekday: "*" },
+				nextRun: now,
+				countdown: 0,
+			},
+		];
+		render(<UpcomingTasks items={items} />);
+		expect(screen.getByText("now")).toBeInTheDocument();
+	});
 
-  it("respects count prop", () => {
-    const now = new Date();
-    const items: UpcomingTask[] = Array.from({ length: 5 }, (_, i) => ({
-      task: { id: `t${i}`, executor: "shell" as const, description: `d${i}`, timeout: 60 },
-      schedule: { task: `t${i}`, hour: 10 + i, minute: 0, weekday: "*" as const },
-      nextRun: new Date(now.getTime() + (i + 1) * 60 * 60 * 1000),
-      countdown: (i + 1) * 60 * 60 * 1000,
-    }));
-    render(<UpcomingTasks items={items} count={2} />);
-    expect(screen.getByText("t0")).toBeInTheDocument();
-    expect(screen.getByText("t1")).toBeInTheDocument();
-    expect(screen.queryByText("t2")).not.toBeInTheDocument();
-  });
+	it("respects count prop", () => {
+		const now = new Date();
+		const items: UpcomingTask[] = Array.from({ length: 5 }, (_, i) => ({
+			task: { id: `t${i}`, executor: "shell" as const, description: `d${i}`, timeout: 60 },
+			schedule: { task: `t${i}`, hour: 10 + i, minute: 0, weekday: "*" as const },
+			nextRun: new Date(now.getTime() + (i + 1) * 60 * 60 * 1000),
+			countdown: (i + 1) * 60 * 60 * 1000,
+		}));
+		render(<UpcomingTasks items={items} count={2} />);
+		expect(screen.getByText("t0")).toBeInTheDocument();
+		expect(screen.getByText("t1")).toBeInTheDocument();
+		expect(screen.queryByText("t2")).not.toBeInTheDocument();
+	});
 
-  it("shows 'Today' label for tasks scheduled today", () => {
-    const now = new Date();
-    const nextRun = new Date(now.getTime() + 60 * 60 * 1000); // 1h from now, same day
-    const items: UpcomingTask[] = [
-      {
-        task: { id: "t1", executor: "shell", description: "d", timeout: 60 },
-        schedule: { task: "t1", hour: nextRun.getHours(), minute: 0, weekday: "*" },
-        nextRun,
-        countdown: 60 * 60 * 1000,
-      },
-    ];
-    render(<UpcomingTasks items={items} />);
-    expect(screen.getByText("Today")).toBeInTheDocument();
-  });
+	it("shows 'Today' label for tasks scheduled today", () => {
+		const now = new Date();
+		const nextRun = new Date(now.getTime() + 60 * 60 * 1000); // 1h from now, same day
+		const items: UpcomingTask[] = [
+			{
+				task: { id: "t1", executor: "shell", description: "d", timeout: 60 },
+				schedule: { task: "t1", hour: nextRun.getHours(), minute: 0, weekday: "*" },
+				nextRun,
+				countdown: 60 * 60 * 1000,
+			},
+		];
+		render(<UpcomingTasks items={items} />);
+		expect(screen.getByText("Today")).toBeInTheDocument();
+	});
 });
 
 // ============================================
@@ -826,276 +818,282 @@ describe("UpcomingTasks", () => {
 // ============================================
 
 describe("AddTaskModal", () => {
-  const defaultProps = {
-    open: true,
-    onClose: vi.fn(),
-  };
+	const defaultProps = {
+		open: true,
+		onClose: vi.fn(),
+	};
 
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
 
-  it("renders when open", () => {
-    render(<AddTaskModal {...defaultProps} />);
-    expect(screen.getByText("Add Task")).toBeInTheDocument();
-    expect(screen.getByText("Create Task")).toBeInTheDocument();
-    expect(screen.getByText("Cancel")).toBeInTheDocument();
-  });
+	it("renders when open", () => {
+		render(<AddTaskModal {...defaultProps} />);
+		expect(screen.getByText("Add Task")).toBeInTheDocument();
+		expect(screen.getByText("Create Task")).toBeInTheDocument();
+		expect(screen.getByText("Cancel")).toBeInTheDocument();
+	});
 
-  it("does not render when closed", () => {
-    render(<AddTaskModal open={false} onClose={vi.fn()} />);
-    expect(screen.queryByText("Add Task")).not.toBeInTheDocument();
-  });
+	it("does not render when closed", () => {
+		render(<AddTaskModal open={false} onClose={vi.fn()} />);
+		expect(screen.queryByText("Add Task")).not.toBeInTheDocument();
+	});
 
-  it("shows shell command field by default", () => {
-    render(<AddTaskModal {...defaultProps} />);
-    expect(screen.getByText("Command")).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("echo 'Hello World'")).toBeInTheDocument();
-  });
+	it("shows shell command field by default", () => {
+		render(<AddTaskModal {...defaultProps} />);
+		expect(screen.getByText("Command")).toBeInTheDocument();
+		expect(screen.getByPlaceholderText("echo 'Hello World'")).toBeInTheDocument();
+	});
 
-  it("switches to opencode showing prompt field", () => {
-    render(<AddTaskModal {...defaultProps} />);
+	it("switches to opencode showing prompt field", () => {
+		render(<AddTaskModal {...defaultProps} />);
 
-    fireEvent.click(screen.getByText("opencode"));
-    expect(screen.getByText("Prompt")).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("Analyze the codebase and...")).toBeInTheDocument();
-    expect(screen.queryByText("Command")).not.toBeInTheDocument();
-  });
+		fireEvent.click(screen.getByText("opencode"));
+		expect(screen.getByText("Prompt")).toBeInTheDocument();
+		expect(screen.getByPlaceholderText("Analyze the codebase and...")).toBeInTheDocument();
+		expect(screen.queryByText("Command")).not.toBeInTheDocument();
+	});
 
-  it("switches to http showing url/method/headers/body fields", () => {
-    render(<AddTaskModal {...defaultProps} />);
+	it("switches to http showing url/method/headers/body fields", () => {
+		render(<AddTaskModal {...defaultProps} />);
 
-    fireEvent.click(screen.getByText("http"));
-    expect(screen.getByText("Method")).toBeInTheDocument();
-    expect(screen.getByText("URL")).toBeInTheDocument();
-    expect(screen.getByText("Headers (JSON)")).toBeInTheDocument();
-    expect(screen.getByText("Body")).toBeInTheDocument();
-  });
+		fireEvent.click(screen.getByText("http"));
+		expect(screen.getByText("Method")).toBeInTheDocument();
+		expect(screen.getByText("URL")).toBeInTheDocument();
+		expect(screen.getByText("Headers (JSON)")).toBeInTheDocument();
+		expect(screen.getByText("Body")).toBeInTheDocument();
+	});
 
-  it("shows working directory for shell and opencode but not http", () => {
-    render(<AddTaskModal {...defaultProps} />);
+	it("shows working directory for shell and opencode but not http", () => {
+		render(<AddTaskModal {...defaultProps} />);
 
-    // Shell: workdir visible
-    expect(screen.getByPlaceholderText("/path/to/directory")).toBeInTheDocument();
+		// Shell: workdir visible
+		expect(screen.getByPlaceholderText("/path/to/directory")).toBeInTheDocument();
 
-    // Switch to http: workdir hidden
-    fireEvent.click(screen.getByText("http"));
-    expect(screen.queryByPlaceholderText("/path/to/directory")).not.toBeInTheDocument();
+		// Switch to http: workdir hidden
+		fireEvent.click(screen.getByText("http"));
+		expect(screen.queryByPlaceholderText("/path/to/directory")).not.toBeInTheDocument();
 
-    // Switch to opencode: workdir visible again
-    fireEvent.click(screen.getByText("opencode"));
-    expect(screen.getByPlaceholderText("/path/to/directory")).toBeInTheDocument();
-  });
+		// Switch to opencode: workdir visible again
+		fireEvent.click(screen.getByText("opencode"));
+		expect(screen.getByPlaceholderText("/path/to/directory")).toBeInTheDocument();
+	});
 
-  it("validates empty fields on submit", () => {
-    render(<AddTaskModal {...defaultProps} />);
+	it("validates empty fields on submit", () => {
+		render(<AddTaskModal {...defaultProps} />);
 
-    // Submit without filling anything
-    fireEvent.click(screen.getByText("Create Task"));
+		// Submit without filling anything
+		fireEvent.click(screen.getByText("Create Task"));
 
-    expect(screen.getByText("Task ID is required")).toBeInTheDocument();
-    expect(screen.getByText("Description is required")).toBeInTheDocument();
-    expect(screen.getByText("Command is required")).toBeInTheDocument();
-  });
+		expect(screen.getByText("Task ID is required")).toBeInTheDocument();
+		expect(screen.getByText("Description is required")).toBeInTheDocument();
+		expect(screen.getByText("Command is required")).toBeInTheDocument();
+	});
 
-  it("validates prompt required for opencode executor", () => {
-    render(<AddTaskModal {...defaultProps} />);
+	it("validates prompt required for opencode executor", () => {
+		render(<AddTaskModal {...defaultProps} />);
 
-    // Switch to opencode
-    fireEvent.click(screen.getByText("opencode"));
+		// Switch to opencode
+		fireEvent.click(screen.getByText("opencode"));
 
-    // Fill id and description but not prompt
-    fireEvent.change(screen.getByPlaceholderText("my_task_name"), {
-      target: { value: "my-task" },
-    });
-    fireEvent.change(screen.getByPlaceholderText("What does this task do?"), {
-      target: { value: "Test description" },
-    });
+		// Fill id and description but not prompt
+		fireEvent.change(screen.getByPlaceholderText("my_task_name"), {
+			target: { value: "my-task" },
+		});
+		fireEvent.change(screen.getByPlaceholderText("What does this task do?"), {
+			target: { value: "Test description" },
+		});
 
-    fireEvent.click(screen.getByText("Create Task"));
-    expect(screen.getByText("Prompt is required")).toBeInTheDocument();
-  });
+		fireEvent.click(screen.getByText("Create Task"));
+		expect(screen.getByText("Prompt is required")).toBeInTheDocument();
+	});
 
-  it("validates url required for http executor", () => {
-    render(<AddTaskModal {...defaultProps} />);
+	it("validates url required for http executor", () => {
+		render(<AddTaskModal {...defaultProps} />);
 
-    // Switch to http
-    fireEvent.click(screen.getByText("http"));
+		// Switch to http
+		fireEvent.click(screen.getByText("http"));
 
-    // Fill id and description but not url
-    fireEvent.change(screen.getByPlaceholderText("my_task_name"), {
-      target: { value: "my-task" },
-    });
-    fireEvent.change(screen.getByPlaceholderText("What does this task do?"), {
-      target: { value: "Test description" },
-    });
+		// Fill id and description but not url
+		fireEvent.change(screen.getByPlaceholderText("my_task_name"), {
+			target: { value: "my-task" },
+		});
+		fireEvent.change(screen.getByPlaceholderText("What does this task do?"), {
+			target: { value: "Test description" },
+		});
 
-    fireEvent.click(screen.getByText("Create Task"));
-    expect(screen.getByText("URL is required")).toBeInTheDocument();
-  });
+		fireEvent.click(screen.getByText("Create Task"));
+		expect(screen.getByText("URL is required")).toBeInTheDocument();
+	});
 
-  it("calls onClose on valid submit for shell", () => {
-    const onClose = vi.fn();
-    render(<AddTaskModal open={true} onClose={onClose} />);
+	it("calls onClose on valid submit for shell", () => {
+		const onClose = vi.fn();
+		render(<AddTaskModal open={true} onClose={onClose} />);
 
-    fireEvent.change(screen.getByPlaceholderText("my_task_name"), {
-      target: { value: "my-task" },
-    });
-    fireEvent.change(screen.getByPlaceholderText("What does this task do?"), {
-      target: { value: "Test description" },
-    });
-    fireEvent.change(screen.getByPlaceholderText("echo 'Hello World'"), {
-      target: { value: "echo test" },
-    });
+		fireEvent.change(screen.getByPlaceholderText("my_task_name"), {
+			target: { value: "my-task" },
+		});
+		fireEvent.change(screen.getByPlaceholderText("What does this task do?"), {
+			target: { value: "Test description" },
+		});
+		fireEvent.change(screen.getByPlaceholderText("echo 'Hello World'"), {
+			target: { value: "echo test" },
+		});
 
-    fireEvent.click(screen.getByText("Create Task"));
-    expect(onClose).toHaveBeenCalledOnce();
-  });
+		fireEvent.click(screen.getByText("Create Task"));
+		expect(onClose).toHaveBeenCalledOnce();
+	});
 
-  it("calls onClose on valid submit for http", () => {
-    const onClose = vi.fn();
-    render(<AddTaskModal open={true} onClose={onClose} />);
+	it("calls onClose on valid submit for http", () => {
+		const onClose = vi.fn();
+		render(<AddTaskModal open={true} onClose={onClose} />);
 
-    fireEvent.click(screen.getByText("http"));
+		fireEvent.click(screen.getByText("http"));
 
-    fireEvent.change(screen.getByPlaceholderText("my_task_name"), {
-      target: { value: "webhook-task" },
-    });
-    fireEvent.change(screen.getByPlaceholderText("What does this task do?"), {
-      target: { value: "Call webhook" },
-    });
-    fireEvent.change(screen.getByPlaceholderText("https://api.example.com/webhook"), {
-      target: { value: "https://hooks.example.com/trigger" },
-    });
+		fireEvent.change(screen.getByPlaceholderText("my_task_name"), {
+			target: { value: "webhook-task" },
+		});
+		fireEvent.change(screen.getByPlaceholderText("What does this task do?"), {
+			target: { value: "Call webhook" },
+		});
+		fireEvent.change(screen.getByPlaceholderText("https://api.example.com/webhook"), {
+			target: { value: "https://hooks.example.com/trigger" },
+		});
 
-    fireEvent.click(screen.getByText("Create Task"));
-    expect(onClose).toHaveBeenCalledOnce();
-  });
+		fireEvent.click(screen.getByText("Create Task"));
+		expect(onClose).toHaveBeenCalledOnce();
+	});
 
-  it("closes on Escape key", () => {
-    const onClose = vi.fn();
-    render(<AddTaskModal open={true} onClose={onClose} />);
+	it("closes on Escape key", () => {
+		const onClose = vi.fn();
+		render(<AddTaskModal open={true} onClose={onClose} />);
 
-    fireEvent.keyDown(window, { key: "Escape" });
-    expect(onClose).toHaveBeenCalledOnce();
-  });
+		fireEvent.keyDown(window, { key: "Escape" });
+		expect(onClose).toHaveBeenCalledOnce();
+	});
 
-  it("closes on backdrop click", () => {
-    const onClose = vi.fn();
-    const { container } = render(<AddTaskModal open={true} onClose={onClose} />);
+	it("closes on backdrop click", () => {
+		const onClose = vi.fn();
+		const { container } = render(<AddTaskModal open={true} onClose={onClose} />);
 
-    // The backdrop is the outermost fixed div
-    const backdrop = container.querySelector(".fixed.inset-0") as HTMLElement;
-    fireEvent.click(backdrop);
-    expect(onClose).toHaveBeenCalledOnce();
-  });
+		// The backdrop is the outermost fixed div
+		const backdrop = container.querySelector(".fixed.inset-0") as HTMLElement;
+		fireEvent.click(backdrop);
+		expect(onClose).toHaveBeenCalledOnce();
+	});
 
-  it("does not close when clicking inside modal content", () => {
-    const onClose = vi.fn();
-    render(<AddTaskModal open={true} onClose={onClose} />);
+	it("does not close when clicking inside modal content", () => {
+		const onClose = vi.fn();
+		render(<AddTaskModal open={true} onClose={onClose} />);
 
-    // Click on the form content area
-    fireEvent.click(screen.getByText("Add Task"));
-    expect(onClose).not.toHaveBeenCalled();
-  });
+		// Click on the form content area
+		fireEvent.click(screen.getByText("Add Task"));
+		expect(onClose).not.toHaveBeenCalled();
+	});
 
-  it("calls onClose when Cancel button is clicked", () => {
-    const onClose = vi.fn();
-    render(<AddTaskModal open={true} onClose={onClose} />);
+	it("calls onClose when Cancel button is clicked", () => {
+		const onClose = vi.fn();
+		render(<AddTaskModal open={true} onClose={onClose} />);
 
-    fireEvent.click(screen.getByText("Cancel"));
-    expect(onClose).toHaveBeenCalledOnce();
-  });
+		fireEvent.click(screen.getByText("Cancel"));
+		expect(onClose).toHaveBeenCalledOnce();
+	});
 
-  it("clears errors when field is updated", () => {
-    render(<AddTaskModal {...defaultProps} />);
+	it("clears errors when field is updated", () => {
+		render(<AddTaskModal {...defaultProps} />);
 
-    // Submit to trigger errors
-    fireEvent.click(screen.getByText("Create Task"));
-    expect(screen.getByText("Task ID is required")).toBeInTheDocument();
+		// Submit to trigger errors
+		fireEvent.click(screen.getByText("Create Task"));
+		expect(screen.getByText("Task ID is required")).toBeInTheDocument();
 
-    // Type in the ID field to clear the error
-    fireEvent.change(screen.getByPlaceholderText("my_task_name"), {
-      target: { value: "a" },
-    });
-    expect(screen.queryByText("Task ID is required")).not.toBeInTheDocument();
-  });
+		// Type in the ID field to clear the error
+		fireEvent.change(screen.getByPlaceholderText("my_task_name"), {
+			target: { value: "a" },
+		});
+		expect(screen.queryByText("Task ID is required")).not.toBeInTheDocument();
+	});
 
-  it("resets form when modal is reopened", () => {
-    const { rerender } = render(<AddTaskModal open={true} onClose={vi.fn()} />);
+	it("resets form when modal is reopened", () => {
+		const { rerender } = render(<AddTaskModal open={true} onClose={vi.fn()} />);
 
-    // Fill in some data
-    fireEvent.change(screen.getByPlaceholderText("my_task_name"), {
-      target: { value: "dirty-data" },
-    });
+		// Fill in some data
+		fireEvent.change(screen.getByPlaceholderText("my_task_name"), {
+			target: { value: "dirty-data" },
+		});
 
-    // Close the modal
-    rerender(<AddTaskModal open={false} onClose={vi.fn()} />);
+		// Close the modal
+		rerender(<AddTaskModal open={false} onClose={vi.fn()} />);
 
-    // Re-open
-    rerender(<AddTaskModal open={true} onClose={vi.fn()} />);
+		// Re-open
+		rerender(<AddTaskModal open={true} onClose={vi.fn()} />);
 
-    // The field should be reset
-    const input = screen.getByPlaceholderText("my_task_name") as HTMLInputElement;
-    expect(input.value).toBe("");
-  });
+		// The field should be reset
+		const input = screen.getByPlaceholderText("my_task_name") as HTMLInputElement;
+		expect(input.value).toBe("");
+	});
 
-  it("allows changing timeout value", () => {
-    render(<AddTaskModal {...defaultProps} />);
+	it("allows changing timeout value", () => {
+		render(<AddTaskModal {...defaultProps} />);
 
-    const timeoutInput = screen.getByDisplayValue("300") as HTMLInputElement;
-    fireEvent.change(timeoutInput, { target: { value: "600" } });
-    expect(timeoutInput.value).toBe("600");
-  });
+		const timeoutInput = screen.getByDisplayValue("300") as HTMLInputElement;
+		fireEvent.change(timeoutInput, { target: { value: "600" } });
+		expect(timeoutInput.value).toBe("600");
+	});
 
-  it("allows changing prompt field for opencode executor", () => {
-    render(<AddTaskModal {...defaultProps} />);
+	it("allows changing prompt field for opencode executor", () => {
+		render(<AddTaskModal {...defaultProps} />);
 
-    // Switch to opencode
-    fireEvent.click(screen.getByText("opencode"));
+		// Switch to opencode
+		fireEvent.click(screen.getByText("opencode"));
 
-    const promptTextarea = screen.getByPlaceholderText("Analyze the codebase and...") as HTMLTextAreaElement;
-    fireEvent.change(promptTextarea, { target: { value: "Refactor the module" } });
-    expect(promptTextarea.value).toBe("Refactor the module");
-  });
+		const promptTextarea = screen.getByPlaceholderText(
+			"Analyze the codebase and...",
+		) as HTMLTextAreaElement;
+		fireEvent.change(promptTextarea, { target: { value: "Refactor the module" } });
+		expect(promptTextarea.value).toBe("Refactor the module");
+	});
 
-  it("allows changing method, url, headers, and body for http executor", () => {
-    render(<AddTaskModal {...defaultProps} />);
+	it("allows changing method, url, headers, and body for http executor", () => {
+		render(<AddTaskModal {...defaultProps} />);
 
-    // Switch to http
-    fireEvent.click(screen.getByText("http"));
+		// Switch to http
+		fireEvent.click(screen.getByText("http"));
 
-    // Change method (custom MatrixSelect)
-    const methodButton = screen.getByRole("button", { name: /GET/i });
-    fireEvent.click(methodButton);
-    const postOption = screen.getByRole("button", { name: /^POST$/i });
-    fireEvent.click(postOption);
-    // After selection, the button text should now show POST
-    expect(screen.getByRole("button", { name: /POST/i })).toBeInTheDocument();
+		// Change method (custom MatrixSelect)
+		const methodButton = screen.getByRole("button", { name: /GET/i });
+		fireEvent.click(methodButton);
+		const postOption = screen.getByRole("button", { name: /^POST$/i });
+		fireEvent.click(postOption);
+		// After selection, the button text should now show POST
+		expect(screen.getByRole("button", { name: /POST/i })).toBeInTheDocument();
 
-    // Change URL
-    const urlInput = screen.getByPlaceholderText("https://api.example.com/webhook") as HTMLInputElement;
-    fireEvent.change(urlInput, { target: { value: "https://example.com/hook" } });
-    expect(urlInput.value).toBe("https://example.com/hook");
+		// Change URL
+		const urlInput = screen.getByPlaceholderText(
+			"https://api.example.com/webhook",
+		) as HTMLInputElement;
+		fireEvent.change(urlInput, { target: { value: "https://example.com/hook" } });
+		expect(urlInput.value).toBe("https://example.com/hook");
 
-    // Change headers
-    const headersTextarea = screen.getByPlaceholderText('{"Content-Type": "application/json"}') as HTMLTextAreaElement;
-    fireEvent.change(headersTextarea, { target: { value: '{"Authorization": "Bearer xyz"}' } });
-    expect(headersTextarea.value).toBe('{"Authorization": "Bearer xyz"}');
+		// Change headers
+		const headersTextarea = screen.getByPlaceholderText(
+			'{"Content-Type": "application/json"}',
+		) as HTMLTextAreaElement;
+		fireEvent.change(headersTextarea, { target: { value: '{"Authorization": "Bearer xyz"}' } });
+		expect(headersTextarea.value).toBe('{"Authorization": "Bearer xyz"}');
 
-    // Change body
-    const bodyTextarea = screen.getByPlaceholderText('{"key": "value"}') as HTMLTextAreaElement;
-    fireEvent.change(bodyTextarea, { target: { value: '{"data": 123}' } });
-    expect(bodyTextarea.value).toBe('{"data": 123}');
-  });
+		// Change body
+		const bodyTextarea = screen.getByPlaceholderText('{"key": "value"}') as HTMLTextAreaElement;
+		fireEvent.change(bodyTextarea, { target: { value: '{"data": 123}' } });
+		expect(bodyTextarea.value).toBe('{"data": 123}');
+	});
 
-  it("allows changing workdir field for shell executor", () => {
-    render(<AddTaskModal {...defaultProps} />);
+	it("allows changing workdir field for shell executor", () => {
+		render(<AddTaskModal {...defaultProps} />);
 
-    const workdirInput = screen.getByPlaceholderText("/path/to/directory") as HTMLInputElement;
-    fireEvent.change(workdirInput, { target: { value: "/home/user/projects" } });
-    expect(workdirInput.value).toBe("/home/user/projects");
-  });
+		const workdirInput = screen.getByPlaceholderText("/path/to/directory") as HTMLInputElement;
+		fireEvent.change(workdirInput, { target: { value: "/home/user/projects" } });
+		expect(workdirInput.value).toBe("/home/user/projects");
+	});
 });
 
 // ============================================
@@ -1103,162 +1101,162 @@ describe("AddTaskModal", () => {
 // ============================================
 
 describe("TaskDetailModal", () => {
-  const onClose = vi.fn();
+	const onClose = vi.fn();
 
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
 
-  it("renders null when task is null", () => {
-    const { container } = render(<TaskDetailModal task={null} onClose={onClose} />);
-    expect(container.innerHTML).toBe("");
-  });
+	it("renders null when task is null", () => {
+		const { container } = render(<TaskDetailModal task={null} onClose={onClose} />);
+		expect(container.innerHTML).toBe("");
+	});
 
-  it("displays shell task details", () => {
-    const task = makeTask({
-      id: "build",
-      executor: "shell",
-      command: "make build",
-      description: "Run build",
-      timeout: 600,
-    });
-    const { container } = render(<TaskDetailModal task={task} onClose={onClose} />);
+	it("displays shell task details", () => {
+		const task = makeTask({
+			id: "build",
+			executor: "shell",
+			command: "make build",
+			description: "Run build",
+			timeout: 600,
+		});
+		const { container } = render(<TaskDetailModal task={task} onClose={onClose} />);
 
-    expect(screen.getByText("build")).toBeInTheDocument();
-    expect(screen.getByText(/Shell Task/)).toBeInTheDocument();
-    expect(screen.getByText("Run build")).toBeInTheDocument();
-    expect(screen.getByText("shell")).toBeInTheDocument();
-    // Command is rendered as "$ make build" in a <pre>
-    const commandPre = container.querySelector("pre.text-cyan-400");
-    expect(commandPre?.textContent).toContain("make build");
-    expect(screen.getByText(/Timeout:/)).toBeInTheDocument();
-  });
+		expect(screen.getByText("build")).toBeInTheDocument();
+		expect(screen.getByText(/Shell Task/)).toBeInTheDocument();
+		expect(screen.getByText("Run build")).toBeInTheDocument();
+		expect(screen.getByText("shell")).toBeInTheDocument();
+		// Command is rendered as "$ make build" in a <pre>
+		const commandPre = container.querySelector("pre.text-cyan-400");
+		expect(commandPre?.textContent).toContain("make build");
+		expect(screen.getByText(/Timeout:/)).toBeInTheDocument();
+	});
 
-  it("displays opencode task details", () => {
-    const task = makeTask({
-      id: "analyze",
-      executor: "opencode",
-      prompt: "Analyze the code",
-      description: "Code analysis",
-      command: undefined,
-    });
-    render(<TaskDetailModal task={task} onClose={onClose} />);
+	it("displays opencode task details", () => {
+		const task = makeTask({
+			id: "analyze",
+			executor: "opencode",
+			prompt: "Analyze the code",
+			description: "Code analysis",
+			command: undefined,
+		});
+		render(<TaskDetailModal task={task} onClose={onClose} />);
 
-    expect(screen.getByText(/Opencode Task/)).toBeInTheDocument();
-    expect(screen.getByText("Analyze the code")).toBeInTheDocument();
-    expect(screen.getByText("opencode")).toBeInTheDocument();
-  });
+		expect(screen.getByText(/Opencode Task/)).toBeInTheDocument();
+		expect(screen.getByText("Analyze the code")).toBeInTheDocument();
+		expect(screen.getByText("opencode")).toBeInTheDocument();
+	});
 
-  it("displays http task details", () => {
-    const task = makeTask({
-      id: "webhook",
-      executor: "http",
-      url: "https://api.example.com",
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: '{"key":"value"}',
-      description: "Webhook call",
-      command: undefined,
-    });
-    render(<TaskDetailModal task={task} onClose={onClose} />);
+	it("displays http task details", () => {
+		const task = makeTask({
+			id: "webhook",
+			executor: "http",
+			url: "https://api.example.com",
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: '{"key":"value"}',
+			description: "Webhook call",
+			command: undefined,
+		});
+		render(<TaskDetailModal task={task} onClose={onClose} />);
 
-    expect(screen.getByText(/HTTP Task/)).toBeInTheDocument();
-    expect(screen.getByText("POST")).toBeInTheDocument();
-    expect(screen.getByText("https://api.example.com")).toBeInTheDocument();
-    expect(screen.getByText('{"key":"value"}')).toBeInTheDocument();
-  });
+		expect(screen.getByText(/HTTP Task/)).toBeInTheDocument();
+		expect(screen.getByText("POST")).toBeInTheDocument();
+		expect(screen.getByText("https://api.example.com")).toBeInTheDocument();
+		expect(screen.getByText('{"key":"value"}')).toBeInTheDocument();
+	});
 
-  it("shows schedules when present", () => {
-    const task = makeTask({
-      schedules: [
-        { task: "test-task", hour: 9, minute: 30, weekday: 1 },
-        { task: "test-task", hour: 14, minute: 0, weekday: "*" },
-      ],
-    });
-    render(<TaskDetailModal task={task} onClose={onClose} />);
+	it("shows schedules when present", () => {
+		const task = makeTask({
+			schedules: [
+				{ task: "test-task", hour: 9, minute: 30, weekday: 1 },
+				{ task: "test-task", hour: 14, minute: 0, weekday: "*" },
+			],
+		});
+		render(<TaskDetailModal task={task} onClose={onClose} />);
 
-    expect(screen.getByText("Schedules (2)")).toBeInTheDocument();
-    expect(screen.getByText("09:30")).toBeInTheDocument();
-    expect(screen.getByText("Mon")).toBeInTheDocument();
-    expect(screen.getByText("14:00")).toBeInTheDocument();
-    expect(screen.getByText("Daily")).toBeInTheDocument();
-  });
+		expect(screen.getByText("Schedules (2)")).toBeInTheDocument();
+		expect(screen.getByText("09:30")).toBeInTheDocument();
+		expect(screen.getByText("Mon")).toBeInTheDocument();
+		expect(screen.getByText("14:00")).toBeInTheDocument();
+		expect(screen.getByText("Daily")).toBeInTheDocument();
+	});
 
-  it("displays JSON configuration", () => {
-    const task = makeTask({ id: "my-task" });
-    render(<TaskDetailModal task={task} onClose={onClose} />);
-    expect(screen.getByText("JSON Configuration")).toBeInTheDocument();
-    // The JSON should contain the task id
-    expect(screen.getByText(/"my-task"/)).toBeInTheDocument();
-  });
+	it("displays JSON configuration", () => {
+		const task = makeTask({ id: "my-task" });
+		render(<TaskDetailModal task={task} onClose={onClose} />);
+		expect(screen.getByText("JSON Configuration")).toBeInTheDocument();
+		// The JSON should contain the task id
+		expect(screen.getByText(/"my-task"/)).toBeInTheDocument();
+	});
 
-  it("closes on Escape key", () => {
-    const task = makeTask();
-    render(<TaskDetailModal task={task} onClose={onClose} />);
+	it("closes on Escape key", () => {
+		const task = makeTask();
+		render(<TaskDetailModal task={task} onClose={onClose} />);
 
-    fireEvent.keyDown(window, { key: "Escape" });
-    expect(onClose).toHaveBeenCalledOnce();
-  });
+		fireEvent.keyDown(window, { key: "Escape" });
+		expect(onClose).toHaveBeenCalledOnce();
+	});
 
-  it("closes on backdrop click", () => {
-    const task = makeTask();
-    const { container } = render(<TaskDetailModal task={task} onClose={onClose} />);
+	it("closes on backdrop click", () => {
+		const task = makeTask();
+		const { container } = render(<TaskDetailModal task={task} onClose={onClose} />);
 
-    const backdrop = container.querySelector(".fixed.inset-0") as HTMLElement;
-    fireEvent.click(backdrop);
-    expect(onClose).toHaveBeenCalledOnce();
-  });
+		const backdrop = container.querySelector(".fixed.inset-0") as HTMLElement;
+		fireEvent.click(backdrop);
+		expect(onClose).toHaveBeenCalledOnce();
+	});
 
-  it("closes on Close button click", () => {
-    const task = makeTask();
-    render(<TaskDetailModal task={task} onClose={onClose} />);
+	it("closes on Close button click", () => {
+		const task = makeTask();
+		render(<TaskDetailModal task={task} onClose={onClose} />);
 
-    fireEvent.click(screen.getByText("Close"));
-    expect(onClose).toHaveBeenCalledOnce();
-  });
+		fireEvent.click(screen.getByText("Close"));
+		expect(onClose).toHaveBeenCalledOnce();
+	});
 
-  it("does not close when clicking modal content", () => {
-    const task = makeTask();
-    render(<TaskDetailModal task={task} onClose={onClose} />);
+	it("does not close when clicking modal content", () => {
+		const task = makeTask();
+		render(<TaskDetailModal task={task} onClose={onClose} />);
 
-    fireEvent.click(screen.getByText("Description"));
-    expect(onClose).not.toHaveBeenCalled();
-  });
+		fireEvent.click(screen.getByText("Description"));
+		expect(onClose).not.toHaveBeenCalled();
+	});
 
-  it("shows working directory when set", () => {
-    const task = makeTask({ workdir: "/home/user/project" });
-    render(<TaskDetailModal task={task} onClose={onClose} />);
-    expect(screen.getByText("/home/user/project")).toBeInTheDocument();
-    expect(screen.getByText("Working Directory")).toBeInTheDocument();
-  });
+	it("shows working directory when set", () => {
+		const task = makeTask({ workdir: "/home/user/project" });
+		render(<TaskDetailModal task={task} onClose={onClose} />);
+		expect(screen.getByText("/home/user/project")).toBeInTheDocument();
+		expect(screen.getByText("Working Directory")).toBeInTheDocument();
+	});
 
-  it("shows manual badge when no schedules", () => {
-    const task = makeTask({ schedules: [] });
-    render(<TaskDetailModal task={task} onClose={onClose} />);
-    expect(screen.getByText("manual")).toBeInTheDocument();
-  });
+	it("shows manual badge when no schedules", () => {
+		const task = makeTask({ schedules: [] });
+		render(<TaskDetailModal task={task} onClose={onClose} />);
+		expect(screen.getByText("manual")).toBeInTheDocument();
+	});
 
-  it("shows auto badge when schedules exist", () => {
-    const task = makeTask({
-      schedules: [{ task: "test-task", hour: 10, minute: 0, weekday: "*" }],
-    });
-    render(<TaskDetailModal task={task} onClose={onClose} />);
-    expect(screen.getByText("auto")).toBeInTheDocument();
-  });
+	it("shows auto badge when schedules exist", () => {
+		const task = makeTask({
+			schedules: [{ task: "test-task", hour: 10, minute: 0, weekday: "*" }],
+		});
+		render(<TaskDetailModal task={task} onClose={onClose} />);
+		expect(screen.getByText("auto")).toBeInTheDocument();
+	});
 
-  it("includes http headers in JSON config when present", () => {
-    const task = makeTask({
-      executor: "http",
-      url: "https://api.example.com",
-      method: "POST",
-      headers: { Authorization: "Bearer token" },
-      command: undefined,
-    });
-    render(<TaskDetailModal task={task} onClose={onClose} />);
-    // "Authorization" appears in both the headers display and JSON config
-    const matches = screen.getAllByText(/Authorization/);
-    expect(matches.length).toBeGreaterThanOrEqual(1);
-  });
+	it("includes http headers in JSON config when present", () => {
+		const task = makeTask({
+			executor: "http",
+			url: "https://api.example.com",
+			method: "POST",
+			headers: { Authorization: "Bearer token" },
+			command: undefined,
+		});
+		render(<TaskDetailModal task={task} onClose={onClose} />);
+		// "Authorization" appears in both the headers display and JSON config
+		const matches = screen.getAllByText(/Authorization/);
+		expect(matches.length).toBeGreaterThanOrEqual(1);
+	});
 });
 
 // ============================================
@@ -1266,174 +1264,160 @@ describe("TaskDetailModal", () => {
 // ============================================
 
 describe("RunDetailModal", () => {
-  const defaultProps = {
-    run: null as RunDetail | null,
-    loading: false,
-    output: null as string | null,
-    outputLoading: false,
-    outputError: null as string | null,
-    onClose: vi.fn(),
-  };
+	const defaultProps = {
+		run: null as RunDetail | null,
+		loading: false,
+		output: null as string | null,
+		outputLoading: false,
+		outputError: null as string | null,
+		onClose: vi.fn(),
+	};
 
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
 
-  it("renders null when no run and not loading", () => {
-    const { container } = render(<RunDetailModal {...defaultProps} />);
-    expect(container.innerHTML).toBe("");
-  });
+	it("renders null when no run and not loading", () => {
+		const { container } = render(<RunDetailModal {...defaultProps} />);
+		expect(container.innerHTML).toBe("");
+	});
 
-  it("shows loading state", () => {
-    render(<RunDetailModal {...defaultProps} loading={true} />);
-    expect(screen.getByText("Loading run details...")).toBeInTheDocument();
-  });
+	it("shows loading state", () => {
+		render(<RunDetailModal {...defaultProps} loading={true} />);
+		expect(screen.getByText("Loading run details...")).toBeInTheDocument();
+	});
 
-  it("displays run details", () => {
-    const run = makeRunDetail({
-      task: "deploy-prod",
-      id: "run-abc",
-      trigger: "manual",
-      exit_code: 0,
-      duration_seconds: 120,
-    });
-    render(<RunDetailModal {...defaultProps} run={run} />);
+	it("displays run details", () => {
+		const run = makeRunDetail({
+			task: "deploy-prod",
+			id: "run-abc",
+			trigger: "manual",
+			exit_code: 0,
+			duration_seconds: 120,
+		});
+		render(<RunDetailModal {...defaultProps} run={run} />);
 
-    expect(screen.getByText("deploy-prod")).toBeInTheDocument();
-    expect(screen.getByText("run-abc")).toBeInTheDocument();
-    expect(screen.getByText("manual")).toBeInTheDocument();
-    expect(screen.getByText("OK")).toBeInTheDocument();
-    expect(screen.getByText("0")).toBeInTheDocument(); // exit code
-    expect(screen.getByText("2m")).toBeInTheDocument(); // duration
-  });
+		expect(screen.getByText("deploy-prod")).toBeInTheDocument();
+		expect(screen.getByText("run-abc")).toBeInTheDocument();
+		expect(screen.getByText("manual")).toBeInTheDocument();
+		expect(screen.getByText("OK")).toBeInTheDocument();
+		expect(screen.getByText("0")).toBeInTheDocument(); // exit code
+		expect(screen.getByText("2m")).toBeInTheDocument(); // duration
+	});
 
-  it("shows RUNNING status for null exit code", () => {
-    const run = makeRunDetail({ exit_code: null });
-    render(<RunDetailModal {...defaultProps} run={run} />);
-    expect(screen.getByText("RUNNING")).toBeInTheDocument();
-  });
+	it("shows RUNNING status for null exit code", () => {
+		const run = makeRunDetail({ exit_code: null });
+		render(<RunDetailModal {...defaultProps} run={run} />);
+		expect(screen.getByText("RUNNING")).toBeInTheDocument();
+	});
 
-  it("shows FAILED status for non-zero exit code", () => {
-    const run = makeRunDetail({ exit_code: 2 });
-    render(<RunDetailModal {...defaultProps} run={run} />);
-    expect(screen.getByText("FAILED")).toBeInTheDocument();
-  });
+	it("shows FAILED status for non-zero exit code", () => {
+		const run = makeRunDetail({ exit_code: 2 });
+		render(<RunDetailModal {...defaultProps} run={run} />);
+		expect(screen.getByText("FAILED")).toBeInTheDocument();
+	});
 
-  it("shows INTERRUPTED status for exit code -1", () => {
-    const run = makeRunDetail({ exit_code: -1 });
-    render(<RunDetailModal {...defaultProps} run={run} />);
-    expect(screen.getByText("INTERRUPTED")).toBeInTheDocument();
-  });
+	it("shows INTERRUPTED status for exit code -1", () => {
+		const run = makeRunDetail({ exit_code: -1 });
+		render(<RunDetailModal {...defaultProps} run={run} />);
+		expect(screen.getByText("INTERRUPTED")).toBeInTheDocument();
+	});
 
-  it("shows output loading state", () => {
-    const run = makeRunDetail();
-    render(
-      <RunDetailModal {...defaultProps} run={run} outputLoading={true} />,
-    );
-    expect(screen.getByText("Loading output...")).toBeInTheDocument();
-  });
+	it("shows output loading state", () => {
+		const run = makeRunDetail();
+		render(<RunDetailModal {...defaultProps} run={run} outputLoading={true} />);
+		expect(screen.getByText("Loading output...")).toBeInTheDocument();
+	});
 
-  it("shows output error", () => {
-    const run = makeRunDetail();
-    render(
-      <RunDetailModal
-        {...defaultProps}
-        run={run}
-        outputError="Failed to fetch output"
-      />,
-    );
-    expect(screen.getByText("Failed to fetch output")).toBeInTheDocument();
-  });
+	it("shows output error", () => {
+		const run = makeRunDetail();
+		render(<RunDetailModal {...defaultProps} run={run} outputError="Failed to fetch output" />);
+		expect(screen.getByText("Failed to fetch output")).toBeInTheDocument();
+	});
 
-  it("shows output content", () => {
-    const run = makeRunDetail();
-    render(
-      <RunDetailModal
-        {...defaultProps}
-        run={run}
-        output="Build successful\nAll tests passed"
-      />,
-    );
-    expect(screen.getByText(/Build successful/)).toBeInTheDocument();
-    expect(screen.getByText(/All tests passed/)).toBeInTheDocument();
-  });
+	it("shows output content", () => {
+		const run = makeRunDetail();
+		render(
+			<RunDetailModal {...defaultProps} run={run} output="Build successful\nAll tests passed" />,
+		);
+		expect(screen.getByText(/Build successful/)).toBeInTheDocument();
+		expect(screen.getByText(/All tests passed/)).toBeInTheDocument();
+	});
 
-  it("shows no output message when output is null", () => {
-    const run = makeRunDetail();
-    render(<RunDetailModal {...defaultProps} run={run} />);
-    expect(screen.getByText("No output available")).toBeInTheDocument();
-  });
+	it("shows no output message when output is null", () => {
+		const run = makeRunDetail();
+		render(<RunDetailModal {...defaultProps} run={run} />);
+		expect(screen.getByText("No output available")).toBeInTheDocument();
+	});
 
-  it("closes on Escape key", () => {
-    const onClose = vi.fn();
-    const run = makeRunDetail();
-    render(<RunDetailModal {...defaultProps} run={run} onClose={onClose} />);
+	it("closes on Escape key", () => {
+		const onClose = vi.fn();
+		const run = makeRunDetail();
+		render(<RunDetailModal {...defaultProps} run={run} onClose={onClose} />);
 
-    fireEvent.keyDown(document, { key: "Escape" });
-    expect(onClose).toHaveBeenCalledOnce();
-  });
+		fireEvent.keyDown(document, { key: "Escape" });
+		expect(onClose).toHaveBeenCalledOnce();
+	});
 
-  it("closes on backdrop click", () => {
-    const onClose = vi.fn();
-    const run = makeRunDetail();
-    const { container } = render(
-      <RunDetailModal {...defaultProps} run={run} onClose={onClose} />,
-    );
+	it("closes on backdrop click", () => {
+		const onClose = vi.fn();
+		const run = makeRunDetail();
+		const { container } = render(<RunDetailModal {...defaultProps} run={run} onClose={onClose} />);
 
-    const backdrop = container.querySelector(".fixed.inset-0") as HTMLElement;
-    fireEvent.click(backdrop);
-    expect(onClose).toHaveBeenCalledOnce();
-  });
+		const backdrop = container.querySelector(".fixed.inset-0") as HTMLElement;
+		fireEvent.click(backdrop);
+		expect(onClose).toHaveBeenCalledOnce();
+	});
 
-  it("closes on X button click", () => {
-    const onClose = vi.fn();
-    const run = makeRunDetail();
-    render(<RunDetailModal {...defaultProps} run={run} onClose={onClose} />);
+	it("closes on X button click", () => {
+		const onClose = vi.fn();
+		const run = makeRunDetail();
+		render(<RunDetailModal {...defaultProps} run={run} onClose={onClose} />);
 
-    fireEvent.click(screen.getByTitle("Close (Esc)"));
-    expect(onClose).toHaveBeenCalledOnce();
-  });
+		fireEvent.click(screen.getByTitle("Close (Esc)"));
+		expect(onClose).toHaveBeenCalledOnce();
+	});
 
-  it("does not close when clicking modal content", () => {
-    const onClose = vi.fn();
-    const run = makeRunDetail();
-    render(<RunDetailModal {...defaultProps} run={run} onClose={onClose} />);
+	it("does not close when clicking modal content", () => {
+		const onClose = vi.fn();
+		const run = makeRunDetail();
+		render(<RunDetailModal {...defaultProps} run={run} onClose={onClose} />);
 
-    fireEvent.click(screen.getByText("run-1"));
-    expect(onClose).not.toHaveBeenCalled();
-  });
+		fireEvent.click(screen.getByText("run-1"));
+		expect(onClose).not.toHaveBeenCalled();
+	});
 
-  it("shows dash for finished_at when not set", () => {
-    const run = makeRunDetail({ finished_at: undefined });
-    render(<RunDetailModal {...defaultProps} run={run} />);
-    // The "Finished" field should show "-"
-    const finishedLabel = screen.getByText("Finished");
-    const finishedContainer = finishedLabel.closest("div")!;
-    expect(within(finishedContainer).getByText("-")).toBeInTheDocument();
-  });
+	it("shows dash for finished_at when not set", () => {
+		const run = makeRunDetail({ finished_at: undefined });
+		render(<RunDetailModal {...defaultProps} run={run} />);
+		// The "Finished" field should show "-"
+		const finishedLabel = screen.getByText("Finished");
+		const finishedContainer = finishedLabel.closest("div")!;
+		expect(within(finishedContainer).getByText("-")).toBeInTheDocument();
+	});
 
-  it("shows dash for exit code when null", () => {
-    const run = makeRunDetail({ exit_code: null });
-    render(<RunDetailModal {...defaultProps} run={run} />);
-    const exitCodeLabel = screen.getByText("Exit Code");
-    const exitCodeContainer = exitCodeLabel.closest("div")!;
-    expect(within(exitCodeContainer).getByText("-")).toBeInTheDocument();
-  });
+	it("shows dash for exit code when null", () => {
+		const run = makeRunDetail({ exit_code: null });
+		render(<RunDetailModal {...defaultProps} run={run} />);
+		const exitCodeLabel = screen.getByText("Exit Code");
+		const exitCodeContainer = exitCodeLabel.closest("div")!;
+		expect(within(exitCodeContainer).getByText("-")).toBeInTheDocument();
+	});
 
-  it("shows Esc hint text", () => {
-    const run = makeRunDetail();
-    render(<RunDetailModal {...defaultProps} run={run} />);
-    expect(screen.getByText("Esc")).toBeInTheDocument();
-    expect(screen.getByText(/to close/)).toBeInTheDocument();
-  });
+	it("shows Esc hint text", () => {
+		const run = makeRunDetail();
+		render(<RunDetailModal {...defaultProps} run={run} />);
+		expect(screen.getByText("Esc")).toBeInTheDocument();
+		expect(screen.getByText(/to close/)).toBeInTheDocument();
+	});
 
-  it("registers escape handler when loading with no run", () => {
-    const onClose = vi.fn();
-    render(<RunDetailModal {...defaultProps} loading={true} onClose={onClose} />);
+	it("registers escape handler when loading with no run", () => {
+		const onClose = vi.fn();
+		render(<RunDetailModal {...defaultProps} loading={true} onClose={onClose} />);
 
-    fireEvent.keyDown(document, { key: "Escape" });
-    expect(onClose).toHaveBeenCalledOnce();
-  });
+		fireEvent.keyDown(document, { key: "Escape" });
+		expect(onClose).toHaveBeenCalledOnce();
+	});
 });
 
 // ============================================
@@ -1441,138 +1425,143 @@ describe("RunDetailModal", () => {
 // ============================================
 
 describe("RunnerComponents edge cases for branch coverage", () => {
-  it("shows 'Tomorrow' label for tasks scheduled tomorrow", () => {
-    const now = new Date();
-    // Create a date for tomorrow
-    const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 10, 0, 0);
-    const countdown = tomorrow.getTime() - now.getTime();
+	it("shows 'Tomorrow' label for tasks scheduled tomorrow", () => {
+		const now = new Date();
+		// Create a date for tomorrow
+		const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 10, 0, 0);
+		const countdown = tomorrow.getTime() - now.getTime();
 
-    const items: UpcomingTask[] = [
-      {
-        task: { id: "t1", executor: "shell", description: "d", timeout: 60 },
-        schedule: { task: "t1", hour: 10, minute: 0, weekday: "*" },
-        nextRun: tomorrow,
-        countdown,
-      },
-    ];
-    render(<UpcomingTasks items={items} />);
-    expect(screen.getByText("Tomorrow")).toBeInTheDocument();
-  });
+		const items: UpcomingTask[] = [
+			{
+				task: { id: "t1", executor: "shell", description: "d", timeout: 60 },
+				schedule: { task: "t1", hour: 10, minute: 0, weekday: "*" },
+				nextRun: tomorrow,
+				countdown,
+			},
+		];
+		render(<UpcomingTasks items={items} />);
+		expect(screen.getByText("Tomorrow")).toBeInTheDocument();
+	});
 
-  it("shows weekday name for tasks scheduled more than 1 day away", () => {
-    const now = new Date();
-    // Create a date 3 days from now
-    const futureDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 3, 10, 0, 0);
-    const countdown = futureDate.getTime() - now.getTime();
+	it("shows weekday name for tasks scheduled more than 1 day away", () => {
+		const now = new Date();
+		// Create a date 3 days from now
+		const futureDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 3, 10, 0, 0);
+		const countdown = futureDate.getTime() - now.getTime();
 
-    const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    const expectedWeekday = weekdays[futureDate.getDay()];
+		const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+		const expectedWeekday = weekdays[futureDate.getDay()];
 
-    const items: UpcomingTask[] = [
-      {
-        task: { id: "t1", executor: "shell", description: "d", timeout: 60 },
-        schedule: { task: "t1", hour: 10, minute: 0, weekday: "*" },
-        nextRun: futureDate,
-        countdown,
-      },
-    ];
-    render(<UpcomingTasks items={items} />);
-    expect(screen.getByText(expectedWeekday)).toBeInTheDocument();
-  });
+		const items: UpcomingTask[] = [
+			{
+				task: { id: "t1", executor: "shell", description: "d", timeout: 60 },
+				schedule: { task: "t1", hour: 10, minute: 0, weekday: "*" },
+				nextRun: futureDate,
+				countdown,
+			},
+		];
+		render(<UpcomingTasks items={items} />);
+		expect(screen.getByText(expectedWeekday)).toBeInTheDocument();
+	});
 
-  it("RunnerTrendChart renders chart with invalid date format in data", () => {
-    // This tests the formatTrendTime fallback (line 735)
-    const data: TrendPoint[] = [
-      { date: "invalid-date-format", total: 10, success: 8, successRate: 0.8 },
-    ];
-    const { container } = render(<RunnerTrendChart data={data} />);
-    // Should still render without crashing
-    expect(container.querySelector("svg")).toBeInTheDocument();
-  });
+	it("RunnerTrendChart renders chart with invalid date format in data", () => {
+		// This tests the formatTrendTime fallback (line 735)
+		const data: TrendPoint[] = [
+			{ date: "invalid-date-format", total: 10, success: 8, successRate: 0.8 },
+		];
+		const { container } = render(<RunnerTrendChart data={data} />);
+		// Should still render without crashing
+		expect(container.querySelector("svg")).toBeInTheDocument();
+	});
 
-  it("RunnerTrendChart shows tooltip with formatted time from valid date", () => {
-    const data: TrendPoint[] = [
-      { date: "2026-01-15T08:30:00Z", total: 10, success: 8, successRate: 0.8 },
-    ];
-    const { container } = render(<RunnerTrendChart data={data} />);
+	it("RunnerTrendChart shows tooltip with formatted time from valid date", () => {
+		const data: TrendPoint[] = [
+			{ date: "2026-01-15T08:30:00Z", total: 10, success: 8, successRate: 0.8 },
+		];
+		const { container } = render(<RunnerTrendChart data={data} />);
 
-    const hoverOverlay = container.querySelector(".absolute.inset-0.z-20") as HTMLElement;
+		const hoverOverlay = container.querySelector(".absolute.inset-0.z-20") as HTMLElement;
 
-    vi.spyOn(hoverOverlay, "getBoundingClientRect").mockReturnValue({
-      left: 0,
-      top: 0,
-      right: 500,
-      bottom: 200,
-      width: 500,
-      height: 200,
-      x: 0,
-      y: 0,
-      toJSON: () => {},
-    });
+		vi.spyOn(hoverOverlay, "getBoundingClientRect").mockReturnValue({
+			left: 0,
+			top: 0,
+			right: 500,
+			bottom: 200,
+			width: 500,
+			height: 200,
+			x: 0,
+			y: 0,
+			toJSON: () => {},
+		});
 
-    fireEvent.mouseMove(hoverOverlay, { clientX: 250, clientY: 100 });
+		fireEvent.mouseMove(hoverOverlay, { clientX: 250, clientY: 100 });
 
-    // Tooltip should show formatted time "08:30"
-    expect(screen.getByText("08:30")).toBeInTheDocument();
-  });
+		// Tooltip should show formatted time "08:30"
+		expect(screen.getByText("08:30")).toBeInTheDocument();
+	});
 
-  it("RunHistory sorting handles runs with missing timestamps gracefully", () => {
-    const runs: RunSummary[] = [
-      makeRun({ id: "r1", task: "a", started_at: "2026-01-15T10:00:00Z", finished_at: null }),
-      makeRun({ id: "r2", task: "b", started_at: "2026-01-15T08:00:00Z", finished_at: "2026-01-15T08:05:00Z" }),
-    ];
-    render(
-      <RunHistory
-        runs={runs}
-        loading={false}
-        page={1}
-        totalPages={1}
-        onPageChange={() => {}}
-        onSelectRun={() => {}}
-      />,
-    );
-    // Both runs should render
-    expect(screen.getByText("a")).toBeInTheDocument();
-    expect(screen.getByText("b")).toBeInTheDocument();
+	it("RunHistory sorting handles runs with missing timestamps gracefully", () => {
+		const runs: RunSummary[] = [
+			makeRun({ id: "r1", task: "a", started_at: "2026-01-15T10:00:00Z", finished_at: null }),
+			makeRun({
+				id: "r2",
+				task: "b",
+				started_at: "2026-01-15T08:00:00Z",
+				finished_at: "2026-01-15T08:05:00Z",
+			}),
+		];
+		render(
+			<RunHistory
+				runs={runs}
+				loading={false}
+				page={1}
+				totalPages={1}
+				onPageChange={() => {}}
+				onSelectRun={() => {}}
+			/>,
+		);
+		// Both runs should render
+		expect(screen.getByText("a")).toBeInTheDocument();
+		expect(screen.getByText("b")).toBeInTheDocument();
 
-    // Click time column to sort
-    fireEvent.click(screen.getByTitle("Sort by time"));
-    // Both should still be present
-    expect(screen.getByText("a")).toBeInTheDocument();
-    expect(screen.getByText("b")).toBeInTheDocument();
-  });
+		// Click time column to sort
+		fireEvent.click(screen.getByTitle("Sort by time"));
+		// Both should still be present
+		expect(screen.getByText("a")).toBeInTheDocument();
+		expect(screen.getByText("b")).toBeInTheDocument();
+	});
 
-  it("UpcomingTasks countdown animation color for <= 5 minutes", () => {
-    const now = new Date();
-    const items: UpcomingTask[] = [
-      {
-        task: { id: "t1", executor: "shell", description: "d", timeout: 60 },
-        schedule: { task: "t1", hour: 10, minute: 0, weekday: "*" },
-        nextRun: new Date(now.getTime() + 3 * 60 * 1000), // 3 minutes
-        countdown: 3 * 60 * 1000,
-      },
-    ];
-    const { container } = render(<UpcomingTasks items={items} />);
-    // Should have warning/pulse class for <= 5 minutes
-    const countdownEl = container.querySelector(".animate-pulse");
-    expect(countdownEl).toBeInTheDocument();
-  });
+	it("UpcomingTasks countdown animation color for <= 5 minutes", () => {
+		const now = new Date();
+		const items: UpcomingTask[] = [
+			{
+				task: { id: "t1", executor: "shell", description: "d", timeout: 60 },
+				schedule: { task: "t1", hour: 10, minute: 0, weekday: "*" },
+				nextRun: new Date(now.getTime() + 3 * 60 * 1000), // 3 minutes
+				countdown: 3 * 60 * 1000,
+			},
+		];
+		const { container } = render(<UpcomingTasks items={items} />);
+		// Should have warning/pulse class for <= 5 minutes
+		const countdownEl = container.querySelector(".animate-pulse");
+		expect(countdownEl).toBeInTheDocument();
+	});
 
-  it("UpcomingTasks countdown color for <= 15 minutes", () => {
-    const now = new Date();
-    const items: UpcomingTask[] = [
-      {
-        task: { id: "t1", executor: "shell", description: "d", timeout: 60 },
-        schedule: { task: "t1", hour: 10, minute: 0, weekday: "*" },
-        nextRun: new Date(now.getTime() + 10 * 60 * 1000), // 10 minutes
-        countdown: 10 * 60 * 1000,
-      },
-    ];
-    const { container } = render(<UpcomingTasks items={items} />);
-    // Should render with bright color class
-    const brightEl = container.querySelector(".text-matrix-bright");
-    expect(brightEl).toBeInTheDocument();
-  });
+	it("UpcomingTasks countdown color for <= 15 minutes", () => {
+		const now = new Date();
+		const items: UpcomingTask[] = [
+			{
+				task: { id: "t1", executor: "shell", description: "d", timeout: 60 },
+				schedule: { task: "t1", hour: 10, minute: 0, weekday: "*" },
+				nextRun: new Date(now.getTime() + 10 * 60 * 1000), // 10 minutes
+				countdown: 10 * 60 * 1000,
+			},
+		];
+		const { container } = render(<UpcomingTasks items={items} />);
+		// Should render with bright color class
+		const brightEl = container.querySelector(".text-matrix-bright");
+		expect(brightEl).toBeInTheDocument();
+	});
 });
 
 // ============================================
@@ -1580,353 +1569,405 @@ describe("RunnerComponents edge cases for branch coverage", () => {
 // ============================================
 
 describe("Runner edge cases for branch coverage", () => {
-  it("TaskSchedule defaults http method to GET when method is undefined (line 213)", () => {
-    const tasks = [
-      makeTask({
-        executor: "http",
-        url: "https://api.example.com/hook",
-        method: undefined,
-        command: undefined,
-      }),
-    ];
-    render(
-      <TaskSchedule
-        tasks={tasks}
-        loading={false}
-        triggerLoading={false}
-        onTrigger={vi.fn()}
-        onAddTask={vi.fn()}
-        onSelectTask={vi.fn()}
-      />,
-    );
-    expect(screen.getByText(/GET https:\/\/api\.example\.com\/hook/)).toBeInTheDocument();
-  });
+	it("TaskSchedule defaults http method to GET when method is undefined (line 213)", () => {
+		const tasks = [
+			makeTask({
+				executor: "http",
+				url: "https://api.example.com/hook",
+				method: undefined,
+				command: undefined,
+			}),
+		];
+		render(
+			<TaskSchedule
+				tasks={tasks}
+				loading={false}
+				triggerLoading={false}
+				onTrigger={vi.fn()}
+				onAddTask={vi.fn()}
+				onSelectTask={vi.fn()}
+			/>,
+		);
+		expect(screen.getByText(/GET https:\/\/api\.example\.com\/hook/)).toBeInTheDocument();
+	});
 
-  it("RunHistory toggles sort from desc to asc and back to desc (line 340)", () => {
-    const runs = [
-      makeRun({ id: "r1", task: "alpha" }),
-      makeRun({ id: "r2", task: "beta" }),
-    ];
-    render(
-      <RunHistory
-        runs={runs}
-        loading={false}
-        page={1}
-        totalPages={1}
-        onPageChange={vi.fn()}
-        onSelectRun={vi.fn()}
-      />,
-    );
-    const taskBtn = screen.getByTitle("Sort by task name");
-    // First click: switch to "task" key, dir=desc
-    fireEvent.click(taskBtn);
-    // Second click: same key, toggle desc -> asc
-    fireEvent.click(taskBtn);
-    // Third click: same key, toggle asc -> desc (covers asc branch)
-    fireEvent.click(taskBtn);
-    expect(screen.getByText("alpha")).toBeInTheDocument();
-  });
+	it("RunHistory toggles sort from desc to asc and back to desc (line 340)", () => {
+		const runs = [makeRun({ id: "r1", task: "alpha" }), makeRun({ id: "r2", task: "beta" })];
+		render(
+			<RunHistory
+				runs={runs}
+				loading={false}
+				page={1}
+				totalPages={1}
+				onPageChange={vi.fn()}
+				onSelectRun={vi.fn()}
+			/>,
+		);
+		const taskBtn = screen.getByTitle("Sort by task name");
+		// First click: switch to "task" key, dir=desc
+		fireEvent.click(taskBtn);
+		// Second click: same key, toggle desc -> asc
+		fireEvent.click(taskBtn);
+		// Third click: same key, toggle asc -> desc (covers asc branch)
+		fireEvent.click(taskBtn);
+		expect(screen.getByText("alpha")).toBeInTheDocument();
+	});
 
-  it("RunHistory sorts by duration (case 'duration', line 358)", () => {
-    const runs = [
-      makeRun({ id: "r1", task: "fast", started_at: "2026-01-15T10:00:00Z", finished_at: "2026-01-15T10:00:30Z" }),
-      makeRun({ id: "r2", task: "slow", started_at: "2026-01-15T10:00:00Z", finished_at: "2026-01-15T10:05:00Z" }),
-      makeRun({ id: "r3", task: "no-duration", started_at: "2026-01-15T10:00:00Z", finished_at: null, exit_code: null }),
-    ];
-    render(
-      <RunHistory
-        runs={runs}
-        loading={false}
-        page={1}
-        totalPages={1}
-        onPageChange={vi.fn()}
-        onSelectRun={vi.fn()}
-      />,
-    );
-    fireEvent.click(screen.getByTitle("Sort by duration"));
-    expect(screen.getByText("fast")).toBeInTheDocument();
-    expect(screen.getByText("slow")).toBeInTheDocument();
-    expect(screen.getByText("no-duration")).toBeInTheDocument();
-  });
+	it("RunHistory sorts by duration (case 'duration', line 358)", () => {
+		const runs = [
+			makeRun({
+				id: "r1",
+				task: "fast",
+				started_at: "2026-01-15T10:00:00Z",
+				finished_at: "2026-01-15T10:00:30Z",
+			}),
+			makeRun({
+				id: "r2",
+				task: "slow",
+				started_at: "2026-01-15T10:00:00Z",
+				finished_at: "2026-01-15T10:05:00Z",
+			}),
+			makeRun({
+				id: "r3",
+				task: "no-duration",
+				started_at: "2026-01-15T10:00:00Z",
+				finished_at: null,
+				exit_code: null,
+			}),
+		];
+		render(
+			<RunHistory
+				runs={runs}
+				loading={false}
+				page={1}
+				totalPages={1}
+				onPageChange={vi.fn()}
+				onSelectRun={vi.fn()}
+			/>,
+		);
+		fireEvent.click(screen.getByTitle("Sort by duration"));
+		expect(screen.getByText("fast")).toBeInTheDocument();
+		expect(screen.getByText("slow")).toBeInTheDocument();
+		expect(screen.getByText("no-duration")).toBeInTheDocument();
+	});
 
-  it("RunHistory shows em dash when neither finished_at nor started_at (line 437)", () => {
-    const runs = [
-      makeRun({ id: "r1", task: "ghost", started_at: "" as unknown as string, finished_at: null }),
-    ];
-    render(
-      <RunHistory
-        runs={runs}
-        loading={false}
-        page={1}
-        totalPages={1}
-        onPageChange={vi.fn()}
-        onSelectRun={vi.fn()}
-      />,
-    );
-    expect(screen.getByText("ghost")).toBeInTheDocument();
-    // The em dash "—" should appear in the time column
-    expect(screen.getAllByText("—").length).toBeGreaterThan(0);
-  });
+	it("RunHistory shows em dash when neither finished_at nor started_at (line 437)", () => {
+		const runs = [
+			makeRun({ id: "r1", task: "ghost", started_at: "" as unknown as string, finished_at: null }),
+		];
+		render(
+			<RunHistory
+				runs={runs}
+				loading={false}
+				page={1}
+				totalPages={1}
+				onPageChange={vi.fn()}
+				onSelectRun={vi.fn()}
+			/>,
+		);
+		expect(screen.getByText("ghost")).toBeInTheDocument();
+		// The em dash "—" should appear in the time column
+		expect(screen.getAllByText("—").length).toBeGreaterThan(0);
+	});
 
-  it("RunHeatmap handles cell.date without 'T' separator (line 563 hourPart fallback)", () => {
-    const data: HeatmapCell[] = [
-      { date: "2026-01-15", count: 5, success: 5, failed: 0 },
-    ];
-    const { container } = render(<RunHeatmap data={data} />);
-    // Should not crash and render a heatmap
-    expect(container.querySelector("[title]")).toBeInTheDocument();
-  });
+	it("RunHeatmap handles cell.date without 'T' separator (line 563 hourPart fallback)", () => {
+		const data: HeatmapCell[] = [{ date: "2026-01-15", count: 5, success: 5, failed: 0 }];
+		const { container } = render(<RunHeatmap data={data} />);
+		// Should not crash and render a heatmap
+		expect(container.querySelector("[title]")).toBeInTheDocument();
+	});
 
-  it("RunHeatmap handles cell with out-of-range level via getLevel (line 653 ?? 0.08)", () => {
-    // very high count (>50) maps to level 4 within range; we exercise
-    // the ?? fallback by constructing data path even though defensively unreachable
-    const data: HeatmapCell[] = [
-      { date: "2026-01-15T10:00:00", count: 1000, success: 1000, failed: 0 },
-    ];
-    const { container } = render(<RunHeatmap data={data} />);
-    expect(container.querySelector("[title]")).toBeInTheDocument();
-  });
+	it("RunHeatmap handles cell with out-of-range level via getLevel (line 653 ?? 0.08)", () => {
+		// very high count (>50) maps to level 4 within range; we exercise
+		// the ?? fallback by constructing data path even though defensively unreachable
+		const data: HeatmapCell[] = [
+			{ date: "2026-01-15T10:00:00", count: 1000, success: 1000, failed: 0 },
+		];
+		const { container } = render(<RunHeatmap data={data} />);
+		expect(container.querySelector("[title]")).toBeInTheDocument();
+	});
 
-  it("RunnerTrendChart with all-zero values exercises max>0 ? : 0 / 1 fallbacks (lines 777, 845)", () => {
-    const data: TrendPoint[] = [
-      { date: "2026-01-15T08:00:00Z", total: 0, success: 0, successRate: 0 },
-      { date: "2026-01-15T09:00:00Z", total: 0, success: 0, successRate: 0 },
-    ];
-    const { container } = render(<RunnerTrendChart data={data} />);
-    const hoverOverlay = container.querySelector(".absolute.inset-0.z-20") as HTMLElement;
-    vi.spyOn(hoverOverlay, "getBoundingClientRect").mockReturnValue({
-      left: 0, top: 0, right: 500, bottom: 200, width: 500, height: 200,
-      x: 0, y: 0, toJSON: () => ({}),
-    } as DOMRect);
-    fireEvent.mouseMove(hoverOverlay, { clientX: 250, clientY: 100 });
-    expect(screen.getByText(/runs/)).toBeInTheDocument();
-  });
+	it("RunnerTrendChart with all-zero values exercises max>0 ? : 0 / 1 fallbacks (lines 777, 845)", () => {
+		const data: TrendPoint[] = [
+			{ date: "2026-01-15T08:00:00Z", total: 0, success: 0, successRate: 0 },
+			{ date: "2026-01-15T09:00:00Z", total: 0, success: 0, successRate: 0 },
+		];
+		const { container } = render(<RunnerTrendChart data={data} />);
+		const hoverOverlay = container.querySelector(".absolute.inset-0.z-20") as HTMLElement;
+		vi.spyOn(hoverOverlay, "getBoundingClientRect").mockReturnValue({
+			left: 0,
+			top: 0,
+			right: 500,
+			bottom: 200,
+			width: 500,
+			height: 200,
+			x: 0,
+			y: 0,
+			toJSON: () => ({}),
+		} as DOMRect);
+		fireEvent.mouseMove(hoverOverlay, { clientX: 250, clientY: 100 });
+		expect(screen.getByText(/runs/)).toBeInTheDocument();
+	});
 
-  it("RunnerTrendChart with single data point uses width/2 fallback (line 844)", () => {
-    const data: TrendPoint[] = [
-      { date: "2026-01-15T08:00:00Z", total: 5, success: 5, successRate: 1 },
-    ];
-    const { container } = render(<RunnerTrendChart data={data} />);
-    const hoverOverlay = container.querySelector(".absolute.inset-0.z-20") as HTMLElement;
-    vi.spyOn(hoverOverlay, "getBoundingClientRect").mockReturnValue({
-      left: 0, top: 0, right: 500, bottom: 200, width: 500, height: 200,
-      x: 0, y: 0, toJSON: () => ({}),
-    } as DOMRect);
-    fireEvent.mouseMove(hoverOverlay, { clientX: 250, clientY: 100 });
-    expect(screen.getByText(/runs/)).toBeInTheDocument();
-  });
+	it("RunnerTrendChart with single data point uses width/2 fallback (line 844)", () => {
+		const data: TrendPoint[] = [
+			{ date: "2026-01-15T08:00:00Z", total: 5, success: 5, successRate: 1 },
+		];
+		const { container } = render(<RunnerTrendChart data={data} />);
+		const hoverOverlay = container.querySelector(".absolute.inset-0.z-20") as HTMLElement;
+		vi.spyOn(hoverOverlay, "getBoundingClientRect").mockReturnValue({
+			left: 0,
+			top: 0,
+			right: 500,
+			bottom: 200,
+			width: 500,
+			height: 200,
+			x: 0,
+			y: 0,
+			toJSON: () => ({}),
+		} as DOMRect);
+		fireEvent.mouseMove(hoverOverlay, { clientX: 250, clientY: 100 });
+		expect(screen.getByText(/runs/)).toBeInTheDocument();
+	});
 
-  it("RunnerTrendChart hover with zero clientWidth falls back to hover.x (line 947)", () => {
-    const data: TrendPoint[] = [
-      { date: "2026-01-15T08:00:00Z", total: 10, success: 8, successRate: 0.8 },
-      { date: "2026-01-15T10:00:00Z", total: 20, success: 18, successRate: 0.9 },
-    ];
-    const { container } = render(<RunnerTrendChart data={data} />);
-    const hoverOverlay = container.querySelector(".absolute.inset-0.z-20") as HTMLElement;
-    // Force clientWidth to 0 so the ternary takes the hover.x branch
-    Object.defineProperty(hoverOverlay, "clientWidth", { value: 0, configurable: true });
-    vi.spyOn(hoverOverlay, "getBoundingClientRect").mockReturnValue({
-      left: 0, top: 0, right: 500, bottom: 200, width: 500, height: 200,
-      x: 0, y: 0, toJSON: () => ({}),
-    } as DOMRect);
-    fireEvent.mouseMove(hoverOverlay, { clientX: 250, clientY: 100 });
-    expect(screen.getByText(/runs/)).toBeInTheDocument();
-  });
+	it("RunnerTrendChart hover with zero clientWidth falls back to hover.x (line 947)", () => {
+		const data: TrendPoint[] = [
+			{ date: "2026-01-15T08:00:00Z", total: 10, success: 8, successRate: 0.8 },
+			{ date: "2026-01-15T10:00:00Z", total: 20, success: 18, successRate: 0.9 },
+		];
+		const { container } = render(<RunnerTrendChart data={data} />);
+		const hoverOverlay = container.querySelector(".absolute.inset-0.z-20") as HTMLElement;
+		// Force clientWidth to 0 so the ternary takes the hover.x branch
+		Object.defineProperty(hoverOverlay, "clientWidth", { value: 0, configurable: true });
+		vi.spyOn(hoverOverlay, "getBoundingClientRect").mockReturnValue({
+			left: 0,
+			top: 0,
+			right: 500,
+			bottom: 200,
+			width: 500,
+			height: 200,
+			x: 0,
+			y: 0,
+			toJSON: () => ({}),
+		} as DOMRect);
+		fireEvent.mouseMove(hoverOverlay, { clientX: 250, clientY: 100 });
+		expect(screen.getByText(/runs/)).toBeInTheDocument();
+	});
 
-  it("AddTaskModal timeout input falls back to 300 when empty (line 1260)", () => {
-    render(
-      <AddTaskModal
-        open={true}
-        onClose={vi.fn()}
-      />,
-    );
-    const timeoutInput = screen.getByLabelText(/Timeout/i) as HTMLInputElement;
-    // Set to an invalid value (empty string parses to NaN -> falsy -> 300)
-    fireEvent.change(timeoutInput, { target: { value: "" } });
-    // No assertion about specific value — the branch is exercised by the change
-    expect(timeoutInput).toBeInTheDocument();
-  });
+	it("AddTaskModal timeout input falls back to 300 when empty (line 1260)", () => {
+		render(<AddTaskModal open={true} onClose={vi.fn()} />);
+		const timeoutInput = screen.getByLabelText(/Timeout/i) as HTMLInputElement;
+		// Set to an invalid value (empty string parses to NaN -> falsy -> 300)
+		fireEvent.change(timeoutInput, { target: { value: "" } });
+		// No assertion about specific value — the branch is exercised by the change
+		expect(timeoutInput).toBeInTheDocument();
+	});
 
-  it("RunDetailModal shows '-' duration when duration_seconds is null/undefined (line 1700)", () => {
-    const run = makeRunDetail({ duration_seconds: null as unknown as number });
-    render(
-      <RunDetailModal
-        run={run}
-        loading={false}
-        output={null}
-        outputLoading={false}
-        outputError={null}
-        onClose={vi.fn()}
-      />,
-    );
-    // formatDuration(0) renders something — covers the ?? 0 fallback
-    expect(screen.getByText(/deploy|test-task/i)).toBeInTheDocument();
-  });
+	it("RunDetailModal shows '-' duration when duration_seconds is null/undefined (line 1700)", () => {
+		const run = makeRunDetail({ duration_seconds: null as unknown as number });
+		render(
+			<RunDetailModal
+				run={run}
+				loading={false}
+				output={null}
+				outputLoading={false}
+				outputError={null}
+				onClose={vi.fn()}
+			/>,
+		);
+		// formatDuration(0) renders something — covers the ?? 0 fallback
+		expect(screen.getByText(/deploy|test-task/i)).toBeInTheDocument();
+	});
 });
 
 // ---------------------------------------------------------------------------
 // Additional Runner edge branches
 // ---------------------------------------------------------------------------
 describe("Runner additional edge branches", () => {
-  it("RunHistory sort by duration handles run with missing finished_at (null duration -> 0)", () => {
-    const runs: RunSummary[] = [
-      makeRun({ id: "r1", started_at: "2026-01-15T10:00:00Z", finished_at: undefined as unknown as string }),
-      makeRun({ id: "r2", started_at: "2026-01-15T10:00:00Z", finished_at: "2026-01-15T10:05:00Z" }),
-    ];
-    render(
-      <RunHistory
-        runs={runs}
-        loading={false}
-        page={1}
-        totalPages={1}
-        onPageChange={vi.fn()}
-        onSelectRun={vi.fn()}
-      />,
-    );
-    const durationHeader = screen.getByText(/duration/i);
-    fireEvent.click(durationHeader);
-    expect(durationHeader).toBeInTheDocument();
-  });
+	it("RunHistory sort by duration handles run with missing finished_at (null duration -> 0)", () => {
+		const runs: RunSummary[] = [
+			makeRun({
+				id: "r1",
+				started_at: "2026-01-15T10:00:00Z",
+				finished_at: undefined as unknown as string,
+			}),
+			makeRun({
+				id: "r2",
+				started_at: "2026-01-15T10:00:00Z",
+				finished_at: "2026-01-15T10:05:00Z",
+			}),
+		];
+		render(
+			<RunHistory
+				runs={runs}
+				loading={false}
+				page={1}
+				totalPages={1}
+				onPageChange={vi.fn()}
+				onSelectRun={vi.fn()}
+			/>,
+		);
+		const durationHeader = screen.getByText(/duration/i);
+		fireEvent.click(durationHeader);
+		expect(durationHeader).toBeInTheDocument();
+	});
 
-  it("TaskDetailModal ignores non-Escape keys", () => {
-    const onClose = vi.fn();
-    const task = {
-      id: "t1",
-      executor: "shell" as const,
-      command: "ls",
-      description: "d",
-      timeout: 60,
-      schedules: [],
-    };
-    render(<TaskDetailModal task={task} onClose={onClose} />);
-    fireEvent.keyDown(window, { key: "Enter" });
-    expect(onClose).not.toHaveBeenCalled();
-  });
+	it("TaskDetailModal ignores non-Escape keys", () => {
+		const onClose = vi.fn();
+		const task = {
+			id: "t1",
+			executor: "shell" as const,
+			command: "ls",
+			description: "d",
+			timeout: 60,
+			schedules: [],
+		};
+		render(<TaskDetailModal task={task} onClose={onClose} />);
+		fireEvent.keyDown(window, { key: "Enter" });
+		expect(onClose).not.toHaveBeenCalled();
+	});
 
-  it("RunDetailModal ignores non-Escape keys", () => {
-    const onClose = vi.fn();
-    const run = makeRunDetail({ id: "r1" });
-    render(
-      <RunDetailModal
-        run={run}
-        loading={false}
-        output={null}
-        outputLoading={false}
-        outputError={null}
-        onClose={onClose}
-      />,
-    );
-    fireEvent.keyDown(document, { key: "Tab" });
-    expect(onClose).not.toHaveBeenCalled();
-  });
+	it("RunDetailModal ignores non-Escape keys", () => {
+		const onClose = vi.fn();
+		const run = makeRunDetail({ id: "r1" });
+		render(
+			<RunDetailModal
+				run={run}
+				loading={false}
+				output={null}
+				outputLoading={false}
+				outputError={null}
+				onClose={onClose}
+			/>,
+		);
+		fireEvent.keyDown(document, { key: "Tab" });
+		expect(onClose).not.toHaveBeenCalled();
+	});
 
-  it("AddTaskModal ignores non-Escape keys", () => {
-    const onClose = vi.fn();
-    render(<AddTaskModal open={true} onClose={onClose} />);
-    fireEvent.keyDown(window, { key: "ArrowDown" });
-    expect(onClose).not.toHaveBeenCalled();
-  });
+	it("AddTaskModal ignores non-Escape keys", () => {
+		const onClose = vi.fn();
+		render(<AddTaskModal open={true} onClose={onClose} />);
+		fireEvent.keyDown(window, { key: "ArrowDown" });
+		expect(onClose).not.toHaveBeenCalled();
+	});
 
-  it("TaskDetailModal http executor with all fields exercises all if-branches", () => {
-    const task = {
-      id: "h1",
-      executor: "http" as const,
-      url: "https://x",
-      method: "POST",
-      headers: { A: "1" },
-      body: "{}",
-      description: "d",
-      timeout: 60,
-      schedules: [],
-      workdir: "/tmp",
-    };
-    render(<TaskDetailModal task={task} onClose={vi.fn()} />);
-    expect(screen.getByText(/HTTP Task/)).toBeInTheDocument();
-  });
+	it("TaskDetailModal http executor with all fields exercises all if-branches", () => {
+		const task = {
+			id: "h1",
+			executor: "http" as const,
+			url: "https://x",
+			method: "POST",
+			headers: { A: "1" },
+			body: "{}",
+			description: "d",
+			timeout: 60,
+			schedules: [],
+			workdir: "/tmp",
+		};
+		render(<TaskDetailModal task={task} onClose={vi.fn()} />);
+		expect(screen.getByText(/HTTP Task/)).toBeInTheDocument();
+	});
 
-  it("RunHeatmap renders given dates with cells of various counts (covers level boundaries)", () => {
-    const today = new Date().toISOString().slice(0, 10);
-    const data = [
-      { date: `${today}T00:00:00`, count: 1, success: 1, failed: 0 },
-      { date: `${today}T02:00:00`, count: 2, success: 2, failed: 0 },
-      { date: `${today}T04:00:00`, count: 5, success: 5, failed: 0 },
-      { date: `${today}T06:00:00`, count: 10, success: 10, failed: 0 },
-      { date: `${today}T08:00:00`, count: 20, success: 20, failed: 0 },
-    ];
-    render(<RunHeatmap data={data} />);
-    expect(screen.getAllByTitle(/runs/).length).toBeGreaterThan(0);
-  });
+	it("RunHeatmap renders given dates with cells of various counts (covers level boundaries)", () => {
+		const today = new Date().toISOString().slice(0, 10);
+		const data = [
+			{ date: `${today}T00:00:00`, count: 1, success: 1, failed: 0 },
+			{ date: `${today}T02:00:00`, count: 2, success: 2, failed: 0 },
+			{ date: `${today}T04:00:00`, count: 5, success: 5, failed: 0 },
+			{ date: `${today}T06:00:00`, count: 10, success: 10, failed: 0 },
+			{ date: `${today}T08:00:00`, count: 20, success: 20, failed: 0 },
+		];
+		render(<RunHeatmap data={data} />);
+		expect(screen.getAllByTitle(/runs/).length).toBeGreaterThan(0);
+	});
 
-  it("RunnerTrendChart with all-zero totals exercises max=1 fallback (point.total/max=0)", () => {
-    const data = Array.from({ length: 24 }, (_, i) => ({
-      date: `2026-01-15T${String(i).padStart(2, "0")}:00:00Z`,
-      total: 0,
-      success: 0,
-      successRate: 1,
-    }));
-    const { container } = render(<RunnerTrendChart data={data} />);
-    expect(container.querySelector("svg")).toBeInTheDocument();
-  });
+	it("RunnerTrendChart with all-zero totals exercises max=1 fallback (point.total/max=0)", () => {
+		const data = Array.from({ length: 24 }, (_, i) => ({
+			date: `2026-01-15T${String(i).padStart(2, "0")}:00:00Z`,
+			total: 0,
+			success: 0,
+			successRate: 1,
+		}));
+		const { container } = render(<RunnerTrendChart data={data} />);
+		expect(container.querySelector("svg")).toBeInTheDocument();
+	});
 
-  it("RunnerTrendChart hover on plot triggers handleMove", () => {
-    const data = Array.from({ length: 24 }, (_, i) => ({
-      date: `2026-01-15T${String(i).padStart(2, "0")}:00:00Z`,
-      total: i + 1,
-      success: i,
-      successRate: 0.9,
-    }));
-    const { container } = render(<RunnerTrendChart data={data} />);
-    const plot = container.querySelector(".cursor-crosshair") as HTMLElement;
-    if (plot) {
-      Object.defineProperty(plot, "getBoundingClientRect", {
-        value: () => ({ left: 0, top: 0, width: 200, height: 100, right: 200, bottom: 100, x: 0, y: 0, toJSON: () => "" }),
-      });
-      fireEvent.mouseMove(plot, { clientX: 100, clientY: 50 });
-      fireEvent.mouseLeave(plot);
-    }
-    expect(plot || container).toBeInTheDocument();
-  });
+	it("RunnerTrendChart hover on plot triggers handleMove", () => {
+		const data = Array.from({ length: 24 }, (_, i) => ({
+			date: `2026-01-15T${String(i).padStart(2, "0")}:00:00Z`,
+			total: i + 1,
+			success: i,
+			successRate: 0.9,
+		}));
+		const { container } = render(<RunnerTrendChart data={data} />);
+		const plot = container.querySelector(".cursor-crosshair") as HTMLElement;
+		if (plot) {
+			Object.defineProperty(plot, "getBoundingClientRect", {
+				value: () => ({
+					left: 0,
+					top: 0,
+					width: 200,
+					height: 100,
+					right: 200,
+					bottom: 100,
+					x: 0,
+					y: 0,
+					toJSON: () => "",
+				}),
+			});
+			fireEvent.mouseMove(plot, { clientX: 100, clientY: 50 });
+			fireEvent.mouseLeave(plot);
+		}
+		expect(plot || container).toBeInTheDocument();
+	});
 
-  it("RunnerTrendChart hover with invalid date shows raw fallback (line 735)", () => {
-    const data: TrendPoint[] = [
-      { date: "not-a-date", total: 5, success: 5, successRate: 1 },
-      { date: "still-not-a-date", total: 7, success: 7, successRate: 1 },
-    ];
-    const { container } = render(<RunnerTrendChart data={data} />);
-    const hoverOverlay = container.querySelector(".absolute.inset-0.z-20") as HTMLElement;
-    vi.spyOn(hoverOverlay, "getBoundingClientRect").mockReturnValue({
-      left: 0, top: 0, right: 500, bottom: 200, width: 500, height: 200,
-      x: 0, y: 0, toJSON: () => ({}),
-    } as DOMRect);
-    fireEvent.mouseMove(hoverOverlay, { clientX: 250, clientY: 100 });
-    expect(screen.getByText(/runs/)).toBeInTheDocument();
-  });
+	it("RunnerTrendChart hover with invalid date shows raw fallback (line 735)", () => {
+		const data: TrendPoint[] = [
+			{ date: "not-a-date", total: 5, success: 5, successRate: 1 },
+			{ date: "still-not-a-date", total: 7, success: 7, successRate: 1 },
+		];
+		const { container } = render(<RunnerTrendChart data={data} />);
+		const hoverOverlay = container.querySelector(".absolute.inset-0.z-20") as HTMLElement;
+		vi.spyOn(hoverOverlay, "getBoundingClientRect").mockReturnValue({
+			left: 0,
+			top: 0,
+			right: 500,
+			bottom: 200,
+			width: 500,
+			height: 200,
+			x: 0,
+			y: 0,
+			toJSON: () => ({}),
+		} as DOMRect);
+		fireEvent.mouseMove(hoverOverlay, { clientX: 250, clientY: 100 });
+		expect(screen.getByText(/runs/)).toBeInTheDocument();
+	});
 
-  it("TaskDetailModal http executor with empty headers omits headers field (line 1432)", () => {
-    const task = makeTask({
-      id: "minimal-http",
-      executor: "http",
-      url: "https://api.example.com",
-      method: "GET",
-      headers: {},
-      body: undefined,
-      command: undefined,
-    });
-    render(<TaskDetailModal task={task} onClose={vi.fn()} />);
-    expect(screen.getByText("https://api.example.com")).toBeInTheDocument();
-  });
+	it("TaskDetailModal http executor with empty headers omits headers field (line 1432)", () => {
+		const task = makeTask({
+			id: "minimal-http",
+			executor: "http",
+			url: "https://api.example.com",
+			method: "GET",
+			headers: {},
+			body: undefined,
+			command: undefined,
+		});
+		render(<TaskDetailModal task={task} onClose={vi.fn()} />);
+		expect(screen.getByText("https://api.example.com")).toBeInTheDocument();
+	});
 
-  it("TaskDetailModal http executor with no url/method/headers/body omits them (lines 1430-1433)", () => {
-    const task = makeTask({
-      id: "bare-http",
-      executor: "http",
-      url: undefined,
-      method: undefined,
-      headers: undefined,
-      body: undefined,
-      command: undefined,
-    });
-    render(<TaskDetailModal task={task} onClose={vi.fn()} />);
-    expect(screen.getByText(/HTTP Task/)).toBeInTheDocument();
-  });
+	it("TaskDetailModal http executor with no url/method/headers/body omits them (lines 1430-1433)", () => {
+		const task = makeTask({
+			id: "bare-http",
+			executor: "http",
+			url: undefined,
+			method: undefined,
+			headers: undefined,
+			body: undefined,
+			command: undefined,
+		});
+		render(<TaskDetailModal task={task} onClose={vi.fn()} />);
+		expect(screen.getByText(/HTTP Task/)).toBeInTheDocument();
+	});
 });

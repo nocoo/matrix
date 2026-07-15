@@ -4,20 +4,20 @@
 import type { ToastVariant } from "@/models/types";
 
 export function toastVariantLabel(variant: ToastVariant): string {
-  const labels: Record<ToastVariant, string> = {
-    default: "Default",
-    success: "Success",
-    error: "Error",
-    warning: "Warning",
-    info: "Info",
-  };
-  return labels[variant];
+	const labels: Record<ToastVariant, string> = {
+		default: "Default",
+		success: "Success",
+		error: "Error",
+		warning: "Warning",
+		info: "Info",
+	};
+	return labels[variant];
 }
 
 export const ALL_TOAST_VARIANTS: ToastVariant[] = [
-  "default",
-  "success",
-  "error",
-  "warning",
-  "info",
+	"default",
+	"success",
+	"error",
+	"warning",
+	"info",
 ];

@@ -4,18 +4,18 @@
 import type { Budget } from "@/models/types";
 
 interface ProgressSummary {
-  totalSpent: number;
-  totalLimit: number;
-  remaining: number;
+	totalSpent: number;
+	totalLimit: number;
+	remaining: number;
 }
 
 export function computeProgressSummary(items: Budget[]): ProgressSummary {
-  const totalSpent = items.reduce((sum, item) => sum + item.spent, 0);
-  const totalLimit = items.reduce((sum, item) => sum + item.limit, 0);
-  return { totalSpent, totalLimit, remaining: totalLimit - totalSpent };
+	const totalSpent = items.reduce((sum, item) => sum + item.spent, 0);
+	const totalLimit = items.reduce((sum, item) => sum + item.limit, 0);
+	return { totalSpent, totalLimit, remaining: totalLimit - totalSpent };
 }
 
 export function computeProgressPercent(current: number, target: number): number {
-  if (target === 0) return 0;
-  return (current / target) * 100;
+	if (target === 0) return 0;
+	return (current / target) * 100;
 }
