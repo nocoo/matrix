@@ -5,6 +5,54 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-07-16
+
+### Fixed
+
+- **Command palette autofocus**: `ControlsPage` Cmd+K palette lost `autoFocus`
+  during the biome migration and had no ref/effect replacement, so opening the
+  palette left focus on the trigger. Added a ref + effect gated on
+  `vm.commandOpen`, mirroring the same fix already applied to `SearchDialog`.
+- **ActivityHeatmap keyboard access**: the scroll region's `tabIndex={0}` was
+  stripped by biome's unsafe pass, breaking WCAG 2.1.1 for users without a
+  scroll wheel. Restored `tabIndex`, added an `onKeyDown` handler that maps
+  Arrow / Page / Home / End to horizontal scroll, and added a `biome-ignore`
+  for the intentional `noNoninteractiveTabindex` exemption.
+- **Avatar fallback stuck after URL swap**: `IdentityCard`'s reset effect had
+  its dep array emptied by an autofix; feeding a new avatar URL after a
+  failure kept showing the fallback `MatrixAvatar`. Restored `[safeAvatarUrl]`
+  with an explicit `biome-ignore` so the intent survives future rewrites.
+- **Vitest thresholds**: earlier release dropped all four metrics to 94, which
+  masked 3.6–5.7 pp of headroom on statements/functions/lines. Tightened back
+  to 95 across the board except `branches` (94, sitting ~1 pp under the actual
+  95.2).
+
+### Added
+
+- Regression tests covering the three fixes above:
+  * `DashboardLayout.test.tsx`: Cmd+K focuses the search input.
+  * `VibeComponents.test.tsx`: swapping avatar URL after an image error
+    remounts the `<img>` instead of sticking on the fallback.
+  * `DataVizComponents.test.tsx`: ActivityHeatmap exposes `role="region"` +
+    `tabIndex="0"` and survives Arrow/Page/Home/End/Tab keys without throwing.
+  * `ControlsPage.command-palette.test.tsx`: the palette input receives focus
+    when `vm.commandOpen` flips true.
+
+### Changed
+
+- `README.md`: hooks table + feature bullet now reflect actual pre-commit
+  (typecheck + lint + test + gitleaks) and pre-push (build + coverage + lint
+  + osv-scanner) gates instead of the truncated `test` / `test + lint`
+  description; dropped stale test counts and non-existent `models/` /
+  `viewmodels/` / `pages/` test subdirectories from the tree diagram and
+  Test Structure table; tech-stack table now advertises TypeScript 7 / Vite 8;
+  "Run tests" snippets use `bun run test` instead of a bare `vitest run`.
+- `CLAUDE.md`: hooks description synced with the actual scripts; release-
+  checklist verification uses `bun run test`.
+- `osv-scanner.toml`: dropped ignored-vuln entries referencing the deleted
+  ESLint toolchain.
+- `react-i18next` 17.0.9 → 17.0.10 (dependabot, merged from `main`).
+
 ## [1.2.1] - 2026-07-15
 
 ### Changed
