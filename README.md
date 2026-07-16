@@ -18,7 +18,7 @@ A cyberpunk dashboard UI kit with 40+ components, 27 pages, and a strict MVVM ar
 - **Strict MVVM Architecture** — Models (pure logic, zero React), ViewModels (hooks), Pages (pure UI)
 - **27 Pages** — Dashboard, 9 Controls pages, Accounts, Cards, Records, Life.ai, Component Showcase, and more
 - **Matrix Design System** — Custom Tailwind v4 theme with `matrix-primary`, `matrix-bright`, `matrix-muted`, `matrix-dim`, panel tokens, and glow effects
-- **768 Tests** — 56 test files covering every model, viewmodel, page, and component
+- **Tested where it matters** — Vitest suites cover the reusable UI components (`src/components/ui/`) and utility functions (`src/lib/`); models, viewmodels, and pages are treated as template scaffolding and left uncovered by design
 - **Quality Gates** — Husky pre-commit (typecheck + lint + tests + gitleaks) and pre-push (build + coverage + lint + osv-scanner) hooks
 - **Single Dark Theme** — No light mode. Sharp corners only. Maximalist cyberpunk aesthetic
 
@@ -89,11 +89,8 @@ src/
 │   ├── date.ts              # Date utilities
 │   └── format.ts            # Formatting utilities
 └── test/
-    ├── models/              # 15 test files
-    ├── viewmodels/          # 12 test files
-    ├── pages/               # 18 test files
-    ├── components/          # 7 test files
-    └── lib/                 # 3 test files
+    ├── components/          # UI component tests (rendering + interaction)
+    └── lib/                 # Utility function tests (date, format, palette, ...)
 ```
 
 ## Architecture
@@ -218,14 +215,14 @@ The sidebar is organized into 5 groups with 27 items:
 ### Running Tests
 
 ```bash
-# Run all 768 tests
+# Run all tests
 vitest run
 
 # Run with coverage report
 bun run test:coverage
 
 # Run a single file
-bun run test src/test/pages/DashboardPage.test.tsx
+bun run test src/test/components/MatrixButton.test.tsx
 
 # Lint
 bun run lint
@@ -233,15 +230,14 @@ bun run lint
 
 ### Test Structure
 
-Tests mirror the source directory layout under `src/test/`:
+Only reusable primitives are covered — models, viewmodels, and pages are
+template scaffolding and are deliberately not tested. Tests live under
+`src/test/`:
 
-| Directory | Files | Description |
-|-----------|-------|-------------|
-| `test/models/` | 15 | Pure function tests — no DOM, no React |
-| `test/viewmodels/` | 12 | Hook tests using `renderHook` |
-| `test/pages/` | 18 | Page smoke tests with mocked viewmodels |
-| `test/components/` | 7 | Component rendering and interaction tests |
-| `test/lib/` | 3 | Utility function tests (date, format, matrix-utils) |
+| Directory | Description |
+|-----------|-------------|
+| `test/components/` | UI component rendering and interaction tests |
+| `test/lib/` | Utility function tests (date, format, palette, matrix-utils, ...) |
 
 ### Git Hooks (Husky 9)
 
@@ -252,7 +248,8 @@ Tests mirror the source directory layout under `src/test/`:
 
 ### Writing Tests
 
-Page tests mock the corresponding viewmodel using `vi.hoisted()` for mutable state:
+Component tests that need viewmodel state (e.g. flipping a modal open) mock
+the viewmodel with `vi.hoisted()` for mutable references:
 
 ```tsx
 const mockState = vi.hoisted(() => ({
