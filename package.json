@@ -26,7 +26,7 @@
     "postcss": "^8.5.19",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
-    "react-i18next": "17.0.9",
+    "react-i18next": "17.0.10",
     "react-router": "8.2.0",
     "rollup": "4.62.2",
     "tailwind-merge": "3.6.0",
