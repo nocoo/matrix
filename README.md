@@ -19,7 +19,7 @@ A cyberpunk dashboard UI kit with 40+ components, 27 pages, and a strict MVVM ar
 - **27 Pages** — Dashboard, 9 Controls pages, Accounts, Cards, Records, Life.ai, Component Showcase, and more
 - **Matrix Design System** — Custom Tailwind v4 theme with `matrix-primary`, `matrix-bright`, `matrix-muted`, `matrix-dim`, panel tokens, and glow effects
 - **768 Tests** — 56 test files covering every model, viewmodel, page, and component
-- **Quality Gates** — Husky pre-commit (tests) and pre-push (tests + lint) hooks
+- **Quality Gates** — Husky pre-commit (typecheck + lint + tests + gitleaks) and pre-push (build + coverage + lint + osv-scanner) hooks
 - **Single Dark Theme** — No light mode. Sharp corners only. Maximalist cyberpunk aesthetic
 
 ## Tech Stack
@@ -247,8 +247,8 @@ Tests mirror the source directory layout under `src/test/`:
 
 | Hook | Runs | Purpose |
 |------|------|---------|
-| **pre-commit** | `bun run test` | All unit tests must pass before committing |
-| **pre-push** | `bun run test && bun run lint` | Full test suite + Biome must pass before pushing |
+| **pre-commit** | `bun run typecheck && bun run lint && bun run test && gitleaks protect --staged` | Static analysis + unit tests + secret scan must pass before committing |
+| **pre-push** | `bun run build && bun run test:coverage && bun run lint && osv-scanner scan --lockfile=bun.lock` | Build + coverage gate + Biome + dependency vuln scan must pass before pushing |
 
 ### Writing Tests
 
