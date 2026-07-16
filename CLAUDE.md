@@ -68,7 +68,7 @@ consumers derive from it at build time:
 
 1. **Bump version** in `package.json`
 2. **Update `CHANGELOG.md`** — add a new `## [x.y.z] - YYYY-MM-DD` section
-3. **Run full verification**: `bun run lint && bun run build && bunx vitest run`
+3. **Run full verification**: `bun run lint && bun run build && bun run test`
 4. **Commit**: `chore: release vX.Y.Z`
 5. **Tag**: `git tag -a vX.Y.Z -m "vX.Y.Z"`
 6. **Push**: `git push && git push --tags`
