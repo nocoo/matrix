@@ -53,6 +53,9 @@
 	"trustedDependencies": [
 		"@biomejs/biome"
 	],
+	"overrides": {
+		"postcss": "^8.5.22"
+	},
 	"lint-staged": {
 		"*.{ts,tsx,js,jsx,json,css}": [
 			"biome check --error-on-warnings --no-errors-on-unmatched"
