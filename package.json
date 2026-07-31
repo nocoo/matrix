@@ -31,7 +31,7 @@
 		"react-router": "8.3.0",
 		"rollup": "4.62.3",
 		"tailwind-merge": "3.6.0",
-		"undici": "^8.8.0"
+		"undici": "^8.9.0"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.5.6",
