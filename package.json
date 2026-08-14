@@ -54,6 +54,7 @@
 		"@biomejs/biome"
 	],
 	"overrides": {
+		"nanoid": "^3.3.18",
 		"postcss": "^8.5.26"
 	},
 	"lint-staged": {
