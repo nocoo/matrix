@@ -23,7 +23,7 @@
 		"i18next": "26.4.0",
 		"i18next-browser-languagedetector": "^8.2.1",
 		"lucide-react": "1.33.0",
-		"picomatch": "^4.0.5",
+		"picomatch": "4.0.7",
 		"postcss": "^8.5.26",
 		"react": "^19.2.8",
 		"react-dom": "^19.2.8",
