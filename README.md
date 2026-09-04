@@ -32,7 +32,7 @@ A cyberpunk dashboard UI kit with 40+ components, 27 pages, and a strict MVVM ar
 | Styling | [Tailwind CSS v4](https://tailwindcss.com) |
 | Language | [TypeScript 7](https://www.typescriptlang.org) (strict mode) |
 | Bundler | [Vite 8](https://vite.dev) |
-| Testing | [Vitest 4](https://vitest.dev) + Testing Library |
+| Testing | [Vitest 5](https://vitest.dev) + Testing Library |
 | Linting | [Biome 2](https://biomejs.dev) |
 | Hooks | [Husky 9](https://typicode.github.io/husky) |
 | Icons | [Lucide React](https://lucide.dev) |
