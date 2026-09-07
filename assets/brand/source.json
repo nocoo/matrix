@@ -1,0 +1,57 @@
+{
+	"study": "matrix/2026-09-07-01",
+	"finishing": "01",
+	"series": "material",
+	"method": "generated",
+	"model": "gpt-image-2",
+	"generationCalls": 1,
+	"nativeDimensions": [2048, 2048],
+	"sourceRevisionBefore": "2bcf6562952d81010a8d14c10061bbd9dfb3f4e1",
+	"previous": {
+		"kind": "emoji",
+		"original": "/logos/emoji/matrix.png",
+		"sourcePath": "nocoo/nocoo README.md — existing project emoji",
+		"sourceUrl": "https://github.com/nocoo/nocoo/blob/9a7ad63e1e96428f9dcd12214bcdbd470b3b51c6/README.md",
+		"modified": false,
+		"width": 1024,
+		"height": 1024,
+		"bytes": 354520,
+		"sha256": "21d9c4ed49bedc6010a787ae1a16c2b7e982be264dc5c3e446a2fe9ad122e8b3",
+		"thumbnail": "/logos/display/matrix-160.webp",
+		"display": "/logos/display/matrix-1024.webp"
+	},
+	"masters": {
+		"logo.png": {
+			"sha256": "f9490707d630bdaed3f8891082e46e3315fa1e2c7be89e63f6994b633de3aaf8",
+			"width": 2048,
+			"height": 2048
+		},
+		"assets/brand/icon.png": {
+			"sha256": "cfca56f6199c4e5eee4f6e1eae1a0868bbaf6283cf6b32e23e1c8bfb23c559db",
+			"width": 2048,
+			"height": 2048
+		},
+		"assets/brand/icon-rounded.png": {
+			"sha256": "32718620d15e7435f15c853ea88b796370d44b958b6512fc336c42bb61e27d7e",
+			"width": 2048,
+			"height": 2048
+		},
+		"assets/brand/background.png": {
+			"sha256": "210f6f50a60ac97ec296fda48f20df7bf8c22f4d8d5a26f98259763eb9591f76",
+			"width": 2048,
+			"height": 2048
+		}
+	},
+	"roundedClearancePx": 268.50000000000006,
+	"acceptance": {
+		"decisionSource": "owner-delegated batch acceptance",
+		"ownerReviewedExactBytes": false,
+		"scope": "Dotty, Matrix and Basalt material batch; Basalt follows the owner-directed architectural revision."
+	},
+	"review": "https://hexly.ai/logos/matrix",
+	"archive": "https://github.com/nocoo/hexly.ai/tree/main/artwork/logo-family/matrix/2026-09-07-01",
+	"generation": {
+		"path": "raw/generated.png",
+		"sha256": "d6d796220a394219bb4ee8efb048376bf08cd7c5840a1a31a38155aeb98033bb"
+	}
+}

@@ -1,6 +1,7 @@
 import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
+import { MatrixLogo } from "@/components/MatrixLogo";
 
 // ============================================
 // MatrixAvatar - Procedural avatar generator
@@ -850,6 +851,7 @@ export function BootScreen({ onSkip }: BootScreenProps) {
 			role={canSkip ? "button" : undefined}
 			tabIndex={canSkip ? 0 : undefined}
 		>
+			<MatrixLogo className="mb-3 h-24 w-24" />
 			<pre className="text-caption leading-[1.2] mb-6 text-matrix-muted select-none">
 				{asciiArt}
 			</pre>

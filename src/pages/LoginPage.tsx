@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { MatrixLogo } from "@/components/MatrixLogo";
 import { AsciiBox } from "@/components/ui/AsciiBox";
 import { MatrixButton } from "@/components/ui/MatrixButton";
 import {
@@ -91,17 +92,8 @@ export default function LoginPage() {
 
 				<AsciiBox title="SYSTEM ACCESS" subtitle="AUTH-V7.2">
 					<div className="space-y-5">
-						{/* ASCII logo + title */}
 						<div className="text-center space-y-2">
-							<pre className="text-[8px] leading-[1.15] text-matrix-primary/60 select-none font-mono">
-								{`
- ██████╗██╗   ██╗██████╗ ██████╗
-██╔════╝╚██╗ ██╔╝██╔══██╗██╔══██╗
-██║      ╚████╔╝ ██████╔╝██████╔╝
-██║       ╚██╔╝  ██╔══██╗██╔═══╝
-╚██████╗   ██║   ██████╔╝██║
- ╚═════╝   ╚═╝   ╚═════╝ ╚═╝`.trim()}
-							</pre>
+							<MatrixLogo className="mx-auto h-24 w-24" />
 							<ScrambleText
 								text="MATRIX AUTHENTICATION GATEWAY"
 								className="font-mono text-sm text-matrix-primary font-bold tracking-[0.2em] block glow-text"

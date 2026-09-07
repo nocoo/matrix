@@ -1,0 +1,113 @@
+{
+	"generator": "scripts/generate-brand.py",
+	"pillow": "12.3.0",
+	"study": "matrix/2026-09-07-01",
+	"finishing": "01",
+	"icoSizes": [16, 24, 32, 48, 64],
+	"files": [
+		{
+			"path": "public/logo-24.png",
+			"role": "transparent application mark",
+			"sha256": "2652554ec21293890e940ed264fff909cf0bf207db3213930fee451809661db3",
+			"width": 24,
+			"height": 24
+		},
+		{
+			"path": "public/logo-32.png",
+			"role": "transparent application mark",
+			"sha256": "13610fbd6f346a420f9cc9b34e44add06a3b2431d0458c5db75aba556bd06af7",
+			"width": 32,
+			"height": 32
+		},
+		{
+			"path": "public/logo-48.png",
+			"role": "transparent application mark",
+			"sha256": "1882be819c85295320111c9f80db8dbaf78c723d287ee872366d2a19b0bf633e",
+			"width": 48,
+			"height": 48
+		},
+		{
+			"path": "public/logo-64.png",
+			"role": "transparent application mark",
+			"sha256": "da9cbd9b97b1088ee6a33894e247cc46dd6b5a0ce668761567b62f48fc265179",
+			"width": 64,
+			"height": 64
+		},
+		{
+			"path": "public/logo-80.png",
+			"role": "transparent application mark",
+			"sha256": "a3406fe6d965448c51222eeb56dc9080fb5487203cfed8eb9a103770f3714fe9",
+			"width": 80,
+			"height": 80
+		},
+		{
+			"path": "public/logo-128.png",
+			"role": "transparent application mark",
+			"sha256": "6cccb757e4fd3ff163ee59c031944be0fa9df080ddd4b1633ded1525109730f1",
+			"width": 128,
+			"height": 128
+		},
+		{
+			"path": "public/logo-256.png",
+			"role": "transparent application mark",
+			"sha256": "f138b26d1025875baa376682f94e68f0c869a16cc025964324984521bb610bbc",
+			"width": 256,
+			"height": 256
+		},
+		{
+			"path": "public/favicon.png",
+			"role": "transparent browser mark",
+			"sha256": "13610fbd6f346a420f9cc9b34e44add06a3b2431d0458c5db75aba556bd06af7",
+			"width": 32,
+			"height": 32
+		},
+		{
+			"path": "public/favicon.ico",
+			"role": "transparent browser mark",
+			"sha256": "481c31b24914fcf79342bb3f34dc053c01f0e0666ff30d14a30fd0e461ed2663",
+			"width": 64,
+			"height": 64,
+			"entries": [
+				{
+					"width": 16,
+					"height": 16,
+					"alphaExtrema": [0, 255]
+				},
+				{
+					"width": 24,
+					"height": 24,
+					"alphaExtrema": [0, 255]
+				},
+				{
+					"width": 32,
+					"height": 32,
+					"alphaExtrema": [0, 255]
+				},
+				{
+					"width": 48,
+					"height": 48,
+					"alphaExtrema": [0, 255]
+				},
+				{
+					"width": 64,
+					"height": 64,
+					"alphaExtrema": [0, 255]
+				}
+			]
+		},
+		{
+			"path": "public/apple-touch-icon.png",
+			"role": "opaque square platform presentation",
+			"sha256": "2071c926f3b1ec7968d1d5eb3e5ef9254e88a572ae22e572bccf26c49761bdec",
+			"width": 180,
+			"height": 180
+		},
+		{
+			"path": "public/opengraph-image.png",
+			"role": "large rounded presentation on its own field",
+			"sha256": "e41c3c713b0203cd62c1df85595dade2351952ed8e52e633fb63983bc24f6ac1",
+			"width": 1200,
+			"height": 630
+		}
+	]
+}

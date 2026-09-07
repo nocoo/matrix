@@ -39,6 +39,7 @@ import { Outlet, useLocation, useNavigate } from "react-router";
 import sidebarBg from "@/assets/bg.jpg";
 import { Github } from "@/components/icons/github";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { MatrixLogo } from "@/components/MatrixLogo";
 import { cn } from "@/lib/utils";
 
 // -- Navigation data model --
@@ -365,6 +366,7 @@ export function DashboardLayout() {
 			{/* Header */}
 			<div className="relative z-10 flex h-12 items-center justify-between px-4">
 				<div className="flex items-center">
+					<MatrixLogo className="mr-2 h-7 w-7 shrink-0" />
 					<span className="font-mono text-sm font-bold uppercase tracking-widest text-matrix-primary glow-text">
 						[MATRIX]
 					</span>
