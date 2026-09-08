@@ -1,298 +1,107 @@
 <p align="center">
-  <img src="assets/brand/icon-rounded.png" alt="Matrix" width="128" height="128" />
+  <img src="assets/brand/icon-rounded.png" width="128" height="128" alt="Matrix" />
 </p>
 
-# Matrix
+<h1 align="center">Matrix</h1>
 
-**The fine-grained substrate for your digital reality.**
+<p align="center">为数据看板提供绿黑配色的控件、图表和页面模板。</p>
 
-A cyberpunk dashboard UI kit with 40+ components, 27 pages, and a strict MVVM architecture — built with React 19, Tailwind CSS v4, and TypeScript.
+<p align="center">
+  <a href="https://matrix.hexly.ai">站点</a> ·
+  <a href="docs/README.en.md">English</a>
+</p>
 
-> Green-on-black. ASCII borders. Scanlines. Monospace everything. If _The Matrix_ had a SaaS dashboard, it would look like this.
+## 这是什么
 
-![Matrix Dashboard](https://s.zhe.to/dcd0e6e42358/20260214/e292e1e7-55c4-42f7-8c07-83356c7ed20b.jpg)
+Matrix 是以终端界面和 Matrix 视觉风格为参考的 React UI 示例集。绿黑配色、等宽字体、ASCII 边框与动态字符组成统一的看板样式，适合复用到管理界面、个人数据页或产品原型。
 
-**[Live Preview →](https://matrix.hexly.ai)**
+仓库运行的是静态 SPA，账户、交易、健康和任务面板使用模拟数据。登录页和运行状态用于展示界面，不连接身份认证、金融账户、健康数据或真实任务调度服务。
 
-The logo is a floating black-and-emerald mothership deck with layered circuitry and a small live arc. Its pale engineering field is reserved for large presentations; the sidebar, login, loading mark and browser favicon use the transparent foreground. [Logo comparison](https://hexly.ai/logos/matrix) · [Brand assets and usage](assets/brand/README.md).
+## 功能
 
----
+- 使用 AsciiBox、MatrixButton、MatrixInput、MatrixSelect 和 MatrixShell 组合页面与交互控件。
+- 展示表单、表格、导航、弹层、通知、标签和确认流程。
+- 提供趋势图、迷你折线、年度热力图、指标面板和任务运行记录的界面示例。
+- 使用 Canvas 字符雨、文字解码、打字机效果和启动序列构建动态页面。
+- 浏览账户、卡片、流水、预算、投资组合与 Life.ai 健康看板模板。
+- 支持中英文切换，提供主题色板参考；目前仅有深色主题。
 
-## Features
+## 使用
 
-- **40+ UI Components** — AsciiBox, MatrixButton, MatrixShell, MatrixRain, BootScreen, Sparkline, TrendMonitor, ActivityHeatmap, NeuralDivergenceMap, IdentityCard, MatrixClock, and more
-- **Strict MVVM Architecture** — Models (pure logic, zero React), ViewModels (hooks), Pages (pure UI)
-- **27 Pages** — Dashboard, 9 Controls pages, Accounts, Cards, Records, Life.ai, Component Showcase, and more
-- **Matrix Design System** — Custom Tailwind v4 theme with `matrix-primary`, `matrix-bright`, `matrix-muted`, `matrix-dim`, panel tokens, and glow effects
-- **Tested where it matters** — Vitest suites cover the reusable UI components (`src/components/ui/`) and utility functions (`src/lib/`); models, viewmodels, and pages are treated as template scaffolding and left uncovered by design
-- **Quality Gates** — Husky pre-commit (typecheck + lint + tests + gitleaks) and pre-push (build + coverage + lint + osv-scanner) hooks
-- **Single Dark Theme** — No light mode. Sharp corners only. Maximalist cyberpunk aesthetic
+打开[在线示例](https://matrix.hexly.ai)，从侧栏查看控件和页面。
 
-## Tech Stack
+| 示例 | 路由 |
+| --- | --- |
+| Dashboard 与组件集合 | `/`、`/component-showcase` |
+| 控件、按钮、表单、表格 | `/controls`、`/buttons`、`/forms`、`/tables` |
+| 反馈、弹层、导航、标签 | `/feedback`、`/overlays`、`/navigation`、`/pills` |
+| 账户、卡片、流水、进度 | `/accounts`、`/card-showcase`、`/records`、`/progress-tracking` |
+| 图表与健康示例 | `/stats`、`/flow-comparison`、`/portfolio`、`/life-ai` |
+| 配色与设置 | `/palette`、`/settings` |
 
-| Layer | Technology |
-|-------|-----------|
-| Runtime | [Bun](https://bun.sh) |
-| Framework | [React 19](https://react.dev) |
-| Routing | [React Router v7](https://reactrouter.com) |
-| Styling | [Tailwind CSS v4](https://tailwindcss.com) |
-| Language | [TypeScript 7](https://www.typescriptlang.org) (strict mode) |
-| Bundler | [Vite 8](https://vite.dev) |
-| Testing | [Vitest 5](https://vitest.dev) + Testing Library |
-| Linting | [Biome 2](https://biomejs.dev) |
-| Hooks | [Husky 9](https://typicode.github.io/husky) |
-| Icons | [Lucide React](https://lucide.dev) |
+主要可复用控件在 [src/components/ui/](src/components/ui/)。主题由 [src/index.css](src/index.css) 中的 Tailwind CSS 变量定义，使用 `text-matrix-primary`、`bg-matrix-panel` 等类名。矩形容器保持直角，圆点与头像可以使用圆形。
 
-## Quick Start
+将模板用于业务应用时，替换 `src/data/mock.ts` 及组件内示例数据，并提供自己的数据访问和认证逻辑。示例代码按 `models/`、`viewmodels/` 和 `pages/` 组织计算、状态与页面。
+
+## 开发
+
+使用 Bun；Node.js 建议采用 24 或更新版本。
 
 ```bash
-# Clone
 git clone https://github.com/nocoo/matrix.git
 cd matrix
-
-# Install dependencies
-bun install
-
-# Start dev server (port 7013)
-bun dev
-
-# Run tests
-bun run test
-
-# Build for production
-bun run build
-
-# Lint
-bun run lint
+bun install --frozen-lockfile
+bun run dev
 ```
 
-Open [http://localhost:7013](http://localhost:7013) to see the dashboard.
-
-## Project Structure
-
-```
-src/
-├── components/
-│   ├── ui/                  # 40+ reusable UI components
-│   │   ├── AsciiBox.tsx         # Box-drawing container
-│   │   ├── MatrixButton.tsx     # Polymorphic button (3 sizes, primary, loading)
-│   │   ├── MatrixShell.tsx      # Page shell with MatrixRain background
-│   │   ├── MatrixExtras.tsx     # 13 components (Avatar, Scramble, Sparkline...)
-│   │   ├── DataVizComponents.tsx # TrendMonitor, ActivityHeatmap, TrendChart
-│   │   ├── VibeComponents.tsx   # 12 business panels (Identity, Fleet, Leaderboard...)
-│   │   ├── RunnerComponents.tsx # 9 task runner components (Clock, Schedule, Heatmap...)
-│   │   └── Toast.tsx            # Toast notification
-│   └── DashboardLayout.tsx  # Sidebar nav + header + Outlet
-├── models/                  # Pure functions & types (zero React)
-├── viewmodels/              # React hooks composing models + state
-├── pages/                   # 27 page components (pure UI)
-│   └── controls/            # 9 Controls pages (Controls, Buttons, Feedback...)
-├── data/
-│   └── mock.ts              # Centralized mock data
-├── lib/
-│   ├── utils.ts             # cn() utility
-│   ├── palette.ts           # Chart color palette
-│   ├── date.ts              # Date utilities
-│   └── format.ts            # Formatting utilities
-└── test/
-    ├── components/          # UI component tests (rendering + interaction)
-    └── lib/                 # Utility function tests (date, format, palette, ...)
-```
-
-## Architecture
-
-Matrix follows a strict **MVVM (Model-View-ViewModel)** pattern:
-
-```
-┌──────────────┐     ┌──────────────────┐     ┌──────────────┐
-│    Model      │────>│    ViewModel     │────>│     Page     │
-│  (pure logic) │     │  (React hooks)   │     │  (pure UI)   │
-│  zero React   │     │  useMemo, state  │     │  consumes VM │
-└──────────────┘     └──────────────────┘     └──────────────┘
-```
-
-- **Models** — Pure TypeScript functions and types. No React imports. Testable in isolation.
-- **ViewModels** — React hooks that compose models with `useMemo`, `useState`, `useCallback`. One hook per page.
-- **Pages** — Pure rendering. All data and callbacks come from the viewmodel. Zero business logic.
-
-## Component Library
-
-### Foundation
-| Component | Description |
-|-----------|-------------|
-| `AsciiBox` | Box-drawing container with title/subtitle/headerRight |
-| `MatrixButton` | Polymorphic button — 3 sizes, primary variant, loading state |
-| `MatrixShell` | Full-page shell with MatrixRain background and scanlines |
-| `MatrixInput` | Styled input field with label |
-| `MatrixSelect` | Portal-based custom dropdown (no native select) |
-| `SignalBox` | Alternative container with decode title effect |
-| `FloatingPortal` | Portal-based floating panel for dropdowns/popovers |
-
-### Data Display
-| Component | Description |
-|-----------|-------------|
-| `DataRow` | Key-value row with optional sub-value |
-| `Sparkline` | Inline SVG mini chart |
-| `TrendMonitor` | Smooth curve chart with tooltip |
-| `TrendChart` | Simple bar chart with peak detection |
-| `ActivityHeatmap` | GitHub-style yearly heatmap |
-| `RunHeatmap` | 30-day x 8-slot execution heatmap |
-
-### Effects & Animation
-| Component | Description |
-|-----------|-------------|
-| `MatrixRain` | Canvas-rendered falling digital rain |
-| `BootScreen` | ASCII art boot/loading sequence |
-| `ScrambleText` | Progressive character scramble reveal |
-| `DecodingText` | Random character decode effect |
-| `TypewriterText` | Classic typewriter with cursor |
-| `LiveSniffer` | Animated log stream |
-
-### Business Panels
-| Component | Description |
-|-----------|-------------|
-| `IdentityPanel` / `IdentityCard` | User identity display with rank and stats |
-| `TopModelsPanel` | AI model usage ranking |
-| `LeaderboardPanel` / `LeaderboardRow` | Ranked leaderboard |
-| `UsagePanel` | Usage statistics with summary layout |
-| `NeuralAdaptiveFleet` | Provider usage bar chart |
-| `NeuralDivergenceMap` | Multi-provider fleet comparison |
-| `CostAnalysisModal` | Cost breakdown modal |
-
-### Runner
-| Component | Description |
-|-----------|-------------|
-| `MatrixClock` | Animated digital clock with flip effect |
-| `TaskSchedule` | Cron task list with trigger buttons |
-| `RunHistory` | Paginated run history table |
-| `UpcomingTasks` | Countdown to next scheduled runs |
-| `RunDetailModal` / `TaskDetailModal` | Detail modals |
-
-## Pages
-
-### Sidebar Navigation
-
-The sidebar is organized into 5 groups with 27 items:
-
-**BLOCKS** — Dashboard, Accounts, Cards, Records, Progress, Life.ai, Components
-
-**CONTROLS** — Controls, Buttons, Feedback, Overlays, Data, Navigation, Forms, Tables, Pills
-
-**CHARTS** — Stats, Flows, Portfolio
-
-**PAGES** — Login, Static, Loading, 404
-
-**SYSTEM** — Help, Palette, Interactions, Settings
-
-### Route Map
-
-| Route | Page | Description |
-|-------|------|-------------|
-| `/` | Dashboard | System status, clock, identity, signal monitor, pixel heatmap, targets, accounts, budget, trend, cash flow, activity |
-| `/accounts` | Accounts | Account balances and changes |
-| `/card-showcase` | Cards | Credit card display with flip animations |
-| `/records` | Records | Transaction list with filtering |
-| `/progress-tracking` | Progress | Budget progress bars |
-| `/stats` | Stats | Statistical charts and breakdowns |
-| `/flow-comparison` | Flows | Income vs expense comparison |
-| `/portfolio` | Portfolio | Investment allocation |
-| `/life-ai` | Life.ai | Health tracking with heatmap |
-| `/component-showcase` | Components | Every UI component demonstrated |
-| `/controls` | Controls | Master controls overview |
-| `/buttons` | Buttons | Button variants and states |
-| `/feedback` | Feedback | Alerts, toasts, progress indicators |
-| `/overlays` | Overlays | Modals, popovers, dropdowns |
-| `/data-display` | Data | Badges, avatars, lists, tables |
-| `/navigation` | Navigation | Tabs, breadcrumbs, pagination, menus |
-| `/forms` | Forms | Inputs, selects, checkboxes, sliders, toggles |
-| `/tables` | Tables | Data tables with sorting and selection |
-| `/pills` | Pills | Tags, badges, status pills |
-| `/help` | Help | FAQ accordion |
-| `/palette` | Palette | Design token reference |
-| `/interactions` | Interactions | Toast and dialog demos |
-| `/settings` | Settings | User preferences |
-| `/login` | Login | Maximalist cyberpunk login with MatrixRain background |
-| `/static-page` | Static | Static content template |
-| `/loading` | Loading | Loading state template |
-| `*` | 404 | Not found |
-
-## Testing
-
-### Running Tests
+开发地址为 `http://localhost:7013`，不需要后端账号或环境变量。
 
 ```bash
-# Run all tests
-bun run test
-
-# Run with coverage report
-bun run test:coverage
-
-# Run a single file
-bun run test src/test/components/MatrixButton.test.tsx
-
-# Lint
+bun run typecheck
 bun run lint
+bun run build
+bun run preview
 ```
 
-### Test Structure
+静态产物在 `dist/`。部署时为 React Router 配置 `index.html` 回退；[wrangler.toml](wrangler.toml)已提供 Cloudflare Workers 静态资源配置。`/api/live` 是 Vite 开发服务器的状态接口，生产静态站不提供该 API。
 
-Only reusable primitives are covered — models, viewmodels, and pages are
-template scaffolding and are deliberately not tested. Tests live under
-`src/test/`:
+## 测试
 
-| Directory | Description |
-|-----------|-------------|
-| `test/components/` | UI component rendering and interaction tests |
-| `test/lib/` | Utility function tests (date, format, palette, matrix-utils, ...) |
+| 测试层 | 命令 |
+| --- | --- |
+| 单元与组件测试 | `bun run test` |
+| 开发时持续运行 | `bun run test:watch` |
 
-### Git Hooks (Husky 9)
+运行单个测试文件：
 
-| Hook | Runs | Purpose |
-|------|------|---------|
-| **pre-commit** | `bun run typecheck && bun run lint && bun run test && gitleaks protect --staged` | Static analysis + unit tests + secret scan must pass before committing |
-| **pre-push** | `bun run build && bun run test:coverage && bun run lint && osv-scanner scan --lockfile=bun.lock` | Build + coverage gate + Biome + dependency vuln scan must pass before pushing |
-
-### Writing Tests
-
-Component tests that need viewmodel state (e.g. flipping a modal open) mock
-the viewmodel with `vi.hoisted()` for mutable references:
-
-```tsx
-const mockState = vi.hoisted(() => ({
-  items: [{ id: 1, name: "test" }],
-}));
-
-vi.mock("@/viewmodels/useFooViewModel", () => ({
-  useFooViewModel: () => mockState,
-}));
-
-beforeEach(() => {
-  mockState.items = [{ id: 1, name: "reset" }];
-});
+```bash
+bun run test src/test/components/MatrixButton.test.tsx
 ```
 
-> **Why `vi.hoisted()`?** — `vi.mock` factories are hoisted at compile time. Regular variables declared after the mock are not yet initialized when the factory runs. `vi.hoisted()` creates a reference available at hoist time that can be mutated in `beforeEach`.
+测试使用 Vitest、jsdom 和 Testing Library。可用 `bun run test:coverage` 查看可复用 UI 组件与 `src/lib/` 工具函数的报告；当前没有独立的 API 或浏览器端到端测试入口。
 
-## Design Tokens
+## 技术栈
 
-Matrix uses a custom Tailwind v4 theme with CSS custom properties:
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
+![React](https://img.shields.io/badge/React-149ECA?logo=react&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?logo=tailwindcss&logoColor=white)
 
-```css
---matrix-primary:      #00FF41   /* The green */
---matrix-bright:       #B0FFB0   /* High emphasis */
---matrix-muted:        #00CC33   /* Body text */
---matrix-dim:          #008822   /* Subtle text */
---matrix-bg:           #050505   /* Background */
---matrix-panel:        rgba(0, 255, 65, 0.03)
---matrix-panel-strong: rgba(0, 255, 65, 0.06)
-```
+| 部分 | 实现 |
+| --- | --- |
+| 应用与路由 | React、TypeScript、React Router |
+| 视觉与图表 | Tailwind CSS、原生 SVG / Canvas、Lucide |
+| 国际化 | i18next、react-i18next |
+| 开发与托管 | Vite / SWC、Bun、Biome、Vitest、Testing Library、Cloudflare Workers 静态资源 |
 
-Use them in Tailwind classes: `text-matrix-primary`, `bg-matrix-panel`, `border-matrix-dim`, etc.
+## 文档
 
-## Acknowledgments
+- [品牌资源与使用](assets/brand/README.md)
+- [可复用组件源码](src/components/ui/)
+- [变更记录](CHANGELOG.md)
 
-This project is inspired by and built upon the **Matrix-A Design System** from [VibeUsage](https://github.com/victorGPT/vibeusage) by [@victorGPT](https://github.com/victorGPT). The cyberpunk dashboard aesthetic, component patterns, and design language owe a great deal to their pioneering work. Thank you to the open-source community for making projects like this possible.
+界面风格和部分组件模式参考 [VibeUsage 的 Matrix-A Design System](https://github.com/victorGPT/vibeusage)。
 
-## License
+## 许可证
 
-[MIT](./LICENSE) © 2026 Zheng Li
+[MIT](LICENSE) © 2026 Zheng Li
