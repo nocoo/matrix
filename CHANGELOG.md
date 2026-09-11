@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.2] - 2026-09-11
+
+### Fixed
+
+- **Wrangler v4 action deployment**: Update release workflow to `cloudflare/wrangler-action@v4` with `packageManager: bun` so static asset routing (`run_worker_first`) and headers are processed by current Wrangler 4 instead of legacy Wrangler 3.90.0.
+
 ## [1.3.1] - 2026-09-11
 
 ### Fixed
