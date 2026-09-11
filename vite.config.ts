@@ -7,15 +7,25 @@ import { defineConfig, type Plugin } from "vite";
 const pkg = JSON.parse(readFileSync(path.resolve(__dirname, "package.json"), "utf-8"));
 
 function liveEndpointPlugin(): Plugin {
+	const metadata = () => {
+		const { version } = JSON.parse(readFileSync(path.resolve(__dirname, "package.json"), "utf-8"));
+		return JSON.stringify({ status: "ok", name: "matrix", version });
+	};
+
 	return {
 		name: "live-endpoint",
 		configureServer(server) {
 			server.middlewares.use("/api/live", (_req, res) => {
-				const { version } = JSON.parse(
-					readFileSync(path.resolve(__dirname, "package.json"), "utf-8"),
-				);
-				res.setHeader("Content-Type", "application/json");
-				res.end(JSON.stringify({ status: "ok", version }));
+				res.setHeader("Content-Type", "application/json; charset=utf-8");
+				res.setHeader("Cache-Control", "no-store");
+				res.end(metadata());
+			});
+		},
+		generateBundle() {
+			this.emitFile({
+				type: "asset",
+				fileName: "api/live",
+				source: `${metadata()}\n`,
 			});
 		},
 	};
