@@ -21,4 +21,3 @@ jobs:
         {
           "typecheck": "previous CI used a no-op typecheck-command"
         }
-    secrets: inherit
