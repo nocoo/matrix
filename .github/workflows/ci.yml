@@ -9,9 +9,13 @@ on:
 
 jobs:
   ci:
-    uses: nocoo/base-ci/.github/workflows/bun-quality.yml@aec4adc1a817c56790d1698329ef9398a15a754a  # v2026.5
+    uses: nocoo/base-ci/.github/workflows/quality.yml@3d2e9e55fdd60aa756df454ded53ef6d06d6653f
     with:
-        pre-command: "bun run build"
-        test-command: "bun run test:coverage"
-        typecheck-command: "true"
-        enable-l2: "false"
+      runtime-version: "1.4.2"
+      install-policy: "trusted"
+      coverage-path: "coverage"
+      prepare-command: "bun run build"
+      test-command: "bun run test:coverage"
+      typecheck: false
+      disabled-check-reasons: '{"typecheck": "previous CI used a no-op typecheck-command"}'
+    secrets: inherit
