@@ -6,7 +6,6 @@
 
 import {
 	ActivityHeatmap,
-	AddTaskModal,
 	AsciiBox,
 	BackendStatus,
 	BootScreen,
@@ -35,7 +34,6 @@ import {
 	SignalBox,
 	Sparkline,
 	SystemHeader,
-	TaskDetailModal,
 	TaskSchedule,
 	TopModelsPanel,
 	TrendChart,
@@ -769,10 +767,6 @@ export default function ComponentShowcasePage() {
 				outputError={null}
 				onClose={vm.handleCloseRunDetail}
 			/>
-
-			<TaskDetailModal task={vm.selectedTask} onClose={vm.handleCloseTaskDetail} />
-
-			<AddTaskModal open={vm.showAddTask} onClose={vm.handleCloseAddTask} />
 
 			<CostAnalysisModal
 				isOpen={vm.showCostModal}
