@@ -9,7 +9,7 @@ on:
 
 jobs:
   ci:
-    uses: nocoo/base-ci/.github/workflows/quality.yml@3d2e9e55fdd60aa756df454ded53ef6d06d6653f
+    uses: nocoo/base-ci/.github/workflows/quality.yml@2857469cc5206e7a4988171a1282209617996a67
     with:
       runtime-version: "1.4.2"
       install-policy: "trusted"
@@ -17,5 +17,8 @@ jobs:
       prepare-command: "bun run build"
       test-command: "bun run test:coverage"
       typecheck: false
-      disabled-check-reasons: '{"typecheck": "previous CI used a no-op typecheck-command"}'
+      disabled-check-reasons: |-
+        {
+          "typecheck": "previous CI used a no-op typecheck-command"
+        }
     secrets: inherit
