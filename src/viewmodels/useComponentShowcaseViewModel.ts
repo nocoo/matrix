@@ -20,7 +20,7 @@ import {
 	getTotalPages,
 	MOCK_RUN_OUTPUT,
 } from "@/models/component-showcase";
-import type { RunDetail, TaskWithSchedule } from "@/models/types";
+import type { RunDetail } from "@/models/types";
 
 const PAGE_SIZE = 5;
 
@@ -28,8 +28,6 @@ export function useComponentShowcaseViewModel() {
 	// ── UI state ──────────────────────────────────────
 	const [runPage, setRunPage] = useState(1);
 	const [selectedRun, setSelectedRun] = useState<RunDetail | null>(null);
-	const [selectedTask, setSelectedTask] = useState<TaskWithSchedule | null>(null);
-	const [showAddTask, setShowAddTask] = useState(false);
 	const [showCostModal, setShowCostModal] = useState(false);
 
 	// ── Data (all deterministic mocks, computed once) ─
@@ -98,18 +96,7 @@ export function useComponentShowcaseViewModel() {
 		[runDetail],
 	);
 
-	const handleSelectTask = useCallback(
-		(taskId: string) => {
-			const task = tasks.find((t) => t.id === taskId);
-			if (task) setSelectedTask(task);
-		},
-		[tasks],
-	);
-
 	const handleCloseRunDetail = useCallback(() => setSelectedRun(null), []);
-	const handleCloseTaskDetail = useCallback(() => setSelectedTask(null), []);
-	const handleOpenAddTask = useCallback(() => setShowAddTask(true), []);
-	const handleCloseAddTask = useCallback(() => setShowAddTask(false), []);
 	const handleOpenCostModal = useCallback(() => setShowCostModal(true), []);
 	const handleCloseCostModal = useCallback(() => setShowCostModal(false), []);
 
@@ -143,8 +130,6 @@ export function useComponentShowcaseViewModel() {
 
 		// UI state
 		selectedRun,
-		selectedTask,
-		showAddTask,
 		showCostModal,
 
 		// Run output (static mock for detail modal)
@@ -152,11 +137,7 @@ export function useComponentShowcaseViewModel() {
 
 		// Actions
 		handleSelectRun,
-		handleSelectTask,
 		handleCloseRunDetail,
-		handleCloseTaskDetail,
-		handleOpenAddTask,
-		handleCloseAddTask,
 		handleOpenCostModal,
 		handleCloseCostModal,
 	};
