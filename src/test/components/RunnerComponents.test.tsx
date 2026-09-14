@@ -798,18 +798,23 @@ describe("UpcomingTasks", () => {
 	});
 
 	it("shows 'Today' label for tasks scheduled today", () => {
-		const now = new Date();
-		const nextRun = new Date(now.getTime() + 60 * 60 * 1000); // 1h from now, same day
-		const items: UpcomingTask[] = [
-			{
-				task: { id: "t1", executor: "shell", description: "d", timeout: 60 },
-				schedule: { task: "t1", hour: nextRun.getHours(), minute: 0, weekday: "*" },
-				nextRun,
-				countdown: 60 * 60 * 1000,
-			},
-		];
-		render(<UpcomingTasks items={items} />);
-		expect(screen.getByText("Today")).toBeInTheDocument();
+		vi.useFakeTimers();
+		try {
+			vi.setSystemTime(new Date(2026, 0, 15, 9, 0, 0));
+			const nextRun = new Date(2026, 0, 15, 10, 0, 0);
+			const items: UpcomingTask[] = [
+				{
+					task: { id: "t1", executor: "shell", description: "d", timeout: 60 },
+					schedule: { task: "t1", hour: nextRun.getHours(), minute: 0, weekday: "*" },
+					nextRun,
+					countdown: 60 * 60 * 1000,
+				},
+			];
+			render(<UpcomingTasks items={items} />);
+			expect(screen.getByText("Today")).toBeInTheDocument();
+		} finally {
+			vi.useRealTimers();
+		}
 	});
 });
 
