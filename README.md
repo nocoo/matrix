@@ -63,7 +63,7 @@ bun run build
 bun run preview
 ```
 
-静态产物在 `dist/`。部署时为 React Router 配置 `index.html` 回退；[wrangler.toml](wrangler.toml)已提供 Cloudflare Workers 静态资源配置。`/api/live` 是 Vite 开发服务器的状态接口，生产静态站不提供该 API。
+静态产物在 `dist/`。[wrangler.toml](wrangler.toml)配置 Cloudflare Worker 和 React Router 所需的 `index.html` 回退。Vite 在开发时提供 `/api/live`，构建时将版本信息写入 `dist/api/live`；[worker.ts](worker.ts)在生产中为该状态接口设置 JSON 和 `no-store` 响应头，其余请求交给静态资源服务。
 
 ## 测试
 

@@ -1,7 +1,7 @@
 # Matrix
 
 Green-on-black React component and dashboard-template showcase with synthetic data.
-Profile: ts-worker-web (static SPA).
+Profile: ts-worker-web (static SPA with a health/asset Worker).
 Direction: [README.md](README.md), [design contract](docs/01-design-contract.md).
 
 ## Sources of Truth
@@ -23,13 +23,14 @@ This file is the contract; hooks, CI and config enforce it. Raise enforcement to
 - Keep maximalist Matrix green-on-black, one dark theme, no grayscale hint text or cross-color dialog mixing. Rectangles, radios, spinners and slider thumbs stay square; only true circles use `rounded-full`.
 - Use `MatrixSelect`, never native select. Preserve portal positioning, button `forwardRef` and `default/header/small` sizes; design specifics live in the linked contract.
 - Tailwind v4 uses `@tailwindcss/vite` and `@theme` in `src/index.css`; no `tailwind.config.ts`. Preserve named Matrix tokens and sidebar background treatment.
-- Never hardcode a displayed version. Production static routing needs SPA fallback; `/api/live` is a Vite dev-server helper, not a production API.
+- Never hardcode a displayed version. Vite serves `/api/live` in dev and emits versioned `dist/api/live`; production `worker.ts` serves this asset with JSON/no-store headers and preserves SPA fallback.
 
 ## Stack / Layout
 
 | Component | Choice |
 | --- | --- |
 | UI | React 19, Tailwind v4, Vite 8/SWC, React Router |
+| Hosting | Cloudflare asset Worker in `worker.ts`, `wrangler.toml` and `dist/` |
 | Language | TypeScript 7 strict with unused/fallthrough checks |
 | Tooling | Bun (manifest 1.3.6; current CI 1.4.2), Biome, Vitest/jsdom |
 | Layout | `src/components/ui/`, `src/lib/`, `src/models/`, `src/viewmodels/`, `src/pages/` |
@@ -57,10 +58,10 @@ Run a focused file with `bun run test src/test/components/MatrixButton.test.tsx`
 
 | Piece | Requirement and current reality | Status | Evidence |
 | --- | --- | --- | --- |
-| L1 | Four-metric ≥95% on reusable components/utilities and any new real logic | planned | Vitest/pre-push/CI currently enforce 95/94/95/95; branch floor is below contract |
-| L2 | Real HTTP for the dev `/api/live` helper and preview routing | planned | No HTTP suite; no production business API exists |
+| L1 | Four-metric ≥95% on reusable components/utilities and Worker logic | planned | Vitest/pre-push/CI enforce 95/94/95/95 on selected UI files; Worker coverage is missing |
+| L2 | Real HTTP for `/api/live`, asset headers and SPA routing in local Worker | planned | No HTTP suite; production Worker serves health/assets but has no business database |
 | L3 | Real component, navigation and responsive UI workflows | planned | No browser runner; template status does not make UI flows inapplicable |
-| G1 | Strict typecheck + Biome, zero errors/warnings | enforced | Pre-commit types/lint; CI's typecheck input is currently disabled |
+| G1 | Strict typecheck + Biome, zero errors/warnings across shipped code | planned | Pre-commit runs two type configs that omit `worker.ts`; CI typecheck is disabled |
 | G2 | Required gitleaks and OSV | enforced | Staged secrets in pre-commit; Bun lock OSV pre-push and shared CI |
 | D1 | Synthetic fixture data independent of daily-dev/user state | planned | Unit DOM state exists; browser/HTTP per-run harness and cleanup guards missing |
 | Build | Vite SPA output | enforced | Pre-push and CI preparation |
@@ -73,14 +74,14 @@ Current hooks check the working tree; pre-commit runs types/lint/unit/staged sec
 | Purpose | Resource | Policy |
 | --- | --- | --- |
 | Dev | `http://localhost:7013` | Synthetic application state |
-| Production | `https://matrix.hexly.ai`, static `dist/` | No business database/auth API |
-| Future L2/L3 | Test-owned preview server/browser profile | Separate port and per-run state required |
+| Production | `https://matrix.hexly.ai`, Worker plus `dist/` | Health/assets only; no business database/auth API |
+| Future L2/L3 | Test-owned local Worker/browser profile | Separate port and per-run state required |
 
 Do not introduce real financial/health accounts as fixtures. A static Cloudflare asset deployment does not justify remote test Workers or databases.
 
 ## Operations / Release
 
-For an authorized release synchronize package version/CHANGELOG, verify, create an immutable annotated `vX.Y.Z` tag and GitHub Release per [release contract](docs/01-design-contract.md). `wrangler.toml` defines static hosting. Verify the deployed homepage/assets and SPA routes; production `/api/live` is not implemented.
+For an authorized release synchronize package version/CHANGELOG, verify, create an immutable annotated `vX.Y.Z` tag and GitHub Release per [release contract](docs/01-design-contract.md). `wrangler.toml` defines the asset Worker. Verify homepage/assets, SPA routes and `/api/live` JSON version with no-store caching.
 
 ## Retrospective
 

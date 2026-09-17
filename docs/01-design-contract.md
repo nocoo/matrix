@@ -34,7 +34,7 @@ consumers derive from it at build time:
 |---|---|
 | Sidebar badge (`v1.0.0`) | `__APP_VERSION__` global, injected via `vite.config.ts` → `define` |
 | MatrixShell footer | `__APP_VERSION__` global |
-| `/api/live` endpoint | Vite dev-server plugin reads `package.json` at request time |
+| `/api/live` endpoint | Vite reads `package.json` for dev responses and the built asset; `worker.ts` adds production JSON/no-store headers |
 | `vitest.config.ts` | Same `define` pattern for test environment |
 | TypeScript | Declared in `src/vite-env.d.ts` as `declare const __APP_VERSION__: string` |
 
