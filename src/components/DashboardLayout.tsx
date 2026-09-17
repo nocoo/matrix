@@ -37,6 +37,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Outlet, useLocation, useNavigate } from "react-router";
 import sidebarBg from "@/assets/bg.jpg";
+import { HexlyLink } from "@/components/HexlyLink";
 import { Github } from "@/components/icons/github";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { MatrixLogo } from "@/components/MatrixLogo";
@@ -463,6 +464,7 @@ export function DashboardLayout() {
 							type="button"
 							onClick={() => setMobileOpen(true)}
 							aria-label={t("common.openNav")}
+							title={t("common.openNav")}
 							className="flex h-7 w-7 items-center justify-center text-matrix-dim hover:text-matrix-primary transition-colors md:hidden"
 						>
 							<Menu className="h-4 w-4" strokeWidth={1.5} />
@@ -485,10 +487,12 @@ export function DashboardLayout() {
 							target="_blank"
 							rel="noopener noreferrer"
 							aria-label={t("common.githubRepo")}
+							title={t("common.githubRepo")}
 							className="flex h-7 w-7 items-center justify-center text-matrix-dim hover:text-matrix-primary transition-colors"
 						>
 							<Github className="h-4 w-4" strokeWidth={1.5} />
 						</a>
+						<HexlyLink />
 					</div>
 				</header>
 
