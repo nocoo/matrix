@@ -1,78 +1,89 @@
-# Matrix — Project Intelligence
+# Matrix
 
-## Project Identity
-- **Type**: Template site / UI kit showcase
-- **Stack**: React 19 + Tailwind CSS v4 + TypeScript 7 + Vite 8 + Bun
-- **Architecture**: MVVM (Model → ViewModel → Page)
-- **Theme**: Cyberpunk / Matrix green-on-black, maximalist (极繁主义)
+Green-on-black React component and dashboard-template showcase with synthetic data.
+Profile: ts-worker-web (static SPA).
+Direction: [README.md](README.md), [design contract](docs/01-design-contract.md).
 
-## Testing Strategy
-This is a **template site**, not a production application. Testing strategy reflects that:
+## Sources of Truth
 
-- **DO test**: UI components (`src/components/ui/`) and utility functions (`src/lib/`). These are the template's core reusable value — the component library and shared utilities.
-- **DO NOT test**: Data models (`src/models/`), viewmodels (`src/viewmodels/`), pages (`src/pages/`), or route smoke tests. These are template scaffolding, not shipped logic.
-- **No global coverage threshold**. Coverage is enforced only for `src/components/ui/` and `src/lib/` at 95% (branches 94%).
-- Pre-commit hook runs `typecheck`, `lint`, `test`, and `gitleaks protect --staged`.
-- Pre-push hook runs `build`, `test:coverage`, `lint`, and `osv-scanner scan --lockfile=bun.lock`.
+This file is the contract; hooks, CI and config enforce it. Raise enforcement to match requirements, never lower the contract to a weaker threshold. Frameworks must not rewrite this file.
 
-## Strict Mode Policy
-- TypeScript: `strict: true`, `noUnusedLocals: true`, `noUnusedParameters: true`, `noFallthroughCasesInSwitch: true`
-- Biome: zero errors, zero warnings (`biome check --error-on-warnings .`).
-- No `any` types unless absolutely unavoidable (and documented with a `// biome-ignore` + reason).
+| Fact | Where |
+| --- | --- |
+| Human docs | [README.md](README.md), [design contract](docs/01-design-contract.md) |
+| Version | Root `package.json`; Vite `__APP_VERSION__`, mirrored in Vitest config |
+| Enforcement | `.husky/`, `.github/workflows/ci.yml`, `vitest.config.ts` |
+| Environment | No backend credentials needed |
+| Accidents | [Retrospective.md](Retrospective.md) |
 
-## Design Constraints
-- **No rounded corners** on any rectangular UI element. Only `rounded-full` on true circular elements (dots, spinners, circular avatars).
-- **No grayscale hint colors** — all placeholder/hint/muted text uses green-shade Matrix colors.
-- **No light mode** — single dark theme only.
-- **No cross-color mixing** — themed dialogs stay mono-color (red stays all-red, etc.).
-- **No native `<select>`** — use `MatrixSelect` everywhere.
-- Sidebar background: `bg.jpg` at `opacity-[0.07]`, `backgroundSize: "240px auto"`, `backgroundRepeat: "repeat"`.
+## Project Invariants
 
-## Component Library Notes
-- `MatrixButton` uses `forwardRef`. Sizes: `"default" | "header" | "small"` (NOT `"sm"`).
-- `MatrixSelect` / `FloatingPortal` use `createPortal` to `document.body` with `getBoundingClientRect` positioning.
-- When mocking animated components in tests (ScrambleText, DecodingText, TypewriterText, MatrixRain), mock them to render static text.
-- Slider thumbs: `border-radius: 0` for square thumbs. Two variants: `.matrix-slider` (green) and `.matrix-slider-warning` (yellow).
-- Toggle switches: track `w-9 h-5`, knob `w-3 h-3`.
-- Radio buttons are square (not circles).
-- Spinners are square (no `rounded-full`).
+- This is a static template using mock data. Login, finance, health and task pages do not authenticate users or operate real accounts.
+- Preserve MVVM: models and ViewModels stay independent of Views/DOM. Reusable value is concentrated in `src/components/ui/` and `src/lib/`; test real logic introduced elsewhere rather than hiding it as scaffolding.
+- Keep maximalist Matrix green-on-black, one dark theme, no grayscale hint text or cross-color dialog mixing. Rectangles, radios, spinners and slider thumbs stay square; only true circles use `rounded-full`.
+- Use `MatrixSelect`, never native select. Preserve portal positioning, button `forwardRef` and `default/header/small` sizes; design specifics live in the linked contract.
+- Tailwind v4 uses `@tailwindcss/vite` and `@theme` in `src/index.css`; no `tailwind.config.ts`. Preserve named Matrix tokens and sidebar background treatment.
+- Never hardcode a displayed version. Production static routing needs SPA fallback; `/api/live` is a Vite dev-server helper, not a production API.
 
-## Tailwind v4
-- No `tailwind.config.ts` — uses `@tailwindcss/vite` plugin with `@theme {}` directive in `index.css`.
-- Colors: `matrix-primary`, `matrix-bright`, `matrix-muted`, `matrix-dim`, `matrix-ghost`, `matrix-panel`, `matrix-panel-strong`, `matrix-dark`, `matrix-bg`.
+## Stack / Layout
 
-## Version Management
+| Component | Choice |
+| --- | --- |
+| UI | React 19, Tailwind v4, Vite 8/SWC, React Router |
+| Language | TypeScript 7 strict with unused/fallthrough checks |
+| Tooling | Bun (manifest 1.3.6; current CI 1.4.2), Biome, Vitest/jsdom |
+| Layout | `src/components/ui/`, `src/lib/`, `src/models/`, `src/viewmodels/`, `src/pages/` |
 
-### Single Source of Truth
+## Commands
 
-The **canonical version** lives in `package.json` → `"version"`. All other
-consumers derive from it at build time:
+Run from root; README recommends Node 24+. Dev needs no accounts or secret variables.
 
-| Consumer | Mechanism |
-|---|---|
-| Sidebar badge (`v1.0.0`) | `__APP_VERSION__` global, injected via `vite.config.ts` → `define` |
-| MatrixShell footer | `__APP_VERSION__` global |
-| `/api/live` endpoint | Vite dev-server plugin reads `package.json` at request time |
-| `vitest.config.ts` | Same `define` pattern for test environment |
-| TypeScript | Declared in `src/vite-env.d.ts` as `declare const __APP_VERSION__: string` |
+```sh
+bun install --frozen-lockfile
+bun run dev
+bun run typecheck
+bun run lint
+bun run build
+bun run preview
+bun run test
+bun run test:coverage
+```
 
-**Never hardcode a version string anywhere.** Always read from `package.json`.
+Run a focused file with `bun run test src/test/components/MatrixButton.test.tsx`. Mock animated text/rain to stable text in unit tests. Build emits `dist/`; it does not deploy.
 
-### Versioning Rules (SemVer)
+## Verification
 
-- **MAJOR** — breaking changes to public API, routes, or data models
-- **MINOR** — new features, pages, or components (backward-compatible)
-- **PATCH** — bug fixes, styling tweaks, dependency bumps
+6DQ = L1/L2/L3 + G1/G2 + D1. Status: `enforced`, `planned`, `manual`, `N/A`. No skipped/focused tests; L1 statements/branches/functions/lines each ≥95%.
 
-### Release Checklist
+| Piece | Requirement and current reality | Status | Evidence |
+| --- | --- | --- | --- |
+| L1 | Four-metric ≥95% on reusable components/utilities and any new real logic | planned | Vitest/pre-push/CI currently enforce 95/94/95/95; branch floor is below contract |
+| L2 | Real HTTP for the dev `/api/live` helper and preview routing | planned | No HTTP suite; no production business API exists |
+| L3 | Real component, navigation and responsive UI workflows | planned | No browser runner; template status does not make UI flows inapplicable |
+| G1 | Strict typecheck + Biome, zero errors/warnings | enforced | Pre-commit types/lint; CI's typecheck input is currently disabled |
+| G2 | Required gitleaks and OSV | enforced | Staged secrets in pre-commit; Bun lock OSV pre-push and shared CI |
+| D1 | Synthetic fixture data independent of daily-dev/user state | planned | Unit DOM state exists; browser/HTTP per-run harness and cleanup guards missing |
+| Build | Vite SPA output | enforced | Pre-push and CI preparation |
+| Docs | Preserve design contract and measured checks | manual | Review linked document and CHANGELOG |
 
-1. **Bump version** in `package.json`
-2. **Update `CHANGELOG.md`** — add a new `## [x.y.z] - YYYY-MM-DD` section
-3. **Run full verification**: `bun run lint && bun run build && bun run test`
-4. **Commit**: `chore: release vX.Y.Z`
-5. **Tag**: `git tag -a vX.Y.Z -m "vX.Y.Z"`
-6. **Push**: `git push && git push --tags`
-7. **GitHub Release**: `gh release create vX.Y.Z --title "vX.Y.Z" --notes-from-tag`
+Current hooks check the working tree; pre-commit runs types/lint/unit/staged secrets, pre-push build/coverage/lint/OSV. Target: check-only index L1/G1 <30s, stdin pushed-ref L2/G2 <3min. Never bypass commit/branch-push hooks or silence a coverage regression.
+
+## Resources / Isolation
+
+| Purpose | Resource | Policy |
+| --- | --- | --- |
+| Dev | `http://localhost:7013` | Synthetic application state |
+| Production | `https://matrix.hexly.ai`, static `dist/` | No business database/auth API |
+| Future L2/L3 | Test-owned preview server/browser profile | Separate port and per-run state required |
+
+Do not introduce real financial/health accounts as fixtures. A static Cloudflare asset deployment does not justify remote test Workers or databases.
+
+## Operations / Release
+
+For an authorized release synchronize package version/CHANGELOG, verify, create an immutable annotated `vX.Y.Z` tag and GitHub Release per [release contract](docs/01-design-contract.md). `wrangler.toml` defines static hosting. Verify the deployed homepage/assets and SPA routes; production `/api/live` is not implemented.
 
 ## Retrospective
-(Record mistakes and lessons learned here)
+
+Record narratives in [Retrospective.md](Retrospective.md). Keep recurring project rules brief; cross-project lessons go to global rules/nmem, deterministic checks to hooks/tests.
+
+- Preserve the template's strict visual constraints while adding component coverage; do not lower the four-metric contract to match the current 94% branch gate.
