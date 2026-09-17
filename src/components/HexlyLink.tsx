@@ -5,15 +5,18 @@ export function HexlyLink() {
 	const chinese = i18n.language.startsWith("zh");
 	const label = chinese ? "在 hexly.ai 查看 Matrix" : "Matrix on hexly.ai";
 
+	const accessibleLabel = `${label}${chinese ? "（在新标签页打开）" : " (opens in a new tab)"}`;
+
 	return (
 		<a
 			href="https://hexly.ai/projects/matrix"
 			target="_blank"
 			rel="noopener noreferrer"
 			title={label}
-			aria-label={`${label}${chinese ? "（在新标签页打开）" : " (opens in a new tab)"}`}
+			aria-label={accessibleLabel}
 			className="flex h-7 w-7 shrink-0 items-center justify-center text-matrix-dim transition-colors hover:text-matrix-primary"
 		>
+			<span className="sr-only">{accessibleLabel}</span>
 			<svg
 				className="h-4 w-4"
 				viewBox="0 0 24 24"
