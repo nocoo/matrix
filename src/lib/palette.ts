@@ -48,9 +48,3 @@ export const chartPositive = "#00FF41";
 
 /** Negative / expense / outflow */
 export const chartNegative = "#FF3366";
-
-/** Primary chart accent (most-used single color) */
-export const chartPrimary = "#00FF41";
-
-/** Axis / grid color */
-export const chartAxis = "rgba(0, 255, 65, 0.2)";
