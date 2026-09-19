@@ -37,7 +37,7 @@ jobs:
       runtime-version: "1.4.2"
       install-policy: "blocked"
       build-command: bun run build
-      wrangler-version: "4.133.0"
+      wrangler-version: "4.135.0"
       environment: production
       concurrency-group: deploy-worker-production
       timeout-minutes: 15
