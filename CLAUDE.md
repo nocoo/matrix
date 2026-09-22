@@ -58,7 +58,7 @@ Run a focused file with `bun run test src/test/components/MatrixButton.test.tsx`
 
 | Piece | Requirement and current reality | Status | Evidence |
 | --- | --- | --- | --- |
-| L1 | Four-metric ≥95% on reusable components/utilities and Worker logic | planned | Vitest/pre-push/CI enforce 95/94/95/95 on selected UI files; Worker coverage is missing |
+| L1 | Four-metric ≥95% on reusable components/utilities and Worker logic | planned | Pre-commit gates the Git index snapshot with coverage thresholds 95/95/95/95 on selected UI files; Worker coverage is missing |
 | L2 | Real HTTP for `/api/live`, asset headers and SPA routing in local Worker | planned | No HTTP suite; production Worker serves health/assets but has no business database |
 | L3 | Real component, navigation and responsive UI workflows | planned | No browser runner; template status does not make UI flows inapplicable |
 | G1 | Strict typecheck + Biome, zero errors/warnings across shipped code | planned | Pre-commit runs two type configs that omit `worker.ts`; CI typecheck is disabled |
@@ -67,7 +67,7 @@ Run a focused file with `bun run test src/test/components/MatrixButton.test.tsx`
 | Build | Vite SPA output | enforced | Pre-push and CI preparation |
 | Docs | Preserve design contract and measured checks | manual | Review linked document and CHANGELOG |
 
-Current hooks check the working tree; pre-commit runs types/lint/unit/staged secrets, pre-push build/coverage/lint/OSV. Target: check-only index L1/G1 <30s, stdin pushed-ref L2/G2 <3min. Never bypass commit/branch-push hooks or silence a coverage regression.
+Current hooks gate the Git index snapshot: pre-commit runs types/lint/unit with coverage/staged secrets against a checkout-index export, pre-push build/coverage/lint/OSV. Target: check-only index L1/G1 <30s, stdin pushed-ref L2/G2 <3min. Never bypass commit/branch-push hooks or silence a coverage regression.
 
 ## Resources / Isolation
 
@@ -87,4 +87,4 @@ For an authorized release synchronize package version/CHANGELOG, verify, create 
 
 Record narratives in [Retrospective.md](Retrospective.md). Keep recurring project rules brief; cross-project lessons go to global rules/nmem, deterministic checks to hooks/tests.
 
-- Preserve the template's strict visual constraints while adding component coverage; do not lower the four-metric contract to match the current 94% branch gate.
+- Preserve the template's strict visual constraints while adding component coverage; do not lower the four-metric contract to match momentary coverage dips.

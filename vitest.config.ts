@@ -15,6 +15,9 @@ export default defineConfig({
 		globals: true,
 		setupFiles: ["./src/test/setup.ts"],
 		include: ["src/**/*.{test,spec}.{ts,tsx}"],
+		allowOnly: false,
+		passWithNoTests: false,
+		reporters: ["default", "./src/test/selected-run.ts"],
 		coverage: {
 			provider: "v8",
 			// AST-aware remapping is built into vitest v4+; no opt-in needed.
@@ -29,12 +32,10 @@ export default defineConfig({
 				"src/components/ui/index.ts",
 			],
 			thresholds: {
-				// Floors sit ~0.5–1 pp below actual coverage so a small regression trips
-				// the gate before it can mask a real drop. Only `branches` is relaxed —
-				// the other three run high enough that keeping them at 95 leaves plenty
-				// of headroom (97.6/99.7/99.4 for statements/functions/lines).
+				// Floors sit below actual coverage (97.6/95.2/99.7/99.4) so a small
+				// regression trips the gate before it can mask a real drop.
 				statements: 95,
-				branches: 94,
+				branches: 95,
 				functions: 95,
 				lines: 95,
 			},
