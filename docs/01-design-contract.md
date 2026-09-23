@@ -1,6 +1,6 @@
 # 01 · Matrix 设计与发布约定
 
-保留模板组件的具体设计和发布约定；质量要求与实际门禁状态见根 CLAUDE.md。
+保留模板组件的具体设计和发布约定；质量要求与实际门禁状态见根 AGENTS.md。
 
 
 - **No rounded corners** on any rectangular UI element. Only `rounded-full` on true circular elements (dots, spinners, circular avatars).
