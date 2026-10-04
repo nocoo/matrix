@@ -1,5 +1,5 @@
 # Retrospective
 
-No accident narratives have been recorded in this log yet.
+## 2026-10-04 — Remove obsolete dependency advisory exceptions
 
-Record the date when known, what happened, its cause, and the follow-up. Do not invent an incident to populate this file. Keep recurring project rules brief in `AGENTS.md`; cross-project lessons belong in global rules or nmem, and deterministic checks belong in hooks or tests.
+Fresh dependency discovery found ten current advisories in Miniflare's Undici 7.29.0 even though the root already used Undici 8.11.0. Updating the requested root to 8.11.2 and Wrangler to 4.145.0 naturally selects Miniflare's patched Undici 7.29.1 without a major override; the release CLI pin stays aligned. An isolated lockfile scan with no vulnerability exceptions confirmed zero findings. Remove all nine obsolete advisory ignores instead of retaining development-dependency waivers. Existing UI branch coverage and Worker/CI enforcement gaps remain documented; dependency validation does not certify the entire 6DQ contract.

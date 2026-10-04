@@ -22,34 +22,34 @@
 		"clsx": "^2.1.1",
 		"i18next": "26.4.2",
 		"i18next-browser-languagedetector": "^8.2.1",
-		"lucide-react": "1.47.0",
+		"lucide-react": "1.49.0",
 		"picomatch": "4.0.7",
 		"postcss": "^8.5.28",
 		"react": "19.3.0",
 		"react-dom": "19.3.0",
 		"react-i18next": "17.0.15",
 		"react-router": "8.4.0",
-		"rollup": "4.63.4",
+		"rollup": "4.63.5",
 		"tailwind-merge": "3.7.0",
-		"undici": "8.11.0"
+		"undici": "8.11.2"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.5.14",
+		"@biomejs/biome": "2.5.15",
 		"@tailwindcss/vite": "4.3.3",
 		"@testing-library/jest-dom": "7.0.1",
 		"@testing-library/react": "^16.3.3",
-		"@types/node": "26.6.2",
+		"@types/node": "26.6.3",
 		"@types/react": "19.3.0",
 		"@types/react-dom": "19.3.0",
 		"@vitejs/plugin-react-swc": "4.3.3",
-		"@vitest/coverage-v8": "5.0.1",
+		"@vitest/coverage-v8": "5.0.3",
 		"husky": "^9.1.7",
 		"jsdom": "30.1.1",
 		"tailwindcss": "4.3.3",
 		"typescript": "7.0.2",
-		"vite": "8.3.0",
-		"vitest": "5.0.1",
-		"wrangler": "4.136.3"
+		"vite": "8.3.1",
+		"vitest": "5.0.3",
+		"wrangler": "4.145.0"
 	},
 	"trustedDependencies": [
 		"@biomejs/biome"
