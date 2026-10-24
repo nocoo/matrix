@@ -22,7 +22,7 @@
 		"clsx": "^2.1.1",
 		"i18next": "26.5.7",
 		"i18next-browser-languagedetector": "^8.2.1",
-		"lucide-react": "1.57.0",
+		"lucide-react": "1.61.0",
 		"picomatch": "4.0.7",
 		"postcss": "8.5.30",
 		"react": "19.3.1",
