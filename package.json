@@ -29,7 +29,7 @@
 		"react-dom": "19.3.1",
 		"react-i18next": "17.1.5",
 		"react-router": "8.4.0",
-		"rollup": "4.64.7",
+		"rollup": "4.65.0",
 		"tailwind-merge": "3.7.0",
 		"undici": "8.12.2"
 	},
