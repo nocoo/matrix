@@ -57,23 +57,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Regression tests covering the three fixes above:
-  * `DashboardLayout.test.tsx`: Cmd+K focuses the search input.
-  * `VibeComponents.test.tsx`: swapping avatar URL after an image error
+  - `DashboardLayout.test.tsx`: Cmd+K focuses the search input.
+  - `VibeComponents.test.tsx`: swapping avatar URL after an image error
     remounts the `<img>` instead of sticking on the fallback.
-  * `DataVizComponents.test.tsx`: ActivityHeatmap exposes `role="region"` +
+  - `DataVizComponents.test.tsx`: ActivityHeatmap exposes `role="region"` +
     `tabIndex="0"` and survives Arrow/Page/Home/End/Tab keys without throwing.
-  * `ControlsPage.command-palette.test.tsx`: the palette input receives focus
+  - `ControlsPage.command-palette.test.tsx`: the palette input receives focus
     when `vm.commandOpen` flips true.
 
 ### Changed
 
 - `README.md`: hooks table + feature bullet now reflect actual pre-commit
   (typecheck + lint + test + gitleaks) and pre-push (build + coverage + lint
-  + osv-scanner) gates instead of the truncated `test` / `test + lint`
-  description; dropped stale test counts and non-existent `models/` /
-  `viewmodels/` / `pages/` test subdirectories from the tree diagram and
-  Test Structure table; tech-stack table now advertises TypeScript 7 / Vite 8;
-  "Run tests" snippets use `bun run test` instead of a bare `vitest run`.
+  - osv-scanner) gates instead of the truncated `test` / `test + lint`
+    description; dropped stale test counts and non-existent `models/` /
+    `viewmodels/` / `pages/` test subdirectories from the tree diagram and
+    Test Structure table; tech-stack table now advertises TypeScript 7 / Vite 8;
+    "Run tests" snippets use `bun run test` instead of a bare `vitest run`.
 - `CLAUDE.md`: hooks description synced with the actual scripts; release-
   checklist verification uses `bun run test`.
 - `osv-scanner.toml`: dropped ignored-vuln entries referencing the deleted

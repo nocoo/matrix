@@ -42,25 +42,25 @@ Run a focused file with `bun run test src/test/components/MatrixButton.test.tsx`
 
 6DQ keeps its name with unified L1, L2/L3, G2 and D1; the owner merged former G1 into L1 on 2026-09-21. Statuses: `enforced`, `planned`, `manual`, `N/A`. No skipped/focused tests; unified L1 requires statements/branches/functions/lines each ≥95% plus strict types and check-only lint with zero errors/warnings across shipped code.
 
-| Piece | Requirement and current reality | Status | Evidence |
-| --- | --- | --- | --- |
-| L1 | Four-metric ≥95% on reusable components/utilities and Worker logic plus strict types/lint across shipped code | planned | Vitest/pre-push/CI enforce 95/94/95/95 on selected UI files; Worker coverage is missing. Pre-commit runs two type configs that omit `worker.ts` and CI typecheck is disabled, so strict static subchecks are incomplete; gates run on the working tree |
-| L2 | Real HTTP for `/api/live`, asset headers and SPA routing in local Worker | planned | No HTTP suite; production Worker serves health/assets but has no business database |
-| L3 | Real component, navigation and responsive UI workflows | planned | No browser runner; template status does not make UI flows inapplicable |
-| G2 | Required gitleaks and OSV | enforced | Staged secrets in pre-commit; Bun lock OSV pre-push and shared CI |
-| D1 | Synthetic fixture data independent of daily-dev/user state | planned | Unit DOM state exists; browser/HTTP per-run harness and cleanup guards missing |
-| Build | Vite SPA output | enforced | Pre-push and CI preparation |
-| Docs | Preserve design contract and measured checks | manual | Review linked document and CHANGELOG |
+| Piece | Requirement and current reality                                                                               | Status   | Evidence                                                                                                                                                                                                                                               |
+| ----- | ------------------------------------------------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| L1    | Four-metric ≥95% on reusable components/utilities and Worker logic plus strict types/lint across shipped code | planned  | Vitest/pre-push/CI enforce 95/94/95/95 on selected UI files; Worker coverage is missing. Pre-commit runs two type configs that omit `worker.ts` and CI typecheck is disabled, so strict static subchecks are incomplete; gates run on the working tree |
+| L2    | Real HTTP for `/api/live`, asset headers and SPA routing in local Worker                                      | planned  | No HTTP suite; production Worker serves health/assets but has no business database                                                                                                                                                                     |
+| L3    | Real component, navigation and responsive UI workflows                                                        | planned  | No browser runner; template status does not make UI flows inapplicable                                                                                                                                                                                 |
+| G2    | Required gitleaks and OSV                                                                                     | enforced | Staged secrets in pre-commit; Bun lock OSV pre-push and shared CI                                                                                                                                                                                      |
+| D1    | Synthetic fixture data independent of daily-dev/user state                                                    | planned  | Unit DOM state exists; browser/HTTP per-run harness and cleanup guards missing                                                                                                                                                                         |
+| Build | Vite SPA output                                                                                               | enforced | Pre-push and CI preparation                                                                                                                                                                                                                            |
+| Docs  | Preserve design contract and measured checks                                                                  | manual   | Review linked document and CHANGELOG                                                                                                                                                                                                                   |
 
 Current hooks check the working tree; pre-commit runs types/lint/unit/staged secrets, pre-push build/coverage/lint/OSV. Target: check-only unified L1 on the index <30s, stdin pushed-ref L2/G2 <3min. Never bypass commit/branch-push hooks or silence a coverage regression.
 
 ## Resources and isolation
 
-| Purpose | Resource | Policy |
-| --- | --- | --- |
-| Dev | `http://localhost:7013` | Synthetic application state |
-| Production | `https://matrix.hexly.ai`, Worker plus `dist/` | Health/assets only; no business database/auth API |
-| Future L2/L3 | Test-owned local Worker/browser profile | Separate port and per-run state required |
+| Purpose      | Resource                                       | Policy                                            |
+| ------------ | ---------------------------------------------- | ------------------------------------------------- |
+| Dev          | `http://localhost:7013`                        | Synthetic application state                       |
+| Production   | `https://matrix.hexly.ai`, Worker plus `dist/` | Health/assets only; no business database/auth API |
+| Future L2/L3 | Test-owned local Worker/browser profile        | Separate port and per-run state required          |
 
 Do not introduce real financial/health accounts as fixtures. A static Cloudflare asset deployment does not justify remote test Workers or databases.
 
@@ -71,5 +71,4 @@ For an authorized release synchronize package version/CHANGELOG, verify, create 
 ## Retrospective
 
 Record narratives in [Retrospective.md](Retrospective.md). Keep recurring project rules brief; cross-project lessons go to global rules/nmem, deterministic checks to hooks/tests.
-
 - Preserve the template's strict visual constraints while adding component coverage; do not lower the four-metric contract to match the current 94% branch gate.

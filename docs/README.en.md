@@ -30,14 +30,14 @@ The repository runs as a static SPA with mock account, transaction, health, and 
 
 Open the [live example](https://matrix.hexly.ai) and explore controls and pages from the sidebar.
 
-| Examples | Routes |
-| --- | --- |
-| Dashboard and component collection | `/`, `/component-showcase` |
-| Controls, buttons, forms, tables | `/controls`, `/buttons`, `/forms`, `/tables` |
-| Feedback, overlays, navigation, tags | `/feedback`, `/overlays`, `/navigation`, `/pills` |
+| Examples                                | Routes                                                          |
+| --------------------------------------- | --------------------------------------------------------------- |
+| Dashboard and component collection      | `/`, `/component-showcase`                                      |
+| Controls, buttons, forms, tables        | `/controls`, `/buttons`, `/forms`, `/tables`                    |
+| Feedback, overlays, navigation, tags    | `/feedback`, `/overlays`, `/navigation`, `/pills`               |
 | Accounts, cards, transactions, progress | `/accounts`, `/card-showcase`, `/records`, `/progress-tracking` |
-| Charts and health examples | `/stats`, `/flow-comparison`, `/portfolio`, `/life-ai` |
-| Palette and settings | `/palette`, `/settings` |
+| Charts and health examples              | `/stats`, `/flow-comparison`, `/portfolio`, `/life-ai`          |
+| Palette and settings                    | `/palette`, `/settings`                                         |
 
 Most reusable controls live in [src/components/ui/](../src/components/ui/). Tailwind CSS variables in [src/index.css](../src/index.css) define the theme through classes such as `text-matrix-primary` and `bg-matrix-panel`. Rectangular containers keep square corners; dots and avatars can be circular.
 
@@ -67,9 +67,9 @@ Static output goes to `dist/`. Configure an `index.html` fallback for React Rout
 
 ## Tests
 
-| Layer | Command |
-| --- | --- |
-| Unit and component tests | `bun run test` |
+| Layer                    | Command              |
+| ------------------------ | -------------------- |
+| Unit and component tests | `bun run test`       |
 | Watch during development | `bun run test:watch` |
 
 Run one test file:
@@ -87,11 +87,11 @@ Tests use Vitest, jsdom, and Testing Library. Run `bun run test:coverage` for a 
 ![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?logo=tailwindcss&logoColor=white)
 
-| Area | Implementation |
-| --- | --- |
-| Application and routing | React, TypeScript, React Router |
-| Visuals and charts | Tailwind CSS, native SVG / Canvas, Lucide |
-| Localization | i18next, react-i18next |
+| Area                    | Implementation                                                                    |
+| ----------------------- | --------------------------------------------------------------------------------- |
+| Application and routing | React, TypeScript, React Router                                                   |
+| Visuals and charts      | Tailwind CSS, native SVG / Canvas, Lucide                                         |
+| Localization            | i18next, react-i18next                                                            |
 | Development and hosting | Vite / SWC, Bun, Biome, Vitest, Testing Library, Cloudflare Workers static assets |
 
 ## Documentation
