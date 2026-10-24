@@ -4,14 +4,14 @@ Black and emerald mothership circuitry. Native 2048 × 2048 Azure Foundry gpt-im
 
 ## Use by surface
 
-| Surface | Asset | Treatment |
-| --- | --- | --- |
-| README and large identity presentations | `assets/brand/icon-rounded.png` | Selected presentation, normally displayed at 128 px in README |
+| Surface                                                  | Asset                                                         | Treatment                                                                 |
+| -------------------------------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| README and large identity presentations                  | `assets/brand/icon-rounded.png`                               | Selected presentation, normally displayed at 128 px in README             |
 | Sidebar, mobile navigation and small application headers | `public/logo-128.png`, with `logo-256.png` for higher density | Transparent material foreground; no tile, color filter or additional mask |
-| Login and loading marks | Transparent application PNGs | Keep the foreground clear of decorative background containers |
-| Browser favicon | `public/favicon.png`, `public/favicon.ico` | Transparent 32 px PNG; ICO includes 16/24/32/48/64 px |
-| Apple touch | `public/apple-touch-icon.png` | Opaque square 180 px presentation |
-| Social / Open Graph | `public/opengraph-image.png` | 1200 × 630 presentation |
+| Login and loading marks                                  | Transparent application PNGs                                  | Keep the foreground clear of decorative background containers             |
+| Browser favicon                                          | `public/favicon.png`, `public/favicon.ico`                    | Transparent 32 px PNG; ICO includes 16/24/32/48/64 px                     |
+| Apple touch                                              | `public/apple-touch-icon.png`                                 | Opaque square 180 px presentation                                         |
+| Social / Open Graph                                      | `public/opengraph-image.png`                                  | 1200 × 630 presentation                                                   |
 
 Root `logo.png` is the exact selected transparent master. The square and rounded presentations remain separate. Reflections, material texture and internal lighting belong to the solid artwork; the engineering paper, projected shadows and external emission remain outside small app/browser marks. All sizes preserve the whole subject's proportions and placement.
 
@@ -24,7 +24,6 @@ uv run --with pillow python scripts/generate-brand.py
 The generator verifies the four exact masters in [source.json](source.json) and records derived PNG/ICO checksums in [derivatives.json](derivatives.json). This logo update changes no product-theme tokens. Selected study `2026-09-07-01`, finishing `01`; nearest foreground clearance from the actual 23% rounded outline is 268.50 native pixels.
 
 The presentation uses **Circuit routing grid**: base `#e2eee7`, light `#f4faf7`, shade `#cddfd8` and motif `#799b8b`. The complete workbench preserves every model request, reference, decision, layer, mask and finishing pass.
-
 - [Individual before/after page](https://hexly.ai/logos/matrix)
 - [Complete study archive](https://github.com/nocoo/hexly.ai/tree/main/artwork/logo-family/matrix/2026-09-07-01)
 - [Local static review](https://index.dev.hexly.ai/artwork/logo-family/matrix/2026-09-07-01/review.html)
