@@ -62,6 +62,7 @@ export XDG_STATE_HOME="$snapshot/.cache"
 PATH="$snapshot/node_modules/.bin:$PATH"
 cd "$snapshot"
 
-bun run typecheck
-bun run lint
-bun run test:coverage
+gate_timeout="${L1_PRECOMMIT_TIMEOUT_SEC:-30}"
+if ! timeout --preserve-status --kill-after=5 "$gate_timeout" bash "$repo/scripts/l1-index-gate.sh"; then
+	exit 1
+fi
