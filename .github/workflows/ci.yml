@@ -15,7 +15,7 @@ jobs:
       install-policy: "trusted"
       coverage-path: "coverage"
       prepare-command: "bun run build"
-      test-command: "bun run test:coverage"
+      test-command: "bun run test:coverage && bun run gate:l1-self-test"
       typecheck: false
       disabled-check-reasons: |-
         {
