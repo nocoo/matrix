@@ -5,12 +5,38 @@ set -euo pipefail
 ROOT=$(git rev-parse --show-toplevel)
 export PATH="$ROOT/node_modules/.bin:${HOME}/.bun/bin:${HOME}/.local/bin:${PATH:-}"
 
-for tool in git bun gitleaks timeout; do
+for tool in git bun timeout; do
 	command -v "$tool" >/dev/null 2>&1 || {
 		echo "l1-gate-self-test: $tool is required" >&2
 		exit 1
 	}
 done
+
+ensure_gitleaks() {
+	if command -v gitleaks >/dev/null 2>&1; then
+		return
+	fi
+	local tools_dir="$ROOT/.cache/l1-gate-tools"
+	mkdir -p "$tools_dir"
+	local bin="$tools_dir/gitleaks"
+	if [ ! -x "$bin" ]; then
+		local arch
+		arch=$(uname -m)
+		case "$arch" in
+		x86_64) arch=linux_x64 ;;
+		aarch64 | arm64) arch=linux_arm64 ;;
+		*)
+			echo "l1-gate-self-test: unsupported arch for gitleaks bootstrap: $arch" >&2
+			exit 1
+			;;
+		esac
+		curl -fsSL "https://github.com/gitleaks/gitleaks/releases/download/v8.24.2/gitleaks_8.24.2_${arch}.tar.gz" |
+			tar -xz -C "$tools_dir" gitleaks
+		chmod +x "$bin"
+	fi
+	export PATH="$tools_dir:$PATH"
+}
+ensure_gitleaks
 
 WORKTREE=
 cleanup() {
