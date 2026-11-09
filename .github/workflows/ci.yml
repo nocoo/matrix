@@ -9,7 +9,7 @@ on:
 
 jobs:
   ci:
-    uses: nocoo/base-ci/.github/workflows/quality.yml@ad43150de3a2be2fa464b5cd2f921dc4fa9f8f0f
+    uses: nocoo/base-ci/.github/workflows/quality.yml@ac635753a869cb85fad1f52aae4ccbd6119f3cae # main 2026-10-22
     with:
       runtime-version: "1.4.2"
       install-policy: "trusted"

@@ -30,14 +30,14 @@ Matrix 是以终端界面和 Matrix 视觉风格为参考的 React UI 示例集�
 
 打开[在线示例](https://matrix.hexly.ai)，从侧栏查看控件和页面。
 
-| 示例 | 路由 |
-| --- | --- |
-| Dashboard 与组件集合 | `/`、`/component-showcase` |
-| 控件、按钮、表单、表格 | `/controls`、`/buttons`、`/forms`、`/tables` |
-| 反馈、弹层、导航、标签 | `/feedback`、`/overlays`、`/navigation`、`/pills` |
+| 示例                   | 路由                                                            |
+| ---------------------- | --------------------------------------------------------------- |
+| Dashboard 与组件集合   | `/`、`/component-showcase`                                      |
+| 控件、按钮、表单、表格 | `/controls`、`/buttons`、`/forms`、`/tables`                    |
+| 反馈、弹层、导航、标签 | `/feedback`、`/overlays`、`/navigation`、`/pills`               |
 | 账户、卡片、流水、进度 | `/accounts`、`/card-showcase`、`/records`、`/progress-tracking` |
-| 图表与健康示例 | `/stats`、`/flow-comparison`、`/portfolio`、`/life-ai` |
-| 配色与设置 | `/palette`、`/settings` |
+| 图表与健康示例         | `/stats`、`/flow-comparison`、`/portfolio`、`/life-ai`          |
+| 配色与设置             | `/palette`、`/settings`                                         |
 
 主要可复用控件在 [src/components/ui/](src/components/ui/)。主题由 [src/index.css](src/index.css) 中的 Tailwind CSS 变量定义，使用 `text-matrix-primary`、`bg-matrix-panel` 等类名。矩形容器保持直角，圆点与头像可以使用圆形。
 
@@ -67,9 +67,9 @@ bun run preview
 
 ## 测试
 
-| 测试层 | 命令 |
-| --- | --- |
-| 单元与组件测试 | `bun run test` |
+| 测试层         | 命令                 |
+| -------------- | -------------------- |
+| 单元与组件测试 | `bun run test`       |
 | 开发时持续运行 | `bun run test:watch` |
 
 运行单个测试文件：
@@ -87,11 +87,11 @@ bun run test src/test/components/MatrixButton.test.tsx
 ![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?logo=tailwindcss&logoColor=white)
 
-| 部分 | 实现 |
-| --- | --- |
-| 应用与路由 | React、TypeScript、React Router |
-| 视觉与图表 | Tailwind CSS、原生 SVG / Canvas、Lucide |
-| 国际化 | i18next、react-i18next |
+| 部分       | 实现                                                                         |
+| ---------- | ---------------------------------------------------------------------------- |
+| 应用与路由 | React、TypeScript、React Router                                              |
+| 视觉与图表 | Tailwind CSS、原生 SVG / Canvas、Lucide                                      |
+| 国际化     | i18next、react-i18next                                                       |
 | 开发与托管 | Vite / SWC、Bun、Biome、Vitest、Testing Library、Cloudflare Workers 静态资源 |
 
 ## 文档
