@@ -324,6 +324,58 @@ describe("TrendMonitor", () => {
 		// Restore
 		(globalThis as unknown as Record<string, unknown>).ResizeObserver = original;
 	});
+
+	it("recomputes axis width when ResizeObserver reports a materially different ratio", () => {
+		const observers: ResizeObserverCallback[] = [];
+		class LiveResizeObserver implements ResizeObserver {
+			constructor(cb: ResizeObserverCallback) {
+				observers.push(cb);
+			}
+			observe = vi.fn();
+			disconnect = vi.fn();
+			unobserve = vi.fn();
+		}
+		(globalThis as unknown as Record<string, unknown>).ResizeObserver = LiveResizeObserver;
+
+		let layoutPass = 0;
+		vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(function (
+			this: HTMLElement,
+		) {
+			const isAxis = this.classList.contains("w-10");
+			const plotWidth = layoutPass === 0 ? 200 : 400;
+			const axisWidth = layoutPass === 0 ? 20 : 80;
+			const width = isAxis ? axisWidth : plotWidth;
+			return {
+				left: 0,
+				right: width,
+				top: 0,
+				bottom: 100,
+				width,
+				height: 100,
+				x: 0,
+				y: 0,
+				toJSON: () => ({}),
+			} as DOMRect;
+		});
+
+		const { container } = render(<TrendMonitor data={[5, 15, 25, 35, 45, 55]} period="day" />);
+		act(() => {
+			for (const cb of observers) {
+				cb([], {} as ResizeObserver);
+			}
+			layoutPass = 1;
+			for (const cb of observers) {
+				cb([], {} as ResizeObserver);
+			}
+		});
+		expect(container.querySelector("svg")).toBeInTheDocument();
+	});
+
+	it("renders day-period x-axis labels when period is day", () => {
+		render(<TrendMonitor data={Array.from({ length: 24 }, (_, i) => i * 10)} period="day" />);
+		expect(screen.getByText("12:00")).toBeInTheDocument();
+		expect(screen.getByText("23:00")).toBeInTheDocument();
+	});
 });
 
 // ===========================================================================
