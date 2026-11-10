@@ -71,4 +71,5 @@ For an authorized release synchronize package version/CHANGELOG, verify, create 
 ## Retrospective
 
 Record narratives in [Retrospective.md](Retrospective.md). Keep recurring project rules brief; cross-project lessons go to global rules/nmem, deterministic checks to hooks/tests.
+
 - Preserve the template's strict visual constraints while adding component coverage; do not lower the four-metric contract to match momentary coverage dips.
