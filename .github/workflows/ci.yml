@@ -1,3 +1,5 @@
+# CI slot standard v1 (nocoo/base-ci docs/slots.md): impl S1, S2, S3, G1, G2, B1, L1, Z1 via quality.yml;
+# na L1.5, P1; todo L2, L3 in slot-status. nocoo/base-ci v2026.12: top-level slot jobs.
 name: CI
 
 on:
@@ -7,17 +9,34 @@ on:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
-  ci:
-    uses: nocoo/base-ci/.github/workflows/quality.yml@633a5545fcfec91b688840650d4edf3e9cc1abbd # v2026.10
+  quality:
+    uses: nocoo/base-ci/.github/workflows/quality.yml@1ea10ecab22b72512399485391603fe03a161016 # v2026.12
     with:
       runtime-version: "1.4.2"
-      install-policy: "trusted"
-      coverage-path: "coverage"
-      prepare-command: "bun run build"
-      test-command: "bun run test:coverage && bun run gate:l1-self-test"
-      typecheck: false
-      disabled-check-reasons: |-
-        {
-          "typecheck": "previous CI used a no-op typecheck-command"
-        }
+      install-policy: trusted
+      coverage-path: coverage
+      test-command: bun run test:coverage && bun run gate:l1-self-test
+      osv-config: osv-scanner.toml
+      gitleaks-config: .gitleaks.toml
+      build: true
+      build-command: bun run build
+      workflow-lint: true
+      workflow-lint-required-workflow: nocoo/base-ci/.github/workflows/deploy-worker.yml
+      workflow-lint-yamllint: true
+      slot-status: >-
+        {"S1": {"status": "impl"},
+        "S2": {"status": "impl"},
+        "S3": {"status": "impl"},
+        "G1": {"status": "impl"},
+        "G2": {"status": "impl"},
+        "B1": {"status": "impl"},
+        "L1": {"status": "impl"},
+        "L1.5": {"status": "na", "reason": "仅有静态资源 Worker，无 @cloudflare/vitest-pool-workers / miniflare 运行时测试套件"},
+        "L2": {"status": "todo", "reason": "尚未在 CI 中接入本地 Worker HTTP E2E（/api/live、SPA 回退与资源头）"},
+        "L3": {"status": "todo", "reason": "有浏览器界面但尚未接入 Playwright E2E"},
+        "P1": {"status": "na", "reason": "package.json 为 private，不发布 npm 包"},
+        "Z1": {"status": "impl"}}
