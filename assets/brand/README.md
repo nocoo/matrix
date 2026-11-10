@@ -24,6 +24,7 @@ uv run --with pillow python scripts/generate-brand.py
 The generator verifies the four exact masters in [source.json](source.json) and records derived PNG/ICO checksums in [derivatives.json](derivatives.json). This logo update changes no product-theme tokens. Selected study `2026-09-07-01`, finishing `01`; nearest foreground clearance from the actual 23% rounded outline is 268.50 native pixels.
 
 The presentation uses **Circuit routing grid**: base `#e2eee7`, light `#f4faf7`, shade `#cddfd8` and motif `#799b8b`. The complete workbench preserves every model request, reference, decision, layer, mask and finishing pass.
+
 - [Individual before/after page](https://hexly.ai/logos/matrix)
 - [Complete study archive](https://github.com/nocoo/hexly.ai/tree/main/artwork/logo-family/matrix/2026-09-07-01)
 - [Local static review](https://index.dev.hexly.ai/artwork/logo-family/matrix/2026-09-07-01/review.html)
