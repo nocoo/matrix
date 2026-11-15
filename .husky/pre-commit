@@ -1,5 +1,5 @@
 # === Quality Gate: pre-commit ===
-# L1 + G1 + G2a (6DQ standard): checks the Git index snapshot, not the working tree.
+# L1 + G1: checks the Git index snapshot, not the working tree.
 set -e
 command -v git >/dev/null 2>&1 || {
 	echo "pre-commit: git is required" >&2

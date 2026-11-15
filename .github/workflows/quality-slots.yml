@@ -1,0 +1,191 @@
+name: Quality
+
+on:
+  workflow_call:
+    outputs:
+      tested-sha:
+        value: ${{ jobs.z1-gate.outputs.tested-sha }}
+
+permissions:
+  contents: read
+  actions: read
+
+env:
+  BUN_VERSION: "1.4.2"
+
+jobs:
+  s1-types:
+    name: "S1: Types"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: nocoo/base-ci/.github/actions/setup-js@777bbe4f9bacab8a91d8c01974480a6ee23d28e0 # v2026.15
+        with:
+          package-manager: bun
+          runtime-version: ${{ env.BUN_VERSION }}
+          install-policy: trusted
+      - run: bun run typecheck
+
+  s2-lint:
+    name: "S2: Lint"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: nocoo/base-ci/.github/actions/setup-js@777bbe4f9bacab8a91d8c01974480a6ee23d28e0 # v2026.15
+        with:
+          package-manager: bun
+          runtime-version: ${{ env.BUN_VERSION }}
+          install-policy: trusted
+      - run: bun run lint
+
+  s3-workflow:
+    name: "S3: Workflow"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Check SHA-pinned workflow actions
+        run: |
+          node -e '
+            const fs = require("node:fs");
+            const path = require("node:path");
+            const dir = ".github/workflows";
+            const shaRe = /@[0-9a-f]{40}(\s|$|#)/;
+            const bad = [];
+            for (const f of fs.readdirSync(dir)) {
+              if (!f.endsWith(".yml") && !f.endsWith(".yaml")) continue;
+              const text = fs.readFileSync(path.join(dir, f), "utf8");
+              for (const m of text.matchAll(/^\s*-?\s*uses:\s*([^\s#]+)/gm)) {
+                const ref = m[1];
+                if (ref.startsWith("./")) continue;
+                if (!shaRe.test(ref)) bad.push(`${f}: ${ref}`);
+              }
+            }
+            if (bad.length) {
+              console.error("Unpinned uses:\n" + bad.join("\n"));
+              process.exit(1);
+            }
+          '
+
+  g1-secrets:
+    name: "G1: Secrets"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: nocoo/base-ci/.github/actions/setup-security-scanners@777bbe4f9bacab8a91d8c01974480a6ee23d28e0 # v2026.15
+      - run: gitleaks dir . --no-banner --redact --log-level error --config .gitleaks.toml
+
+  g2-dependencies:
+    name: "G2: Dependencies"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: nocoo/base-ci/.github/actions/setup-security-scanners@777bbe4f9bacab8a91d8c01974480a6ee23d28e0 # v2026.15
+      - run: osv-scanner scan --config osv-scanner.toml --lockfile=bun.lock
+
+  b1-build:
+    name: "B1: Build"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: nocoo/base-ci/.github/actions/setup-js@777bbe4f9bacab8a91d8c01974480a6ee23d28e0 # v2026.15
+        with:
+          package-manager: bun
+          runtime-version: ${{ env.BUN_VERSION }}
+          install-policy: trusted
+      - run: bun run build
+
+  l1-unit:
+    name: "L1: Unit"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: nocoo/base-ci/.github/actions/setup-js@777bbe4f9bacab8a91d8c01974480a6ee23d28e0 # v2026.15
+        with:
+          package-manager: bun
+          runtime-version: ${{ env.BUN_VERSION }}
+          install-policy: trusted
+      - run: bun run test:coverage && bun run gate:l1-self-test
+
+  l2-runtime:
+    name: "L2: Runtime"
+    if: ${{ vars.ENABLE_L2_RUNTIME == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "N/A - static assets deployed to Cloudflare Worker"
+
+  l3-integration:
+    name: "L3: Integration"
+    if: ${{ vars.ENABLE_L3_INTEGRATION == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "TODO - no local Worker HTTP E2E wired yet"
+
+  l4-e2e:
+    name: "L4: E2E"
+    if: ${{ vars.ENABLE_L4_E2E == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "TODO - no Playwright E2E suite yet"
+
+  p1-package:
+    name: "P1: Package"
+    if: ${{ vars.ENABLE_P1_PACKAGE == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "N/A - private repo, not published to npm"
+
+  z1-gate:
+    name: "Z1: Gate"
+    runs-on: ubuntu-latest
+    if: always()
+    needs:
+      - s1-types
+      - s2-lint
+      - s3-workflow
+      - g1-secrets
+      - g2-dependencies
+      - b1-build
+      - l1-unit
+      - l2-runtime
+      - l3-integration
+      - l4-e2e
+      - p1-package
+    outputs:
+      tested-sha: ${{ github.sha }}
+    steps:
+      - name: Verify all quality slots
+        run: |
+          echo "s1-types: ${{ needs.s1-types.result }}"
+          echo "s2-lint: ${{ needs.s2-lint.result }}"
+          echo "s3-workflow: ${{ needs.s3-workflow.result }}"
+          echo "g1-secrets: ${{ needs.g1-secrets.result }}"
+          echo "g2-dependencies: ${{ needs.g2-dependencies.result }}"
+          echo "b1-build: ${{ needs.b1-build.result }}"
+          echo "l1-unit: ${{ needs.l1-unit.result }}"
+          echo "l2-runtime: ${{ needs.l2-runtime.result }}"
+          echo "l3-integration: ${{ needs.l3-integration.result }}"
+          echo "l4-e2e: ${{ needs.l4-e2e.result }}"
+          echo "p1-package: ${{ needs.p1-package.result }}"
+          for r in \
+            "${{ needs.s1-types.result }}" \
+            "${{ needs.s2-lint.result }}" \
+            "${{ needs.s3-workflow.result }}" \
+            "${{ needs.g1-secrets.result }}" \
+            "${{ needs.g2-dependencies.result }}" \
+            "${{ needs.b1-build.result }}" \
+            "${{ needs.l1-unit.result }}"; do
+            if [ "$r" != "success" ]; then
+              echo "Required slot failed or was skipped: $r"
+              exit 1
+            fi
+          done
+          for r in \
+            "${{ needs.l2-runtime.result }}" \
+            "${{ needs.l3-integration.result }}" \
+            "${{ needs.l4-e2e.result }}" \
+            "${{ needs.p1-package.result }}"; do
+            if [ "$r" != "success" ] && [ "$r" != "skipped" ]; then
+              echo "Optional slot failed: $r"
+              exit 1
+            fi
+          done
