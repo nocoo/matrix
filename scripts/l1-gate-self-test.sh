@@ -145,12 +145,12 @@ probe_ut_fail() {
 }
 
 probe_coverage_insufficient() {
-	wt perl -i -pe 's/branches: 95/branches: 100/' vitest.config.ts
+	wt perl -i -pe 's/branches: 80/branches: 100/' vitest.config.ts
 	wt git add vitest.config.ts
 }
 
 probe_coverage_functions_only() {
-	wt perl -i -pe 's/functions: 95/functions: 100/' vitest.config.ts
+	wt perl -i -pe 's/functions: 80/functions: 100/' vitest.config.ts
 	wt bash -c 'printf "%s\n" "export function l1UncoveredGateProbe(): string { return \"probe\"; }" >> src/lib/utils.ts'
 	wt git add vitest.config.ts src/lib/utils.ts
 }
