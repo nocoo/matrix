@@ -14,6 +14,7 @@ export default defineConfig({
 		environment: "node",
 		globals: true,
 		include: ["src/**/*.{test,spec}.{ts,tsx}"],
+		exclude: ["node_modules/**", "dist/**", "tests/e2e/**"],
 		allowOnly: false,
 		passWithNoTests: false,
 		reporters: ["default", "./src/test/selected-run.ts"],

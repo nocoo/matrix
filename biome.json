@@ -62,7 +62,16 @@
 		}
 	},
 	"files": {
-		"includes": ["**", "!**/node_modules", "!**/dist", "!**/coverage", "!**/.wrangler"]
+		"includes": [
+			"**",
+			"!**/node_modules",
+			"!**/dist",
+			"!**/coverage",
+			"!**/.wrangler",
+			"!**/test-results",
+			"!**/playwright-report",
+			"!**/blob-report"
+		]
 	},
 	"overrides": [
 		{
