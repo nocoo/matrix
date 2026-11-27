@@ -36,7 +36,7 @@ Mock animated text/rain (`ScrambleText`, `DecodingText`, `TypewriterText`, `Matr
 
 ## Quality & Local Gates
 
-Follows `system1-quality`; CI slot definitions and pinned `base-ci` revision live in `.github/workflows/quality-slots.yml` (invoked via `.github/workflows/ci.yml`; `quality / Z1: Gate` required on `main`). Status vocabulary: `enforced`, `planned`, `manual`, `N/A`.
+Follows `system1-quality`; CI slot definitions and pinned `base-ci` revision live in `.github/workflows/quality-slots.yml` (invoked alongside `D1`–`D5` Worker deploy on `main` push via `.github/workflows/pipeline.yml`, reusing `B1` `matrix-dist` and verifying `/api/live` + `/`; `quality / Z1: Gate` required on `main`). Status vocabulary: `enforced`, `planned`, `manual`, `N/A`.
 
 - **Exceptions / gaps**: `L2 Runtime` is `N/A` (static Cloudflare asset Worker); `L3 Integration` (`planned`, no Worker HTTP E2E); `L4 E2E` (`enforced` / `impl`, Playwright Chromium smoke suite in `tests/e2e/` against built `dist/`); `P1 Package` (`enforced` / `impl`, `wrangler deploy --dry-run` against built `dist/`).
 - **L1 scope**: `vitest.config.ts` enforces 80/80/80/80 thresholds on `src/lib/**` and `src/components/ui/matrix-utils.ts` (UI components excluded); `bun run gate:l1-self-test` remains local-only.
