@@ -1,0 +1,47 @@
+name: Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: Deploy after quality gate passes
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  quality:
+    uses: ./.github/workflows/quality-slots.yml
+
+  deploy:
+    name: Deploy Worker
+    needs: [quality]
+    if: >-
+      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.deploy == true)
+    uses: nocoo/base-ci/.github/workflows/deploy-worker.yml@3703a073693d598159e87f77f99587e586c14cfe # v2026.24
+    with:
+      runtime-version: "1.4.2"
+      install-policy: "blocked"
+      artifact-name: matrix-dist
+      artifact-path: dist
+      environment: production
+      concurrency-group: deploy-worker-production
+      timeout-minutes: 15
+      verify-command: |
+        EXPECTED=$(jq -r .version package.json)
+        HTTP=$(curl -fsS -o /tmp/live.json -w "%{http_code}" https://matrix.hexly.ai/api/live || echo "000")
+        test "$HTTP" = "200"
+        jq -e --arg v "$EXPECTED" '.status == "ok" and .name == "matrix" and .version == $v' /tmp/live.json
+        HOME_HTTP=$(curl -fsS -o /dev/null -w "%{http_code}" https://matrix.hexly.ai/ || echo "000")
+        test "$HOME_HTTP" = "200"
+      verify-retries: 6
+      verify-retry-seconds: 5
+    secrets:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
