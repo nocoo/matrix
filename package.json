@@ -36,7 +36,7 @@
 		"undici": "8.13.1"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.6.8",
+		"@biomejs/biome": "2.6.9",
 		"@playwright/test": "1.65.1",
 		"@tailwindcss/vite": "4.3.5",
 		"@testing-library/jest-dom": "7.0.1",
