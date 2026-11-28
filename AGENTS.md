@@ -13,7 +13,7 @@ bun run dev                 # http://localhost:7013 (https://matrix.dev.hexly.ai
 bun run typecheck           # S1
 bun run lint                # S2 check-only, 0 warnings (biome)
 bun run test                # unit tests; focused: bun run test src/test/lib/format.test.ts
-bun run test:coverage       # L1 >= 80% on src/lib/** + matrix-utils.ts
+bun run test:coverage       # L1 >= 90/85% on src/lib/**, src/models/**, matrix-utils.ts
 bun run test:e2e            # L4 Playwright Chromium smoke suite against dist/
 bun run gate:l1-self-test   # L1 pre-commit hook probe suite (temp worktree)
 bun run build               # B1 emits dist/ (does not deploy)
@@ -39,7 +39,7 @@ Mock animated text/rain (`ScrambleText`, `DecodingText`, `TypewriterText`, `Matr
 Follows `system1-quality`; CI slot definitions and pinned `base-ci` revision live in `.github/workflows/quality-slots.yml` (invoked alongside `D1`–`D5` Worker deploy on `main` push via `.github/workflows/pipeline.yml`, reusing `B1` `matrix-dist` and verifying `/api/live` + `/`; `quality / Z1: Gate` required on `main`). Status vocabulary: `enforced`, `planned`, `manual`, `N/A`.
 
 - **Exceptions / gaps**: `L2 Runtime` is `N/A` (static Cloudflare asset Worker); `L3 Integration` (`planned`, no Worker HTTP E2E); `L4 E2E` (`enforced` / `impl`, Playwright Chromium smoke suite in `tests/e2e/` against built `dist/`); `P1 Package` (`enforced` / `impl`, `wrangler deploy --dry-run` against built `dist/`).
-- **L1 scope**: `vitest.config.ts` enforces 80/80/80/80 thresholds on `src/lib/**` and `src/components/ui/matrix-utils.ts` (UI components excluded); `bun run gate:l1-self-test` remains local-only.
+- **L1 scope**: `vitest.config.ts` enforces 90/85/90/90 (st/br/fn/ln) thresholds on `src/lib/**`, `src/models/**` (excl. types & showcase mock fixtures), and `src/components/ui/matrix-utils.ts` (UI components excluded); `bun run gate:l1-self-test` remains local-only.
 - **Pre-commit**: installed via `bun run prepare` (`.husky/pre-commit`); checks staged index (`G1` `gitleaks`, then `S1`/`S2`/`L1` + non-empty `coverage/lcov.info`, `L1_PRECOMMIT_TIMEOUT_SEC` default `30`s).
 - **Pre-push**: `.husky/pre-push` runs `build`/`test:coverage`/`lint` then `osv-scanner` (`G2`), without `set -e` (OSV can mask prior failures); see [quality gates](docs/02-quality-gates.md).
 
